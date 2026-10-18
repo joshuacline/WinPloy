@@ -1,4 +1,4 @@
-:: <# WinPloy: Granular Windows Deployment Re-Imagined v 0000 Documentation @ github.com/joshuacline
+:: <# WinPloy: Granular Windows Deployment Re-Imagined v 0000.1 Documentation @ github.com/joshuacline
 :: Build, administrate and backup your Windows in a native WinPE recovery environment © Joshua Cline 
 @ECHO OFF&&SETLOCAL ENABLEDELAYEDEXPANSION&&SET "ARGS=%*"
 FOR %%1 in (0 1 2 3 4 5 6 7 8 9) DO (CALL SET "ARG%%1=%%%%1%%")
@@ -1794,6 +1794,7 @@ IF NOT DEFINED CUSTOM_SESSION ECHO.&&ECHO.             %@@%%CURR_SESSION%-LIST E
 SET "$BOX=SB"&&CALL:BOX_DISP&&SET "MOUNT="&&CALL:MOUNT_INT&&CHCP 65001>NUL
 IF NOT EXIST "%ProgFolder%\$PKX" CALL:CLEAN
 FOR %%a in ($HALT LIST_ITEMS_EXECUTE LIST_ITEMS_BUILDER DRVR_QRY FEAT_QRY SC_PREPARE RO_PREPARE) DO (SET "%%a=")
+FOR %%a in ($DRVR $FEAT) DO (IF EXIST "%%a" DEL /Q /F "%%a">NUL 2>&1)
 EXIT /B
 :UNIFIED_PARSE_EXECUTE
 IF NOT DEFINED COLUMN0 EXIT /B
@@ -1934,25 +1935,25 @@ FOR %%■ in (DrvTar WinTar UsrTar HiveSoftware HiveSystem HiveUser ProgFolder I
 ECHO.CALL:ROUTINE^>"%ProgFolder%\$LOG">>"%WinDir%\TEMP\$%$RAS%.cmd"
 ECHO.DEL /Q /F "%WinDir%\TEMP\$%$RAS%.cmd"^>NUL^&EXIT>>"%WinDir%\TEMP\$%$RAS%.cmd"
 ECHO.:ROUTINE>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%"=="COMMAND" IF EXIST "$LIST" ECHO.FOR /F "TOKENS=*" %%%%@ in ($LIST) DO (%CMD% /C %%%%@)>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%:%$QCLM3$%"=="SERVICE:DELETE" ECHO.%REG% DELETE "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%:%$QCLM3$%"=="SERVICE:AUTO" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "2" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%:%$QCLM3$%"=="SERVICE:MANUAL" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "3" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%:%$QCLM3$%"=="SERVICE:DISABLE" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "4" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%"=="TASK" ECHO.%REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%"=="TASK" ECHO.%REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{%TASKID%}" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
-IF /I "%$QCLM1$%"=="TASK" ECHO.DEL /Q /F "%WinTar%\System32\Tasks\%$QCLM2$%"^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!"=="COMMAND" IF EXIST "$LIST" ECHO.FOR /F "TOKENS=*" %%%%@ in ($LIST) DO (%CMD% /C %%%%@)>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!:!$QCLM3$!"=="SERVICE:DELETE" ECHO.%REG% DELETE "%HiveSystem%\ControlSet001\Services\!$QCLM2$!" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!:!$QCLM3$!"=="SERVICE:AUTO" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\!$QCLM2$!" /V "Start" /T REG_DWORD /D "2" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!:!$QCLM3$!"=="SERVICE:MANUAL" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\!$QCLM2$!" /V "Start" /T REG_DWORD /D "3" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!:!$QCLM3$!"=="SERVICE:DISABLE" ECHO.%REG% ADD "%HiveSystem%\ControlSet001\Services\!$QCLM2$!" /V "Start" /T REG_DWORD /D "4" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!"=="TASK" ECHO.%REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\!$QCLM2$!" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!"=="TASK" ECHO.%REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{%TASKID%}" /F^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
+IF /I "!$QCLM1$!"=="TASK" ECHO.DEL /Q /F "%WinTar%\System32\Tasks\!$QCLM2$!"^>NUL 2^>^&^1>>"%WinDir%\TEMP\$%$RAS%.cmd"
 SET "XNT="&&ECHO.EXIT /B>>"%WinDir%\TEMP\$%$RAS%.cmd"
 IF NOT "%WINPE_BOOT%"=="1" NET START $RAS>NUL 2>&1
 IF "%WINPE_BOOT%"=="1" IF "%$RAS%"=="RAS" CALL %CMD% /C "%WinDir%\TEMP\$RAS.cmd"
 IF "%WINPE_BOOT%"=="1" IF "%$RAS%"=="RATI" CALL %CMD% /C "%WinDir%\TEMP\$RAS.cmd">NUL 2>&1
 :RASTI_WAIT
-SET /A "XNT+=1"&&FOR %%■ in (SERVICE TASK) DO (IF /I "%$QCLM1$%"=="%%■" FOR %%□ in (RAS RATI) DO (
+SET /A "XNT+=1"&&FOR %%■ in (SERVICE TASK) DO (IF /I "!$QCLM1$!"=="%%■" FOR %%□ in (RAS RATI) DO (
 IF EXIST "%WinDir%\TEMP\$%%□.cmd" CALL:TIMER_POINT3
 IF EXIST "%WinDir%\TEMP\$%%□.cmd" IF "%XNT%"=="10" IF NOT DEFINED RETRY SET "RETRY=1"&&GOTO:RASTI_CREATE
 IF EXIST "%WinDir%\TEMP\$%%□.cmd" IF "%XNT%"=="10" IF DEFINED RETRY CALL:RASTI_CHECK&DEL /Q /F "%WinDir%\TEMP\$%%□.cmd">NUL 2>&1))
 FOR %%□ in (RAS RATI) DO (IF EXIST "%WinDir%\TEMP\$%%□.cmd" GOTO:RASTI_WAIT)
-IF EXIST "%ProgFolder%\$LOG" IF /I NOT "%$QCLM1$%"=="SERVICE" IF /I NOT "%$QCLM1$%"=="TASK" FOR /F "USEBACKQ TOKENS=* DELIMS=" %%□ in ("%ProgFolder%\$LOG") DO (ECHO.%%□)
+IF EXIST "%ProgFolder%\$LOG" IF /I NOT "!$QCLM1$!"=="SERVICE" IF /I NOT "!$QCLM1$!"=="TASK" FOR /F "USEBACKQ TOKENS=* DELIMS=" %%□ in ("%ProgFolder%\$LOG") DO (ECHO.%%□)
 IF EXIST "%ProgFolder%\$LOG" DEL /Q /F "%ProgFolder%\$LOG">NUL 2>&1
 SET "RETRY="&&SET "XNT="&&EXIT /B
 :RASTI_CHECK
@@ -2187,11 +2188,11 @@ CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (INSTALL) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
 IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not INSTALL.&&EXIT /B
-FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (SET "EXTPACKAGE=%PackFolder%\%%□"
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (SET "EXTPACKAGE=%PackFolder%\%%□"
 IF NOT EXIST "%PackFolder%\%%□" ECHO.%COLOR4%ERROR:%$$% %PackFolder%\%%□ doesn't exist.&&EXIT /B)
 SET "PACK_GOOD=The operation completed successfully"
 FOR %%G in ("%EXTPACKAGE%") DO (SET "PACKFULL=%%~nG%%~xG"&&SET "PACKEXT=%%~xG")
-IF /I "%PACKEXT%"==".PKX" CALL %CMD% /C ""%ProgFolder%\winploy.cmd" -IMAGEMGR -RUN -PACK "%$QCLM2$%" -path "%DrvTar%""&EXIT /B
+IF /I "%PACKEXT%"==".PKX" CALL %CMD% /C ""%ProgFolder%\winploy.cmd" -IMAGEMGR -RUN -PACK "!$QCLM2$!" -path "%DrvTar%""&EXIT /B
 FOR %%G in (APPXBUNDLE MSIXBUNDLE) DO (IF /I "%PACKEXT%"==".%%G" SET "PACKEXT=.APPX")
 IF DEFINED @VERBOSE ECHO.Installing %@@%%PACKFULL%%$$%...
 IF /I "%PACKEXT%"==".APPX" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PROVISIONEDAPPXPACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" ECHO.%COLOR5%%PACK_GOOD%.%$$%&&EXIT /B)
@@ -2231,94 +2232,90 @@ EXIT /B
 :APPX_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing AppX %@@%%%□%$$%...)
-SET "CAPS_SET=$QCLM2$"&&SET "CAPS_VAR=%$QCLM2$%"&&CALL:CAPS_SET
-IF DEFINED APPX_SKIP SET "CAPS_SET=APPX_SKIPX"&&SET "CAPS_VAR=%APPX_SKIP%"&&CALL:CAPS_SET
-IF DEFINED APPX_SKIP FOR %%1 in (%APPX_SKIPX%) DO (IF "%$QCLM2$%"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&GOTO:APPX_END)
+SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing AppX %@@%%%□%$$%...)
+IF DEFINED APPX_SKIP FOR %%1 in (!APPX_SKIP!) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&GOTO:APPX_END)
 FOR /F "TOKENS=1-1* DELIMS=\" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications" /F "%$QCLM2$%" 2^>NUL') DO (IF "%%a"=="HKEY_LOCAL_MACHINE" SET "APPX_KEY=%%a\%%b"&&CALL:APPX_NML)
 IF NOT DEFINED APPX_KEY FOR /F "TOKENS=1-1* DELIMS=\" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications" /F "%$QCLM2$%" 2^>NUL') DO (IF "%%a"=="HKEY_LOCAL_MACHINE" SET "APPX_KEY=%%a\%%b"&&CALL:APPX_IBX)
-IF NOT DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% AppX %%□ doesn't exist.)
-IF DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR2%ERROR:%$$% AppX %%□ is a stub or unable to remove.)
+IF NOT DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% AppX %%□ doesn't exist.)
+IF DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% AppX %%□ is a stub or unable to remove.)
 :APPX_END
 FOR %%a in (APPX_DONE APPX_PATH APPX_VER APPX_KEY) DO (SET "%%a=")
 EXIT /B
 :APPX_NML
 FOR /F "TOKENS=1-9 SKIP=2 DELIMS=\ " %%a in ('%REG% QUERY "%APPX_KEY%" /V Path 2^>NUL') DO (IF "%%a"=="Path" SET "APPX_PATH=%DrvTar%\Program Files\WindowsApps\%%g")
-FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("%APPX_KEY%") DO (SET "APPX_VER=%%d")
+FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("!APPX_KEY!") DO (SET "APPX_VER=%%d")
 IF DEFINED APPX_PATH IF DEFINED APPX_VER CALL:IF_LIVE_MIX
 IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-Provisionedappxpackage /PACKAGENAME:"%$QCLM2$%_%APPX_VER%" 2^>NUL') DO (
 IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&IF DEFINED @VERBOSE ECHO.%COLOR5%%%1.%$$%
-IF "%%1"=="The operation completed successfully" IF EXIST "%APPX_PATH%\*" SET "FOLDER_DEL=%APPX_PATH%"&&CALL:FOLDER_DEL)
+IF "%%1"=="The operation completed successfully" IF EXIST "!APPX_PATH!\*" SET "FOLDER_DEL=!APPX_PATH!"&&CALL:FOLDER_DEL)
 IF DEFINED APPX_DONE CALL:IF_LIVE_EXT
-IF DEFINED APPX_DONE %REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\%$QCLM2$%_%APPX_VER%" /f>NUL 2>&1
+IF DEFINED APPX_DONE %REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\!$QCLM2$!_!APPX_VER!" /f>NUL 2>&1
 EXIT /B
 :APPX_IBX
 CALL:IF_LIVE_EXT
 FOR /F "TOKENS=1-9 SKIP=2 DELIMS=\ " %%a in ('%REG% QUERY "%APPX_KEY%" /V Path 2^>NUL') DO (IF "%%a"=="Path" SET "APPX_PATH=%DrvTar%\Windows\SystemApps\%%f")
-FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("%APPX_KEY%") DO (SET "APPX_VER=%%d")
-IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%REG% DELETE "%APPX_KEY%" /F 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&ECHO. %COLOR5%%%1.%$$%&&IF EXIST "%APPX_PATH%\*" SET "FOLDER_DEL=%APPX_PATH%"&&CALL:FOLDER_DEL&%REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\%$QCLM2$%_%APPX_VER%" /f>NUL 2>&1)
+FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("!APPX_KEY!") DO (SET "APPX_VER=%%d")
+IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%REG% DELETE "%APPX_KEY%" /F 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&ECHO. %COLOR5%%%1.%$$%&&IF EXIST "!APPX_PATH!\*" SET "FOLDER_DEL=!APPX_PATH!"&&CALL:FOLDER_DEL&%REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\!$QCLM2$!_!APPX_VER!" /f>NUL 2>&1)
 EXIT /B
 :CAPABILITY_ITEM
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing Capability %@@%%%□%$$%...)
+SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Capability %@@%%%□%$$%...)
 SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-CAPABILITY /CAPABILITYNAME:"%$QCLM2$%" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" CALL ECHO.%COLOR5%%%1.%$$%&&EXIT /B)
-FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Capability %%□ doesn't exist.)
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Capability %%□ doesn't exist.)
 EXIT /B
 :COMPONENT_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing Component %@@%%%□%$$%...)
-SET "CAPS_SET=$QCLM2$"&&SET "CAPS_VAR=%$QCLM2$%"&&CALL:CAPS_SET
-IF DEFINED COMP_SKIP SET "CAPS_SET=COMP_SKIPX"&&SET "CAPS_VAR=%COMP_SKIP%"&&CALL:CAPS_SET
-IF DEFINED COMP_SKIP FOR %%1 in (%COMP_SKIPX%) DO (IF "%$QCLM2$%"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
+SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Component %@@%%%□%$$%...)
+IF DEFINED COMP_SKIP FOR %%1 in (%COMP_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
 SET "X0Z="&&SET "COMP_XNT="&&SET "FNL_XNT="&&FOR /F "TOKENS=1* DELIMS=:~" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" /F "%$QCLM2$%" 2^>NUL') DO (IF NOT "%%a"=="" CALL SET /A "COMP_XNT+=1"&&CALL SET /A "FNL_XNT+=1"&&CALL SET "TX1=%%a"&&CALL SET "TX2=%%b"&&CALL:COMP_ITEM2)
 EXIT /B
 :COMP_ITEM2
-IF "%X0Z%"=="%TX1%" EXIT /B
+IF /I "%X0Z%"=="%TX1%" EXIT /B
 IF "%COMP_XNT%" GTR "1" EXIT /B
-IF "%TX1%"=="End of search" FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Component %%□ doesn't exist.&&EXIT /B)
+IF /I "%TX1%"=="End of search" FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Component %%□ doesn't exist.&&EXIT /B)
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_EXT
 FOR %%a in (1 2 3 4 5 6 7 8 9) DO (CALL SET "COMP_Z%%a=")
 SET "X0Z="&&SET "SUB_XNT="&&SET "COMP_FLAG="&&FOR /F "TOKENS=1* DELIMS=:~" %%1 IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" /F "%$QCLM2$%" 2^>NUL') DO (IF NOT "%%1"=="" CALL SET /A "SUB_XNT+=1"&&CALL SET "X1=%%1"&&CALL SET "X2=%%2"&&CALL:COMP_DELETE)
 EXIT /B
 :COMP_AVOID
-IF "%$QCLM2$%~%X2%"=="%COMPX%" SET "COMP_AVD=1"
+IF /I "%$QCLM2$%~%X2%"=="%COMPX%" SET "COMP_AVD=1"
 EXIT /B
 :COMP_DELETE
-IF "%X1%"=="End of search" EXIT /B
+IF /I "%X1%"=="End of search" EXIT /B
 IF "%FNL_XNT%" GTR "9" EXIT /B
 IF "%SUB_XNT%" GTR "9" EXIT /B
-IF "%X0Z%"=="%$QCLM2$%~%X2%" EXIT /B
+IF /I "%X0Z%"=="%$QCLM2$%~%X2%" EXIT /B
 SET "COMP_AVD="&&FOR %%a in (1 2 3 4 5 6 7 8 9) DO (CALL SET "COMPX=%%COMP_Z%%a%%"&&CALL:COMP_AVOID)
 IF DEFINED COMP_AVD EXIT /B
-SET "COMP_ABT=X"&&SET "COMP_ABT1="&&IF "%SAFE_EXCLUDE%"=="ENABLED" FOR /F "TOKENS=1-9 DELIMS=-" %%1 IN ("%$QCLM2$%") DO (IF "%%4"=="FEATURES" SET "COMP_ABT1=1")
-SET "COMP_ABT2="&&IF "%SAFE_EXCLUDE%"=="ENABLED" FOR /F "TOKENS=1-9 DELIMS=-" %%1 IN ("%$QCLM2$%") DO (IF "%%5"=="REQUIRED" SET "COMP_ABT2=1")
-SET "COMP_Z%FNL_XNT%=%$QCLM2$%~%X2%"&&SET "COMP_ABT3="&&FOR %%1 in (%COMP_SKIPX%) DO (IF "%$QCLM2$%"=="%%1" SET "COMP_ABT3=1")
+SET "COMP_ABT=X"&&SET "COMP_ABT1="&&IF /I "%SAFE_EXCLUDE%"=="ENABLED" FOR /F "TOKENS=1-9 DELIMS=-" %%1 IN ("!$QCLM2$!") DO (IF /I "%%4"=="FEATURES" SET "COMP_ABT1=1")
+SET "COMP_ABT2="&&IF /I "%SAFE_EXCLUDE%"=="ENABLED" FOR /F "TOKENS=1-9 DELIMS=-" %%1 IN ("!$QCLM2$!") DO (IF /I "%%5"=="REQUIRED" SET "COMP_ABT2=1")
+SET "COMP_Z%FNL_XNT%=%$QCLM2$%~%X2%"&&SET "COMP_ABT3="&&FOR %%1 in (%COMP_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" SET "COMP_ABT3=1")
 IF NOT DEFINED COMP_ABT1 IF NOT DEFINED COMP_ABT2 IF NOT DEFINED COMP_ABT3 SET "COMP_ABT="
 SET /A "FNL_XNT+=1"&&SET "X0Z=%$QCLM2$%~%X2%"
-IF NOT DEFINED COMP_FLAG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing Subcomp %@@%%%□~%X2%%$$%...)
-IF DEFINED COMP_ABT IF "%FNL_XNT%"=="2" SET "COMP_FLAG=1"&&FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is required or unable to remove.)
+IF NOT DEFINED COMP_FLAG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Subcomp %@@%%%□~%X2%%$$%...)
+IF DEFINED COMP_ABT IF "%FNL_XNT%"=="2" SET "COMP_FLAG=1"&&FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is required or unable to remove.)
 IF DEFINED COMP_ABT EXIT /B
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_EXT
 %REG% ADD "%X1%~%X2%" /V "Visibility" /T REG_DWORD /D "1" /F>NUL 2>&1
 %REG% DELETE "%X1%~%X2%\Owners" /F>NUL 2>&1
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_MIX
 SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-PACKAGE /PACKAGENAME:"%$QCLM2$%~%X2%" 2^>NUL') DO (SET "DISMSG="&&IF "%%1"=="The operation completed successfully" CALL SET "DISMSG=%%1.")
-IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is a stub or unable to remove.)
+IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is a stub or unable to remove.)
 IF DEFINED DISMSG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%DISMSG%") DO (ECHO.%COLOR5%%%□%$$%)
 EXIT /B
 :DRIVER_ITEM
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (INSTALL DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not INSTALL or DELETE.&&EXIT /B)
+SET "$PASS="&&FOR %%□ IN (INSTALL DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not INSTALL or DELETE.&&EXIT /B)
 IF /I "%$QCLM1$%:%$QCLM3$%:%$QCLM4$%"=="DRIVER:INSTALL:DX" CALL:DRVR_INSTALL
 IF /I "%$QCLM1$%:%$QCLM3$%:%$QCLM4$%"=="DRIVER:DELETE:DX" CALL:DRVR_REMOVE
 EXIT /B
@@ -2332,19 +2329,17 @@ IF NOT EXIST "%%a\*" IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GO
 IF NOT EXIST "%%a\*" IF NOT DEFINED DISMSG ECHO.%COLOR2%ERROR:%$$% %PACK_BAD%.)
 EXIT /B
 :DRVR_REMOVE
-SET "FILE_OUTPUT=$DRVR"
-IF NOT DEFINED DRVR_QRY IF EXIST "$DRVR" DEL /Q /F "$DRVR">NUL 2>&1
-FOR /F "TOKENS=1 DELIMS= " %%# in ("%$QCLM3$%") DO (CALL SET "$QCLM3$=%%#")
+SET "FILE_OUTPUT=$DRVR"&&IF NOT DEFINED DRVR_QRY IF EXIST "$DRVR" DEL /Q /F "$DRVR">NUL 2>&1
 IF NOT EXIST "$DRVR" IF DEFINED @VERBOSE ECHO.Getting driver listing...
-IF NOT EXIST "$DRVR" SET "DRVR_QRY=1"&&FOR /F "TOKENS=1-9 DELIMS=|" %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-DRIVERS /FORMAT:TABLE 2^>NUL') DO (FOR /F "TOKENS=1 DELIMS= " %%# in ("%%a") DO (SET "X1=%%#")
-FOR /F "TOKENS=1 DELIMS= " %%# in ("%%g") DO (SET "X3=%%#")
-FOR /F "TOKENS=1 DELIMS= " %%# in ("%%b") DO (SET "CAPS_SET=X2"&&SET "CAPS_VAR=%%#"&&CALL:CAPS_SET&&CALL:FILE_OUTPUT))
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing Driver %@@%%%□%$$%...)
-SET "CAPS_SET=$QCLM2$"&&SET "CAPS_VAR=%$QCLM2$%"&&CALL:CAPS_SET
-SET "DISMSG="&&IF EXIST "$DRVR" FOR /F "TOKENS=1-3 DELIMS=%U00%" %%a in ($DRVR) DO (IF DEFINED @VERBOSE IF "%%b"=="%$QCLM2$%" ECHO.Uninstalling %@@%%%a%$$% v%%c...
-IF "%%b"=="%$QCLM2$%" IF DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('PNPUTIL.EXE /DELETE-DRIVER "%%a" /UNINSTALL /FORCE 2^>NUL') DO (IF "%%1"=="Driver package deleted successfully" SET "DISMSG=The operation completed successfully.")
-IF "%%b"=="%$QCLM2$%" IF NOT DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /REMOVE-DRIVER /DRIVER:"%%a" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "DISMSG=%%1."))
-IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Driver %%□ doesn't exist.)
+IF NOT EXIST "$DRVR" SET "DRVR_QRY=1"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=|" %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-DRIVERS /FORMAT:TABLE 2^>NUL') DO (
+FOR /F "TOKENS=1 DELIMS= " %%# in ("%%a") DO (SET "X1=%%#")
+FOR /F "TOKENS=1 DELIMS= " %%# in ("%%b") DO (SET "X2=%%#")
+FOR /F "TOKENS=1 DELIMS= " %%# in ("%%g") DO (SET "X3=%%#"&&CALL:FILE_OUTPUT))
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Driver %@@%%%□%$$%...)
+SET "DISMSG="&&IF EXIST "$DRVR" FOR /F "TOKENS=1-3 DELIMS=%U00%" %%a in ($DRVR) DO (IF DEFINED @VERBOSE IF /I "%%b"=="!$QCLM2$!" ECHO.Uninstalling %@@%%%a%$$% v%%c...
+IF /I "%%b"=="!$QCLM2$!" IF DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('PNPUTIL.EXE /DELETE-DRIVER "%%a" /UNINSTALL /FORCE 2^>NUL') DO (IF "%%1"=="Driver package deleted successfully" SET "DISMSG=The operation completed successfully.")
+IF /I "%%b"=="!$QCLM2$!" IF NOT DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /REMOVE-DRIVER /DRIVER:"%%a" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "DISMSG=%%1."))
+IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Driver %%□ doesn't exist.)
 IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%DISMSG%%$$%
 EXIT /B
 :FILE_OUTPUT
@@ -2354,69 +2349,68 @@ EXIT /B
 :FEATURE_ITEM
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (ENABLE DISABLE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not ENABLE or DISABLE.&&EXIT /B)
+SET "$PASS="&&FOR %%□ IN (ENABLE DISABLE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not ENABLE or DISABLE.&&EXIT /B)
 SET "FILE_OUTPUT=$FEAT"&&IF NOT DEFINED FEAT_QRY IF EXIST "$FEAT" DEL /Q /F "$FEAT">NUL 2>&1
 IF NOT EXIST "$FEAT" IF DEFINED @VERBOSE ECHO.Getting feature listing...
-IF NOT EXIST "$FEAT" SET "FEAT_QRY=1"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=| " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-FEATURES /FORMAT:TABLE 2^>NUL') DO (FOR %%X in (Enabled Disabled) DO (IF "%%b"=="%%X" SET "X1=%%a"&&SET "X2=%%b"&&CALL:FILE_OUTPUT))
-IF /I "%$QCLM3$%"=="ENABLE" FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (IF DEFINED @VERBOSE ECHO.Enabling Feature %@@%%%□%$$%...)
-IF /I "%$QCLM3$%"=="DISABLE" FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (IF DEFINED @VERBOSE ECHO.Disabling Feature %@@%%%□%$$%...)
-SET "FEAT="&&IF EXIST "$FEAT" FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ($FEAT) DO (IF /I "%%a"=="%$QCLM2$%" SET "FEAT=1"&&SET "X1=%%a"&&SET "X2=%%b")
-IF NOT DEFINED FEAT FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ doesn't exist.&&EXIT /B)
-IF /I "%$QCLM3$%"=="ENABLE" IF "%X2%"=="Enabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
-IF /I "%$QCLM3$%"=="ENABLE" IF "%X2%"=="Enabled" EXIT /B
-IF /I "%$QCLM3$%"=="DISABLE" IF "%X2%"=="Disabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
-IF /I "%$QCLM3$%"=="DISABLE" IF "%X2%"=="Disabled" EXIT /B
-IF /I "%$QCLM3$%"=="ENABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ENABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /ALL 2^>NUL') DO (
+IF NOT EXIST "$FEAT" SET "FEAT_QRY=1"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=| " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-FEATURES /FORMAT:TABLE 2^>NUL') DO (FOR %%X in (Enabled Disabled) DO (IF /I "%%b"=="%%X" SET "X1=%%a"&&SET "X2=%%b"&&CALL:FILE_OUTPUT))
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (
+IF /I "!$QCLM3$!"=="DISABLE" ECHO.Disabling Feature %@@%%%□%$$%...
+IF /I "!$QCLM3$!"=="ENABLE" ECHO.Enabling Feature %@@%%%□%$$%...)
+SET "FEAT="&&IF EXIST "$FEAT" FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ($FEAT) DO (IF /I "%%a"=="!$QCLM2$!" SET "FEAT=1"&&SET "X1=%%a"&&SET "X2=%%b")
+IF NOT DEFINED FEAT FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ doesn't exist.&&EXIT /B)
+IF /I "!$QCLM3$!"=="ENABLE" IF /I "%X2%"=="Enabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="ENABLE" IF /I "%X2%"=="Enabled" EXIT /B
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%X2%"=="Disabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%X2%"=="Disabled" EXIT /B
+IF /I "!$QCLM3$!"=="ENABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ENABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /ALL 2^>NUL') DO (
 IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%■.%$$%
 IF "%%■"=="The operation completed successfully" SET "X2=Enabled"&&CALL:FILE_OUTPUT&&EXIT /B)
-IF /I "%$QCLM3$%"=="DISABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /DISABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /REMOVE 2^>NUL') DO (
+IF /I "!$QCLM3$!"=="DISABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /DISABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /REMOVE 2^>NUL') DO (
 IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%$.%$$%
 IF "%%■"=="The operation completed successfully" SET "X2=Disabled"&&CALL:FILE_OUTPUT&&EXIT /B)
-FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ is a stub or unable to change.)
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ is a stub or unable to change.)
 EXIT /B
 :SERVICE_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (AUTO MANUAL DISABLE DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
 IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not AUTO, MANUAL, DISABLE, or DELETE.&&EXIT /B
-FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (FOR /F "TOKENS=*" %%■ IN ("%$QCLM2$%") DO (
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (FOR /F "TOKENS=*" %%■ IN ("!$QCLM2$!") DO (
 IF /I "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Removing Service %@@%%%■%$$%...
-IF /I NOT "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Changing start to %@@%%%□%$$% for Service %@@%%%■%$$%...
-SET "CAPS_SET=$QCLM2$"&&SET "CAPS_VAR=%%■"&&CALL:CAPS_SET))
-IF DEFINED SVC_SKIP SET "CAPS_SET=SVC_SKIPX"&&SET "CAPS_VAR=%SVC_SKIP%"&&CALL:CAPS_SET
-IF DEFINED SVC_SKIP FOR %%1 in (%SVC_SKIPX%) DO (IF "%$QCLM2$%"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
+IF /I NOT "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Changing start to %@@%%%□%$$% for Service %@@%%%■%$$%...))
+IF DEFINED SVC_SKIP FOR %%1 in (%SVC_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
 SET "$GO="&&FOR /F "TOKENS=1-3 DELIMS= " %%a IN ('%REG% QUERY "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V Start 2^>NUL') DO (
 IF "%%a"=="Start" SET "$GO=1"
-IF /I "%$QCLM3$%"=="AUTO" IF "%%a"=="Start" IF "%%c"=="0x2" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
-IF /I "%$QCLM3$%"=="AUTO" IF "%%a"=="Start" IF "%%c"=="0x2" EXIT /B
-IF /I "%$QCLM3$%"=="MANUAL" IF "%%a"=="Start" IF "%%c"=="0x3" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
-IF /I "%$QCLM3$%"=="MANUAL" IF "%%a"=="Start" IF "%%c"=="0x3" EXIT /B
-IF /I "%$QCLM3$%"=="DISABLE" IF "%%a"=="Start" IF "%%c"=="0x4" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
-IF /I "%$QCLM3$%"=="DISABLE" IF "%%a"=="Start" IF "%%c"=="0x4" EXIT /B)
-IF NOT DEFINED $GO FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Service %%□ doesn't exist.&&EXIT /B)
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM3$%"=="DELETE" %REG% DELETE "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /F>NUL 2>&1
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM3$%"=="AUTO" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "2" /F >NUL 2>&1
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM3$%"=="MANUAL" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "3" /F>NUL 2>&1
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM3$%"=="DISABLE" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "4" /F>NUL 2>&1
+IF /I "!$QCLM3$!"=="AUTO" IF /I "%%a"=="Start" IF "%%c"=="0x2" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="AUTO" IF /I "%%a"=="Start" IF "%%c"=="0x2" EXIT /B
+IF /I "!$QCLM3$!"=="MANUAL" IF /I "%%a"=="Start" IF "%%c"=="0x3" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="MANUAL" IF /I "%%a"=="Start" IF "%%c"=="0x3" EXIT /B
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%%a"=="Start" IF "%%c"=="0x4" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%%a"=="Start" IF "%%c"=="0x4" EXIT /B)
+IF NOT DEFINED $GO FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Service %%□ doesn't exist.&&EXIT /B)
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="DELETE" %REG% DELETE "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /F>NUL 2>&1
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="AUTO" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "2" /F >NUL 2>&1
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="MANUAL" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "3" /F>NUL 2>&1
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="DISABLE" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "4" /F>NUL 2>&1
 IF NOT "%WINPE_BOOT%"=="1" SET "$RAS=RATI"&&CALL:RASTI_CREATE
 FOR /F "TOKENS=1-3 DELIMS= " %%a IN ('%REG% QUERY "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V Start 2^>NUL') DO (
-IF /I "%$QCLM3$%"=="AUTO" IF "%%a"=="Start" IF NOT "%%c"=="0x2" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "%$QCLM3$%"=="MANUAL" IF "%%a"=="Start" IF NOT "%%c"=="0x3" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "%$QCLM3$%"=="DISABLE" IF "%%a"=="Start" IF NOT "%%c"=="0x4" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "%$QCLM3$%"=="DELETE" IF "%%a"=="Start" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B)
+IF /I "!$QCLM3$!"=="AUTO" IF "%%a"=="Start" IF NOT "%%c"=="0x2" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="MANUAL" IF "%%a"=="Start" IF NOT "%%c"=="0x3" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="DISABLE" IF "%%a"=="Start" IF NOT "%%c"=="0x4" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="DELETE" IF "%%a"=="Start" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B)
 IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
 EXIT /B
 :TASK_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.Removing Task %@@%%%□%$$%...)
+SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Task %@@%%%□%$$%...)
 SET "TASKID="&&FOR /F "TOKENS=1-4 DELIMS={} " %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /V Id 2^>NUL') DO (IF "%%a"=="Id" SET "TASKID=%%c")
-IF NOT DEFINED TASKID FOR /F "TOKENS=*" %%□ IN ("%$QCLM2$%") DO (ECHO.%COLOR4%ERROR:%$$% Task %%□ doesn't exist.&&EXIT /B)
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM1$%"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /F>NUL 2>&1
-IF "%WINPE_BOOT%"=="1" IF /I "%$QCLM1$%"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{%TASKID%}" /F>NUL 2>&1
+IF NOT DEFINED TASKID FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Task %%□ doesn't exist.&&EXIT /B)
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM1$!"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /F>NUL 2>&1
+IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM1$!"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{%TASKID%}" /F>NUL 2>&1
 IF NOT "%WINPE_BOOT%"=="1" SET "$RAS=RATI"&&CALL:RASTI_CREATE
 FOR /F "TOKENS=1 DELIMS= " %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /V Id 2^>NUL') DO (IF "%%a"=="Id" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B)
 IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
@@ -2424,8 +2418,8 @@ EXIT /B
 :WINSXS_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
-SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "%$QCLM3$%"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("%$QCLM3$%") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
 IF DEFINED LIVE_APPLY ECHO.%COLOR4%ERROR:%$$% OFFLINE IMAGE ONLY&&EXIT /B
 IF NOT DEFINED SXS_SKIP SET "SXS_SKIP=amd64_microsoft-windows-s..cingstack.resources amd64_microsoft-windows-servicingstack amd64_microsoft.vc80.crt amd64_microsoft.vc90.crt amd64_microsoft.windows.c..-controls.resources amd64_microsoft.windows.common-controls amd64_microsoft.windows.gdiplus x86_microsoft.vc80.crt x86_microsoft.vc90.crt x86_microsoft.windows.c..-controls.resources x86_microsoft.windows.common-controls x86_microsoft.windows.gdiplus"
 ECHO.&&ECHO.Removing %@@%WinSxS folder%$$%...&&SET "SUBZ="&&SET "SUBXNT="&&FOR /F "TOKENS=1-2* DELIMS=_" %%a IN ('DIR "%WinTar%\WinSxS" /A: /B /O:GN') DO (IF NOT "%%a"=="" SET "QUERYX=%%a_%%b"&&SET "SUBX=%%c"&&SET /A "SUBXNT+=1"&&CALL:LATERS_WINSXS)
@@ -2768,13 +2762,14 @@ EXIT /B
 SET "$GO="&&FOR /F "TOKENS=1 DELIMS=\" %%X in ('%REG% QUERY "HKLM\SoftwareX" /VE 2^>NUL') DO (IF "%%X"=="HKEY_LOCAL_MACHINE" SET "$GO=1")
 IF NOT DEFINED $GO SET "MOUNT="&&IF "%DEBUG%"=="ENABLED" ECHO.Mounting external registry hives..
 IF "%MOUNT%"=="EXT" EXIT /B
-SET "MOUNT=EXT"&&SET "HiveUser=HKEY_USERS\AllUsersX"&&SET "HiveSoftware=HKEY_LOCAL_MACHINE\SoftwareX"&&SET "HiveSystem=HKEY_LOCAL_MACHINE\SystemX"&&SET "ApplyTarget=IMAGE:%TARGET_PATH%"&&SET "DrvTar=%TARGET_PATH%"&&SET "WinTar=%TARGET_PATH%\Windows"
+SET "MOUNT=EXT"&&SET "HiveUser=HKEY_USERS\AllUsersX"&&SET "HiveSoftware=HKEY_LOCAL_MACHINE\SoftwareX"&&SET "HiveSystem=HKEY_LOCAL_MACHINE\SystemX"&&SET "ApplyTarget=IMAGE:"%TARGET_PATH%""&&SET "DrvTar=%TARGET_PATH%"&&SET "WinTar=%TARGET_PATH%\Windows"
 %REG% UNLOAD HKU\AllUsersX>NUL 2>&1
 %REG% UNLOAD HKLM\SoftwareX>NUL 2>&1
 %REG% UNLOAD HKLM\SystemX>NUL 2>&1
 %REG% LOAD HKLM\SoftwareX "%TARGET_PATH%\WINDOWS\SYSTEM32\Config\SOFTWARE">NUL 2>&1
 SET "UsrSid="&&FOR /F "TOKENS=2* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows\CurrentVersion\Authentication\LogonUI" /v LastLoggedOnUserSID 2^>NUL') do (IF "%%a"=="REG_SZ" SET "UsrSid=%%b")
-SET "UsrFld="&&FOR /F "TOKENS=2-3* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows NT\CurrentVersion\ProfileList\%UsrSid%" /v ProfileImagePath 2^>NUL') do (IF "%%a"=="REG_EXPAND_SZ" SET "UsrFld=%%c")
+SET "UsrFld="&&FOR /F "TOKENS=2-3* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows NT\CurrentVersion\ProfileList\%UsrSid%" /v ProfileImagePath 2^>NUL') do (IF "%%a"=="REG_SZ" SET "UsrFld=%%c"
+IF "%%a"=="REG_EXPAND_SZ" SET "UsrFld=%%c")
 IF DEFINED UsrFld IF EXIST "%TARGET_PATH%\%UsrFld%" SET "UsrTar=%TARGET_PATH%\%UsrFld%"
 IF DEFINED UsrFld IF NOT EXIST "%TARGET_PATH%\%UsrFld%" SET "UsrFld="
 IF NOT DEFINED UsrFld SET "UsrFld=Users\Default"&&SET "UsrTar=%TARGET_PATH%\Users\Default"
@@ -2794,13 +2789,14 @@ EXIT /B
 :MOUNT_MIX
 FOR /F "TOKENS=1 DELIMS=\" %%X in ('%REG% QUERY "HKLM\SoftwareX" /VE 2^>NUL') DO (IF "%%X"=="HKEY_LOCAL_MACHINE" SET "MOUNT="&&IF "%DEBUG%"=="ENABLED" ECHO.Unmounting external registry hives..)
 IF "%MOUNT%"=="MIX" EXIT /B
-SET "MOUNT=MIX"&&SET "HiveUser=HKEY_CURRENT_USER"&&SET "HiveSoftware=HKEY_LOCAL_MACHINE\SOFTWARE"&&SET "HiveSystem=HKEY_LOCAL_MACHINE\SYSTEM"&&SET "ApplyTarget=IMAGE:%TARGET_PATH%"&&SET "DrvTar=%TARGET_PATH%"&&SET "WinTar=%TARGET_PATH%\Windows"
+SET "MOUNT=MIX"&&SET "HiveUser=HKEY_CURRENT_USER"&&SET "HiveSoftware=HKEY_LOCAL_MACHINE\SOFTWARE"&&SET "HiveSystem=HKEY_LOCAL_MACHINE\SYSTEM"&&SET "ApplyTarget=IMAGE:"%TARGET_PATH%""&&SET "DrvTar=%TARGET_PATH%"&&SET "WinTar=%TARGET_PATH%\Windows"
 %REG% UNLOAD HKU\AllUsersX>NUL 2>&1
 %REG% UNLOAD HKLM\SoftwareX>NUL 2>&1
 %REG% UNLOAD HKLM\SystemX>NUL 2>&1
 %REG% LOAD HKLM\SoftwareX "%TARGET_PATH%\WINDOWS\SYSTEM32\Config\SOFTWARE">NUL 2>&1
 SET "UsrSid="&&FOR /F "TOKENS=2* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows\CurrentVersion\Authentication\LogonUI" /v LastLoggedOnUserSID 2^>NUL') do (IF "%%a"=="REG_SZ" SET "UsrSid=%%b")
-SET "UsrFld="&&FOR /F "TOKENS=2-3* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows NT\CurrentVersion\ProfileList\%UsrSid%" /v ProfileImagePath 2^>NUL') do (IF "%%a"=="REG_EXPAND_SZ" SET "UsrFld=%%c")
+SET "UsrFld="&&FOR /F "TOKENS=2-3* SKIP=1 DELIMS=:\ " %%a in ('%REG% QUERY "HKLM\SoftwareX\Microsoft\Windows NT\CurrentVersion\ProfileList\%UsrSid%" /v ProfileImagePath 2^>NUL') do (IF "%%a"=="REG_SZ" SET "UsrFld=%%c"
+IF "%%a"=="REG_EXPAND_SZ" SET "UsrFld=%%c")
 IF DEFINED UsrFld IF EXIST "%TARGET_PATH%\%UsrFld%" SET "UsrTar=%TARGET_PATH%\%UsrFld%"
 IF DEFINED UsrFld IF NOT EXIST "%TARGET_PATH%\%UsrFld%" SET "UsrFld="
 IF NOT DEFINED UsrFld SET "UsrFld=Users\Default"&&SET "UsrTar=%TARGET_PATH%\Users\Default"
@@ -3854,14 +3850,17 @@ S = "$RoutineX"
 }}}}
 }
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FUNCTION◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
-function MOUNT_INT {
-$global:HiveUser = "HKEY_CURRENT_USER"
+function MOUNT_INT {$global:UsrSid = "";$global:UsrTar = "";
+$global:UsrSid = Get-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Authentication\LogonUI" -Name "LastLoggedOnUserSID" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty LastLoggedOnUserSID -ErrorAction SilentlyContinue
+if ($UsrSid) {$UsrTarX = Get-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\ProfileList\$UsrSid" -Name "ProfileImagePath" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ProfileImagePath -ErrorAction SilentlyContinue} 
+if (Test-Path -Path "$UsrTarX") {$global:HiveUser = "HKEY_USERS\$UsrSid";$global:UsrTar = "$UsrTarX"} else {$global:HiveUser = "HKEY_CURRENT_USER";$global:UsrTar = "$env:USERPROFILE"}
+if (-not ($UsrTarX)) {$global:HiveUser = "HKEY_CURRENT_USER";$global:UsrTar = "$env:USERPROFILE"}
 $global:HiveSoftware = "HKEY_LOCAL_MACHINE\SOFTWARE"
 $global:HiveSystem = "HKEY_LOCAL_MACHINE\SYSTEM"
 $global:DrvTar = "$env:SystemDrive"
 $global:WinTar = "$env:SystemDrive\Windows"
-$global:UsrTar = "$env:USERPROFILE";#$global:UsrTar = "$HOME"
 $global:ApplyTarget = "ONLINE"
+#$global:UsrTar = "$HOME"
 }
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FUNCTION◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 function VDISK_DETACH {
@@ -3873,13 +3872,16 @@ $global:vdiskltr = ""
 MOUNT_INT
 }
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FUNCTION◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
-function MOUNT_EXT {
+function MOUNT_EXT {$global:UsrSid = "";$global:UsrTar = "";
+$global:UsrSid = Get-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SoftwareX\Microsoft\Windows\CurrentVersion\Authentication\LogonUI" -Name "LastLoggedOnUserSID" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty LastLoggedOnUserSID -ErrorAction SilentlyContinue
+if ($UsrSid) {$UsrTarX = Get-ItemProperty -Path "Registry::HKEY_LOCAL_MACHINE\SoftwareX\Microsoft\Windows NT\CurrentVersion\ProfileList\$UsrSid" -Name "ProfileImagePath" -ErrorAction SilentlyContinue | Select-Object -ExpandProperty ProfileImagePath -ErrorAction SilentlyContinue}
+if ($UsrTarX) {$UsrTarZ = $vdiskltr + $UsrTarX.Substring(1)} else {$UsrTarZ = "$vdiskltr`:\Users\Default"}
+if (Test-Path -Path "$UsrTarZ") {$global:UsrTar = "$UsrTarZ"} else {$global:UsrTar = "$vdiskltr`:\Users\Default"}
 $global:HiveUser = "HKEY_USERS\AllUsersX"
 $global:HiveSoftware = "HKEY_LOCAL_MACHINE\SoftwareX"
 $global:HiveSystem = "HKEY_LOCAL_MACHINE\SystemX"
 $global:DrvTar = "$vdiskltr`:"
 $global:WinTar = "$vdiskltr`:\Windows"
-$global:UsrTar = "$vdiskltr`:\Users\Default"
 $global:ApplyTarget = "IMAGE:$vdiskltr`:"
 }
 function VDISK_ATTACH {
@@ -4762,9 +4764,9 @@ $PageV2W.Visible = $true;$PageV2W.BringToFront();$Button_W2V.Visible = $true;$Bu
 function Button_PageLB {
 if ($REFSKIP) {$global:REFERENCE = "$REFSKIP";$global:REFSKIP = "";}
 $global:GUI_RESUME = "ImageManagementList"
-$ListView1_PageLB.Items.Clear();$ListView2_PageLB.Items.Clear()
+$ListView1_PageLB.Items.Clear()
 Get-ChildItem -Path "$ListFolder\*.base" -Name | ForEach-Object {[void]$ListView1_PageLB.Items.Add($_)}
-Get-ChildItem -Path "$ListFolder\*.list" -Name | ForEach-Object {[void]$ListView2_PageLB.Items.Add($_)}
+Get-ChildItem -Path "$ListFolder\*.list" -Name | ForEach-Object {[void]$ListView1_PageLB.Items.Add($_)}
 if ($DropBox1_PageLB.SelectedItem) {$null} else {$DropBox1_PageLB.Items.Clear();[void]$DropBox1_PageLB.Items.Add("🪟 Current Environment");[void]$DropBox1_PageLB.Items.Add("Disabled");Get-ChildItem -Path "$ImageFolder\*.vhdx" -Name | ForEach-Object {[void]$DropBox1_PageLB.Items.Add($_)}
 [void]$DropBox1_PageLB.Items.Add("Refresh");$DropBox1_PageLB.SelectedItem = "$REFERENCE";}
 if ($REFERENCE -eq "LIVE") {if (-not ($DropBox1_PageLB.SelectedItem -eq "🪟 Current Environment")) {$DropBox1_PageLB.SelectedItem = "🪟 Current Environment";}}
@@ -4773,10 +4775,8 @@ $PageMain.Visible = $true;$PageLEWiz.Visible = $false;$PageLBWiz.Visible = $fals
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FUNCTION◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 function Button_PagePB {
 $global:GUI_RESUME = "ImageManagementPack"
-$ListView1_PagePB.Items.Clear();$ListView2_PagePB.Items.Clear()
+$ListView1_PagePB.Items.Clear()
 Get-ChildItem -Path "$PackFolder\*.pkx" -Name | ForEach-Object {[void]$ListView1_PagePB.Items.Add($_)}
-if (Test-Path -Path $ProjectFolder) {
-Get-ChildItem -Path "$ProjectFolder" -Name | ForEach-Object {[void]$ListView2_PagePB.Items.Add($_)}}
 $PageMain.Visible = $true;$PagePEWiz.Visible = $false;$PagePBWiz.Visible = $false;$PagePB.Visible = $true;$PagePB.BringToFront();$Button_LB.Visible = $true;$Button_PB.Visible = $false
 }
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FUNCTION◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
@@ -5778,8 +5778,11 @@ $DropBox3_PageV2W = NewDropBox -X '425' -Y '525' -W '300' -H '40' -C '0' -Displa
 $Page = 'PageLB';$Label0_PageLB = NewLabel -X '-125' -Y '5' -W '1000' -H '60' -Bold 'True' -TextSize '36' -Text "📜 Image Management" -TextAlign 'X'
 $Label1_PageLB = NewLabel -X '85' -Y '535' -W '175' -H '30' -Text 'Reference'
 $DropBox1_PageLB = NewDropBox -X '215' -Y '530' -W '325' -H '40' -C '0' -DisplayMember 'Name'
-$ListView1_PageLB = NewListView -X '390' -Y '90' -W '335' -H '420';$WSIZ = [int](325 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView1_PageLB.Columns.Add("X", $WSIZX)
-$ListView2_PageLB = NewListView -X '25' -Y '90' -W '335' -H '420';$WSIZ = [int](325 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView2_PageLB.Columns.Add("X", $WSIZX)
+
+
+$ListView1_PageLB = NewListView -X '25' -Y '90' -W '700' -H '420';$WSIZ = [int](690 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView1_PageLB.Columns.Add("X", $WSIZX)
+
+
 $Button1_PageLB = NewButton -X '25' -Y '585' -W '225' -H '60' -Text '🏁 List Execute' -Hover_Text 'List Execute' -Add_Click {LEWiz_Stage1}
 $Button2_PageLB = NewButton -X '500' -Y '585' -W '225' -H '60' -Text '🏗 List Builder' -Hover_Text 'List Builder' -Add_Click {LBWiz_Stage1}
 
@@ -5789,8 +5792,7 @@ $FileFilt = "List files (*.base;*.list)|*.base;*.list";PickFile
 if ($Pick) {Start-Process -FilePath "Notepad.exe" -WindowStyle "Maximized" -ArgumentList "$Pick"}}
 #▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶FORM◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 $Page = 'PagePB';$Label0_PagePB = NewLabel -X '-125' -Y '5' -W '1000' -H '60' -Bold 'True' -TextSize '36' -Text "🗳 Image Management" -TextAlign 'X'
-$ListView1_PagePB = NewListView -X '25' -Y '90' -W '335' -H '470';$WSIZ = [int](325 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView1_PagePB.Columns.Add("X", $WSIZX)
-$ListView2_PagePB = NewListView -X '390' -Y '90' -W '335' -H '470';$WSIZ = [int](325 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView2_PagePB.Columns.Add("X", $WSIZX)
+$ListView1_PagePB = NewListView -X '25' -Y '90' -W '700' -H '420';$WSIZ = [int](690 * $ScaleRef * $GUI_SCALE);$WSIZX = [int]($WSIZ * 4);[void]$ListView1_PagePB.Columns.Add("X", $WSIZX)
 $Button0_PagePB = NewButton -X '25' -Y '585' -W '225' -H '60' -Text '🏁 Pack Execute' -Hover_Text 'Pack Execute' -Add_Click {PEWiz_Stage1}
 $Button3_PagePB = NewButton -X '500' -Y '585' -W '225' -H '60' -Text '🏗 Pack Builder' -Hover_Text 'Pack Builder' -Add_Click {PBWiz_Stage1}
 $Button4_PagePB = NewButton -X '262' -Y '585' -W '225' -H '60' -Text '✏ Edit Pack' -Hover_Text 'Edit Pack' -Add_Click {

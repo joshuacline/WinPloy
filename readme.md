@@ -18,10 +18,9 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 - https://youtube.com/@windozedev
 
 > [!WARNING]
-> There are links to impersonating malicious software in the search results.
-> Do not download from anywhere other than here or the mirrors listed.
+> There are links to impersonating malicious software in the search results using screenshots from previous releases.
 
-<a href=" " target="_blank"><img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/starhistory.png" alt=" " width="720"/></a>
+> Do not download from anywhere other than listed here.
 
 ***Microsoft Copilot:***
 

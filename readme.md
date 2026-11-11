@@ -3,6 +3,8 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/maingui.png" alt=" " width="720">
 
+Due to name-jacking, impersonating, and SEO poisoning, we will now have milestone/era names.
+
 **Current milestone/era: winfawt**
 
 [![Download](https://img.shields.io/github/v/release/joshuacline/windick)](https://github.com/joshuacline/windick/archive/refs/heads/main.zip)

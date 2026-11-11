@@ -84,6 +84,8 @@ MenuScript: menu based scripting database
 ## Recovery Environment
 ***Backup, restore, or apply tweaks from within recovery (CMD-Driven menu only)***
 
+<img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/recoverylogo.gif" alt=" " width="720">
+
 <details>
 <summary>Recovery</summary>
 

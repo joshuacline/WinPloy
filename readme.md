@@ -3,24 +3,24 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/maingui.png" alt=" " width="720">
 
-[![Download](https://img.shields.io/github/v/release/joshuacline/windick)](https://github.com/joshuacline/windick/archive/refs/heads/main.zip)
+# Download
 
+- ☆[![Download](https://img.shields.io/github/v/release/joshuacline/windick)](https://github.com/joshuacline/windick/releases)☆
 
-# Mirrors
 - https://www.majorgeeks.com/files/details/windows_deployment_image_customization_kit.html
 
 - https://www.softpedia.com/get/System/System-Miscellaneous/Windows-Deployment-Image-Customization-Kit.shtml
+
+> [!WARNING]
+>## There are links to impersonating malicious software in the search results including using screenshots from previous releases.
+
+>## Do not download from anywhere other than listed here.
 
 # Documentation
 - https://github.com/joshuacline/documentation/blob/main/windick/readme.md
 - https://learn.microsoft.com/en-us/archive/technet-wiki/54560.windows-1011-how-to-implement-a-bootable-windows-pe-recovery-deployment-environment-in-command-shell
 
 - https://youtube.com/@windozedev
-
-> [!WARNING]
-> There are links to impersonating malicious software in the search results using screenshots from previous releases.
-
-> Do not download from anywhere other than listed here.
 
 ***Microsoft Copilot:***
 

@@ -1,6 +1,10 @@
 ﻿MENU-SCRIPT QUICK
 
+❕Quick list example - Useful for operations that only will be applied to the Current Environment or launching multiple nested sessions.❕
 ❕This tutorial has dynamic menu entries and saves the grocery count in the Windows registry.❕
+❕The "QUICK" header modifier is an override to always use the Current Environment (Live) for the 'Reference' and target, bypassing the vhdx mount and target selection screens.❕
+❕Dynamic menu entries (start with '📜') will still be skipped when the 'Reference' is set to disabled.❕
+❕Eexecution always applies to the Current Environment.❕
 
 ❕Group❕🍏Fruit❕🍎Apples ➥ ◁Array1.S▷❕Normal❕Fruit group❗How many apples❕
 ❕📜Routine❕◁HiveUser▷\Software\Winploy\Tutorial❗Apples❕Registry❕Integer❕

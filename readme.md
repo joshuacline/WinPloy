@@ -13,12 +13,12 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 > [!WARNING]
 >## There are links to impersonating malicious software in the search results including using screenshots from previous releases.
-
-> [!WARNING]
 > <a href="https://youtu.be/C2M6gBZeS8s" target="_blank"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/STOP_sign.jpg/500px-STOP_sign.jpg" alt="🚨🚨🚨" width="720"/></a>
->## In addition to the malicious links there are leeches attempting to steal traffic by impersonating the list of features for my tool, and via direct name-jacking. You heard that right, 1 week after rebranding, the name of my tool has been stolen as well as the search results.
+>## In addition to the malicious links there are leeches attempting to steal traffic by impersonating the list of features for my tool in combination with direct name-jacking. You heard that right, 1 week after rebranding, the name of my tool has been stolen as well as the search results.
 
 >## Do not download from anywhere other than listed here.
+
+<img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/starhistory.png" alt=" " width="720">
 
 # Documentation
 - https://github.com/joshuacline/documentation/blob/main/windick/readme.md

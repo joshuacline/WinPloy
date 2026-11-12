@@ -3,6 +3,9 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/maingui.png" alt=" " width="720">
 
+# 🏆 Welcome to the most versatile Windows deployment and configuration tool on the market 🏆 
+***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
+
 # Download
 
 - ☆[![Download](https://img.shields.io/github/v/release/joshuacline/windick)](https://github.com/joshuacline/windick/releases)☆
@@ -17,8 +20,6 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 >## In addition to the malicious links there are leeches attempting to steal traffic by impersonating the list of features for my tool in combination with direct name-jacking. You heard that right, 1 week after rebranding, the name of my tool has been stolen as well as the search results.
 
 >## Do not download from anywhere other than listed here.
-
-<img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/starhistory.png" alt=" " width="720">
 
 # Documentation
 - https://github.com/joshuacline/documentation/blob/main/windick/readme.md
@@ -119,3 +120,4 @@ Standard recovery
 - "It was already pinned to the XDA Windows 11 subforum, so our options were limited. Four years of weekly coverage featuring competing products without a single mention, and yet it persists." -Joaõ, XDA Developers
 - "Exquisite. A masterclass in debugging. Looks like I picked the wrong week to stop huffing glue." - Daniel, LTT
 
+<img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/starhistory.png" alt=" " width="720">

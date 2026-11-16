@@ -7,7 +7,7 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 ***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
 
-The only comprehensive toolkit with absolutely **zero internet connectivity**, a notable missing feature from recent utilities. Zero updates, check-ins, and most importantly no backdoors. **Period**. Experience a level freedom I'll never dare dream of again. **Priceless**. Administrate your Windows from an offline recovery environment.
+The only comprehensive toolkit with absolutely **zero internet connectivity**, a notable missing feature from recent utilities. Zero updates, check-ins, and most importantly no backdoors. **Period**. Experience a level of freedom I'll never dare dream of again. **Priceless**. Administrate your Windows from an offline recovery environment.
 
 # Download
 

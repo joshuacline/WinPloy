@@ -4,7 +4,10 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/maingui.png" alt=" " width="720">
 
 # 🏆 Welcome to the most versatile Windows deployment and configuration tool on the market 🏆 
+
 ***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
+
+The only comprehensive toolkit with absolutely **zero internet connectivity**, a notable missing feature from recent utilities. Zero updates, check-ins, and most importantly no backdoors. **Period**. Experience a level freedom I'll never dare dream of again. **Priceless**. Administrate your Windows from an offline recovery environment.
 
 # Download
 
@@ -121,3 +124,7 @@ Standard recovery
 - "Exquisite. A masterclass in debugging. Looks like I picked the wrong week to stop huffing glue." - Daniel, LTT
 
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/starhistory.png" alt=" " width="720">
+
+## Tutorials coming soon. Anyone feeling brave today?
+
+<img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/youtube.jpg" alt=" " width="720">

@@ -3,7 +3,9 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 <img src="https://raw.githubusercontent.com/joshuacline/documentation/main/windick/png/maingui.png" alt=" " width="720">
 
-# 🏆 Welcome to the most versatile Windows deployment and configuration tool on the market 🏆 
+# Welcome to the most versatile Windows deployment and configuration tool on the market
+
+While some might call it '**legacy**', others refer to it as '**a dependency-free baseline that retains functionality in the most scarce system terrain, including in the absence of PowerShell and .NET frameworks, i.e. Windows Pre-Installation Environments**'.
 
 ***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
 

@@ -1,4 +1,4 @@
-:: <# Windows Deployment Image Customization Kit v 1232 github.com/joshuacline
+:: <# Windows Deployment Image Customization Kit v 1233 github.com/joshuacline
 :: Build, administrate and backup your Windows in a native WinPE recovery environment © Joshua Cline
 @ECHO OFF&&SETLOCAL ENABLEDELAYEDEXPANSION&&SET "ARGS=%*"
 FOR %%1 in (0 1 2 3 4 5 6 7 8 9) DO (CALL SET "ARG%%1=%%%%1%%")
@@ -10,14 +10,14 @@ GOTO:GET_INIT
 IF "%PROG_MODE%"=="RAMDISK" FOR %%a in (BASIC CUSTOM) DO (IF "%MENU_MODE%"=="%%a" GOTO:%MENU_MODE%_MODE)
 IF NOT "%GUI_LAUNCH%"=="DISABLED" IF NOT "%WINPE_BOOT%"=="1" GOTO:GUI_MODE
 IF EXIST "%ProgFolder%\$PKX" ECHO.Cleaning up pkx folder from previous session...&&SET "FOLDER_DEL=%ProgFolder%\$PKX"&&CALL:FOLDER_DEL
-CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:GET_SPACE_ENV&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                                winploy&&ECHO.&&ECHO.&&IF "%PROG_MODE%"=="RAMDISK" ECHO. (%##% 0 %$$%) %U09% Change Boot Order
-ECHO. (%##% 1 %$$%) %U07% Image Processing&&ECHO. (%##% 2 %$$%) %U20% Image Management&&ECHO. (%##% 3 %$$%) %U11% Other Management&&ECHO. (%##% 4 %$$%) %U04% BootDisk Creator&&ECHO. (%##% 5 %$$%) %U21% Settings&&ECHO.&&ECHO.
-IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="Z:\%HOST_FOLDERX%" ECHO.          ^< Disk %@@%%HOST_NUMBER%%$$% UID %@@%%HOST_TARGET%%$$% ^>
-IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="X:\$" ECHO.        ^< Disk %COLOR2%ERROR%$$% UID %COLOR2%%HOST_TARGET%%$$% ^>
+CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:GET_SPACE_ENV&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                                winploy&&ECHO.&&ECHO.&&IF "%PROG_MODE%"=="RAMDISK" ECHO. (%CB% 0 %CT%) %U09% Change Boot Order
+ECHO. (%CB% 1 %CT%) %U07% Image Processing&&ECHO. (%CB% 2 %CT%) %U20% Image Management&&ECHO. (%CB% 3 %CT%) %U11% Other Management&&ECHO. (%CB% 4 %CT%) %U04% BootDisk Creator&&ECHO. (%CB% 5 %CT%) %U21% Settings&&ECHO.&&ECHO.
+IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="Z:\%HOST_FOLDERX%" ECHO.          ^< Disk %CA%%HOST_NUMBER%%CT% UID %CA%%HOST_TARGET%%CT% ^>
+IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="X:\$" ECHO.        ^< Disk %COLOR2%ERROR%CT% UID %COLOR2%%HOST_TARGET%%CT% ^>
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&TITLE winploy: Granular Windows Deployment Re-Imagined v%VER_CUR%  (%ProgFolder%)
-IF "%PROG_MODE%"=="RAMDISK" ECHO.  (%##%Q%$$%)uit  (%##%*%$$%) Basic Menu                                    %@@%%FREE%GB%$$% Free
-IF "%PROG_MODE%"=="PORTABLE" IF "%WINPE_BOOT%"=="1" ECHO.  (%##%Q%$$%)uit                                                   %@@%%FREE%GB%$$% Free
-IF "%PROG_MODE%"=="PORTABLE" IF NOT "%WINPE_BOOT%"=="1" ECHO.  (%##%Q%$$%)uit  (%##%*%$$%) %U06% Switch to GUI                            %@@%%FREE%GB%$$% Free
+IF "%PROG_MODE%"=="RAMDISK" ECHO.  (%CB%Q%CT%)uit  (%CB%*%CT%) Basic Menu                                    %CA%%FREE%GB%CT% Free
+IF "%PROG_MODE%"=="PORTABLE" IF "%WINPE_BOOT%"=="1" ECHO.  (%CB%Q%CT%)uit                                                   %CA%%FREE%GB%CT% Free
+IF "%PROG_MODE%"=="PORTABLE" IF NOT "%WINPE_BOOT%"=="1" ECHO.  (%CB%Q%CT%)uit  (%CB%*%CT%) %U06% Switch to GUI                            %CA%%FREE%GB%CT% Free
 CALL:PAD_LINE&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF "%SELECT%"=="Q" GOTO:QUIT
 IF DEFINED SELECT CALL:SHORTCUT_RUN
@@ -28,19 +28,19 @@ IF "%SELECT%"=="3" GOTO:%MISC_LAST%_MANAGEMENT
 IF "%SELECT%"=="4" GOTO:BOOT_CREATOR
 IF "%SELECT%"=="5" GOTO:SETTINGS_MENU
 IF "%SELECT%"=="*" IF "%PROG_MODE%"=="RAMDISK" SET "MENU_MODE=BASIC"&&GOTO:BASIC_MODE
-IF "%SELECT%"=="*" IF "%PROG_MODE%"=="PORTABLE" IF NOT "%WINPE_BOOT%"=="1" SET "GUI_LAUNCH=ENABLED"&&(ECHO.&&ECHO.GUI_LAUNCH=ENABLED)>>"winploy.ini"
+IF "%SELECT%"=="*" IF "%PROG_MODE%"=="PORTABLE" IF NOT "%WINPE_BOOT%"=="1" IF DEFINED PSEXE SET "GUI_LAUNCH=ENABLED"&&(ECHO.&&ECHO.GUI_LAUNCH=ENABLED)>>"winploy.ini"
 IF "%SELECT%"=="~" SET&&CALL:PAUSED
 IF "%SELECT%"=="0" IF "%PROG_MODE%"=="RAMDISK" CALL:BCD_MENU
 GOTO:MAIN_MENU
 :GUI_MODE
-START powershell -noprofile -WindowStyle Hidden -executionpolicy bypass -command "$Content = Get-Content -Path \"%~f0\" -raw -Encoding utf8;$ContentUTF = [ScriptBlock]::Create($Content);& $ContentUTF"
+START %PSEXE% -noprofile -WindowStyle Hidden -executionpolicy bypass -command "$Content = Get-Content -Path \"%~f0\" -raw -Encoding utf8;$ContentUTF = [ScriptBlock]::Create($Content);& $ContentUTF"
 GOTO:QUIT
 :BASIC_MODE
-@ECHO OFF&&SET "MOUNT="&&CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:GET_SPACE_ENV&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                                winploy&&ECHO.&&ECHO.&&ECHO. (%##% 0 %$$%) %U09% Change Boot Order&&ECHO. (%##% 1 %$$%) %U07% Backup&&ECHO. (%##% 2 %$$%) %U07% Restore
-ECHO.&&ECHO.&&IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="Z:\%HOST_FOLDERX%" ECHO.          ^< Disk %@@%%HOST_NUMBER%%$$% UID %@@%%HOST_TARGET%%$$% ^>
-IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="X:\$" ECHO.        ^< Disk %COLOR2%ERROR%$$% UID %COLOR2%%HOST_TARGET%%$$% ^>
+@ECHO OFF&&SET "MOUNT="&&CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:GET_SPACE_ENV&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                                winploy&&ECHO.&&ECHO.&&ECHO. (%CB% 0 %CT%) %U09% Change Boot Order&&ECHO. (%CB% 1 %CT%) %U07% Backup&&ECHO. (%CB% 2 %CT%) %U07% Restore
+ECHO.&&ECHO.&&IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="Z:\%HOST_FOLDERX%" ECHO.          ^< Disk %CA%%HOST_NUMBER%%CT% UID %CA%%HOST_TARGET%%CT% ^>
+IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="X:\$" ECHO.        ^< Disk %COLOR2%ERROR%CT% UID %COLOR2%%HOST_TARGET%%CT% ^>
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&TITLE winploy: Granular Windows Deployment Re-Imagined v%VER_CUR%  (%ProgFolder%)
-ECHO.  (%##%Q%$$%)uit  (%##%*%$$%) Main Menu                                    %@@%%FREE%GB%$$% Free
+ECHO.  (%CB%Q%CT%)uit  (%CB%*%CT%) Main Menu                                    %CA%%FREE%GB%CT% Free
 CALL:PAD_LINE&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF "%SELECT%"=="Q" GOTO:QUIT
 IF DEFINED SELECT CALL:SHORTCUT_RUN
@@ -55,10 +55,10 @@ GOTO:BASIC_MODE
 IF NOT DEFINED MENU_LIST GOTO:MAIN_MENU
 IF NOT EXIST "%ListFolder%\%MENU_LIST%" SET "MENU_LIST="&&GOTO:MAIN_MENU
 SET "$HEAD_CHECK=%ListFolder%\%MENU_LIST%"&&CALL:GET_HEADER
-IF NOT "%$HEAD%"=="MENU-SCRIPT" ECHO.&&ECHO.%COLOR4%ERROR:%$$% %MENU_LIST% is not a base or execution list. Leaving custom menu.&&ECHO.&&CALL:PAUSED&GOTO:MAIN_MENU
-SET "TIMER_MSG= %$$%Executing %@@%%MENU_LIST%%$$% in [ %COLOR4%%%TIMER%%%$$% ] seconds. %##%Close window to abort.%$$%"&&SET "TIMER=10"&&CALL:TIMER&&SET "MENU_MODE=CUSTOM"&&CALL:SETS_HANDLER
+IF NOT "%$HEAD%"=="MENU-SCRIPT" ECHO.&&ECHO.%COLOR4%ERROR:%CT% %MENU_LIST% is not a base or execution list. Leaving custom menu.&&ECHO.&&CALL:PAUSED&GOTO:MAIN_MENU
+SET "TIMER_MSG= %CT%Executing %CA%%MENU_LIST%%CT% in [ %COLOR4%%%TIMER%%%CT% ] seconds. %CB%Close window to abort.%CT%"&&SET "TIMER=10"&&CALL:TIMER&&SET "MENU_MODE=CUSTOM"&&CALL:SETS_HANDLER
 CLS&&CALL %CMD% /C ""%ProgFolder%\winploy.cmd" -IMAGEMGR -RUN -LIST "%MENU_LIST%" -QUICK"
-SET "TIMER=10"&&CALL:TIMER&&SET "TIMER_MSG= %$$%Reboot in [ %COLOR4%%%TIMER%%%$$% ] seconds."&&SET "TIMER=15"&&CALL:TIMER
+SET "TIMER=10"&&CALL:TIMER&&SET "TIMER_MSG= %CT%Reboot in [ %COLOR4%%%TIMER%%%CT% ] seconds."&&SET "TIMER=15"&&CALL:TIMER
 GOTO:QUIT
 :COMMAND_MODE
 IF DEFINED GUI_ACTIVE SET "PROG_MODE=GUI"&&CALL:SETS_HANDLER&CLS
@@ -69,12 +69,12 @@ IF "%ARG1%"=="-HELP" CALL:COMMAND_HELP
 IF "%ARG1%"=="-BOOTMAKER" SET "ARG1=-BOOTCREATOR"
 IF "%ARG1%"=="-INTERNAL" IF "%ARG2%"=="-SETTINGS" SET "MENU_EXIT=1"&&GOTO:SETTINGS_MENU
 IF "%ARG1%"=="-FILEMGR" IF NOT "%ARG2%"=="-GRANT" ECHO.Valid options are -grant
-IF "%ARG1%"=="-FILEMGR" IF "%ARG2%"=="-GRANT" IF NOT EXIST "%ARG3%" ECHO.%COLOR4%ERROR:%$$% %ARG3% doesn't exist
+IF "%ARG1%"=="-FILEMGR" IF "%ARG2%"=="-GRANT" IF NOT EXIST "%ARG3%" ECHO.%COLOR4%ERROR:%CT% %ARG3% doesn't exist
 IF "%ARG1%"=="-FILEMGR" IF "%ARG2%"=="-GRANT" IF DEFINED ARG3 IF EXIST "%ARG3%" SET "$PICK=%ARG3%"&&CALL:FMGR_OWN
 IF "%ARG1%"=="-NEXTBOOT" IF NOT "%ARG2%"=="-RECOVERY" IF NOT "%ARG2%"=="-VHDX" ECHO.Valid options are -recovery and -vhdx
 IF "%ARG1%"=="-NEXTBOOT" FOR %%a in (VHDX RECOVERY) DO (IF "%ARG2%"=="-%%a" SET "BOOT_TARGET=%%a"&&CALL:BOOT_TOGGLE)
 IF "%ARG1%"=="-NEXTBOOT" IF DEFINED BOOT_OK ECHO.Next boot is %NEXT_BOOT%
-IF "%ARG1%"=="-NEXTBOOT" IF NOT DEFINED BOOT_OK ECHO.%COLOR4%ERROR:%$$% The boot environment is not installed on this system.
+IF "%ARG1%"=="-NEXTBOOT" IF NOT DEFINED BOOT_OK ECHO.%COLOR4%ERROR:%CT% The boot environment is not installed on this system.
 IF "%ARG1%"=="-AUTOBOOT" IF NOT "%ARG2%"=="-INSTALL" IF NOT "%ARG2%"=="-REMOVE" ECHO.Valid options are -install and -remove
 IF "%ARG1%"=="-AUTOBOOT" IF "%ARG2%"=="-REMOVE" SET "BOOTSVC=REMOVE"&&CALL:AUTOBOOT_SVC
 IF "%ARG1%"=="-AUTOBOOT" IF "%ARG2%"=="-INSTALL" SET "BOOTSVC=INSTALL"&&CALL:AUTOBOOT_SVC
@@ -82,44 +82,44 @@ IF "%ARG1%"=="-BOOTCREATOR" CALL:COMMAND_BOOTCREATOR
 IF "%ARG1%"=="-DISKMGR" CALL:COMMAND_DISKMGR
 IF "%ARG1%"=="-IMAGEMGR" CALL:COMMAND_IMAGEMGR
 IF "%ARG1%"=="-IMAGEPROC" SET "SOURCE_TYPE="&&SET "TARGET_TYPE="&&SET "$PASS="&&FOR %%▓ in (WIM PATH VHDX) DO (IF "%ARG2%"=="-%%▓" SET "$PASS=1"&&SET "SOURCE_TYPE=%%▓"&&CALL:COMMAND_IMAGEPROC_%%▓)
-IF "%ARG1%"=="-IMAGEPROC" IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% ARG2 not -wim, -path, or -vhdx&&EXIT /B
+IF "%ARG1%"=="-IMAGEPROC" IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% ARG2 not -wim, -path, or -vhdx&&EXIT /B
 GOTO:QUIT
 :COMMAND_IMAGEPROC_PATH
-IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%$$% ARG3 'path' is not specified&&EXIT /B
-IF NOT EXIST "%ARG3%\*" ECHO.%COLOR4%ERROR:%$$% 'path' "%ARG3%" doesn't exist&&EXIT /B
-IF NOT "%ARG4%"=="-WIM" ECHO.%COLOR4%ERROR:%$$% ARG4 is not -wim&&EXIT /B
-IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%$$% ARG5 'wim' is not specified&&EXIT /B
-IF NOT "%ARG6%"=="-XLVL" ECHO.%COLOR4%ERROR:%$$% ARG6 is not -xlvl&&EXIT /B
-IF NOT "%ARG7%"=="FAST" IF NOT "%ARG7%"=="MAX" ECHO.%COLOR4%ERROR:%$$% ARG7 'compression' is not fast or max&&EXIT /B
+IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%CT% ARG3 'path' is not specified&&EXIT /B
+IF NOT EXIST "%ARG3%\*" ECHO.%COLOR4%ERROR:%CT% 'path' "%ARG3%" doesn't exist&&EXIT /B
+IF NOT "%ARG4%"=="-WIM" ECHO.%COLOR4%ERROR:%CT% ARG4 is not -wim&&EXIT /B
+IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%CT% ARG5 'wim' is not specified&&EXIT /B
+IF NOT "%ARG6%"=="-XLVL" ECHO.%COLOR4%ERROR:%CT% ARG6 is not -xlvl&&EXIT /B
+IF NOT "%ARG7%"=="FAST" IF NOT "%ARG7%"=="MAX" ECHO.%COLOR4%ERROR:%CT% ARG7 'compression' is not fast or max&&EXIT /B
 SET "TARGET_TYPE=WIM"&&SET "PATH_SOURCE=%ARG3%"&&SET "WIM_TARGET=%ARG5%"&&SET "COMPRESS=%ARG7%"&&CALL:IMAGEPROC_START
 EXIT /B
 :COMMAND_IMAGEPROC_VHDX
-IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%$$% ARG3 'vhdx' is not specified&&EXIT /B
-IF NOT EXIST "%ImageFolder%\%ARG3%" ECHO.%COLOR4%ERROR:%$$% 'vhdx' "%ImageFolder%\%ARG3%" doesn't exist&&EXIT /B
-IF NOT "%ARG4%"=="-INDEX" ECHO.%COLOR4%ERROR:%$$% ARG4 is not -index&&EXIT /B
-IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%$$% ARG5 'index' number is not specified&&EXIT /B
+IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%CT% ARG3 'vhdx' is not specified&&EXIT /B
+IF NOT EXIST "%ImageFolder%\%ARG3%" ECHO.%COLOR4%ERROR:%CT% 'vhdx' "%ImageFolder%\%ARG3%" doesn't exist&&EXIT /B
+IF NOT "%ARG4%"=="-INDEX" ECHO.%COLOR4%ERROR:%CT% ARG4 is not -index&&EXIT /B
+IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%CT% ARG5 'index' number is not specified&&EXIT /B
 SET "$PASS="&&FOR %%▓ in (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25) DO (IF "%ARG5%"=="%%▓" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% ARG5 'index' is not between 1-25&&EXIT /B
-IF NOT "%ARG6%"=="-WIM" ECHO.%COLOR4%ERROR:%$$% ARG6 is not -wim&&EXIT /B
-IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%$$% ARG7 'wim' is not specified&&EXIT /B
-IF NOT "%ARG8%"=="-XLVL" ECHO.%COLOR4%ERROR:%$$% ARG8 is not -xlvl&&EXIT /B
-IF /I NOT "%ARG9%"=="FAST" IF /I NOT "%ARG9%"=="MAX" ECHO.%COLOR4%ERROR:%$$% ARG9 'compression' is not fast or max&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% ARG5 'index' is not between 1-25&&EXIT /B
+IF NOT "%ARG6%"=="-WIM" ECHO.%COLOR4%ERROR:%CT% ARG6 is not -wim&&EXIT /B
+IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%CT% ARG7 'wim' is not specified&&EXIT /B
+IF NOT "%ARG8%"=="-XLVL" ECHO.%COLOR4%ERROR:%CT% ARG8 is not -xlvl&&EXIT /B
+IF /I NOT "%ARG9%"=="FAST" IF /I NOT "%ARG9%"=="MAX" ECHO.%COLOR4%ERROR:%CT% ARG9 'compression' is not fast or max&&EXIT /B
 SET "TARGET_TYPE=WIM"&&SET "VHDX_SOURCE=%ARG3%"&&SET "WIM_INDEX=%ARG5%"&&SET "WIM_TARGET=%ARG7%"&&SET "COMPRESS=%ARG9%"&&CALL:IMAGEPROC_START
 EXIT /B
 :COMMAND_IMAGEPROC_WIM
-IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%$$% 'wim' [%ARG3%] is not defined&&EXIT /B
-IF NOT EXIST "%ImageFolder%\%ARG3%" ECHO.%COLOR4%ERROR:%$$% 'wim' "%ImageFolder%\%ARG3%" doesn't exist&&EXIT /B
-IF NOT "%ARG4%"=="-INDEX" ECHO.%COLOR4%ERROR:%$$% ARG4 is not -index&&EXIT /B
-IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%$$% ARG5 'index' number is not specified&&EXIT /B
+IF NOT DEFINED ARG3 ECHO.%COLOR4%ERROR:%CT% 'wim' [%ARG3%] is not defined&&EXIT /B
+IF NOT EXIST "%ImageFolder%\%ARG3%" ECHO.%COLOR4%ERROR:%CT% 'wim' "%ImageFolder%\%ARG3%" doesn't exist&&EXIT /B
+IF NOT "%ARG4%"=="-INDEX" ECHO.%COLOR4%ERROR:%CT% ARG4 is not -index&&EXIT /B
+IF NOT DEFINED ARG5 ECHO.%COLOR4%ERROR:%CT% ARG5 'index' number is not specified&&EXIT /B
 SET "$PASS="&&FOR %%▓ in (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25) DO (IF "%ARG5%"=="%%▓" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% ARG5 'index' is not between 1-25&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% ARG5 'index' is not between 1-25&&EXIT /B
 SET "$PASS="&&FOR %%▓ in (PATH VHDX) DO (IF "%ARG6%"=="-%%▓" SET "$PASS=1"&&SET "TARGET_TYPE=%%▓")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% ARG6 'target' is not -path or -vhdx&&EXIT /B
-IF "%TARGET_TYPE%"=="PATH" IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%$$% ARG7 'path' is not specified&&EXIT /B
-IF "%TARGET_TYPE%"=="PATH" IF NOT EXIST "%ARG7%\*" ECHO.%COLOR4%ERROR:%$$% 'path' "%ARG7%" doesn't exist&&EXIT /B
-IF "%TARGET_TYPE%"=="VHDX" IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%$$% ARG7 'vhdx' is not specified&&EXIT /B
-IF "%TARGET_TYPE%"=="VHDX" IF NOT "%ARG8%"=="-SIZE" ECHO.%COLOR4%ERROR:%$$% ARG8 is not -size&&EXIT /B
-IF "%TARGET_TYPE%"=="VHDX" IF NOT DEFINED ARG9 ECHO.%COLOR4%ERROR:%$$% ARG9 'size' is not specified&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% ARG6 'target' is not -path or -vhdx&&EXIT /B
+IF "%TARGET_TYPE%"=="PATH" IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%CT% ARG7 'path' is not specified&&EXIT /B
+IF "%TARGET_TYPE%"=="PATH" IF NOT EXIST "%ARG7%\*" ECHO.%COLOR4%ERROR:%CT% 'path' "%ARG7%" doesn't exist&&EXIT /B
+IF "%TARGET_TYPE%"=="VHDX" IF NOT DEFINED ARG7 ECHO.%COLOR4%ERROR:%CT% ARG7 'vhdx' is not specified&&EXIT /B
+IF "%TARGET_TYPE%"=="VHDX" IF NOT "%ARG8%"=="-SIZE" ECHO.%COLOR4%ERROR:%CT% ARG8 is not -size&&EXIT /B
+IF "%TARGET_TYPE%"=="VHDX" IF NOT DEFINED ARG9 ECHO.%COLOR4%ERROR:%CT% ARG9 'size' is not specified&&EXIT /B
 IF "%TARGET_TYPE%"=="VHDX" SET "WIM_SOURCE=%ARG3%"&&SET "WIM_INDEX=%ARG5%"&&SET "VHDX_TARGET=%ARG7%"&&SET "VHDX_SIZE=%ARG9%"&&CALL:IMAGEPROC_START
 IF "%TARGET_TYPE%"=="PATH" SET "INPUT=%ARG7%"&&SET "OUTPUT=ARG7"&&CALL:SLASHER
 IF "%TARGET_TYPE%"=="PATH" SET "WIM_SOURCE=%ARG3%"&&SET "WIM_INDEX=%ARG5%"&&SET "PATH_TARGET=%ARG7%"&&CALL:IMAGEPROC_START
@@ -138,11 +138,11 @@ IF "%ARG2%"=="-RUNEXT" IF DEFINED ARG3 IF DEFINED ARG4 IF EXIST "%ARG4%" SET "IN
 IF "%ARG2%"=="-RUNEXT" IF "%ARG3%"=="-LIST" IF EXIST "%ARG4%" SET "ARG2=-RUN"&&SET "ListFolder=%$PATH_X%"&&SET "ARG4=%$FILE_X%%$EXT_X%"
 IF "%ARG2%"=="-RUNEXT" IF "%ARG3%"=="-PACK" IF EXIST "%ARG4%" SET "PackFolder=%$PATH_X%"&&SET "ARG4=%$FILE_X%%$EXT_X%"
 IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-CUSTOM" SET "CUSTOM_SESSION=1"&&SET "DELETE_DONE=%ARG4%"&&SET "ARG3=-LIST"
-IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-PACK" IF DEFINED ARG4 IF NOT EXIST "%PackFolder%\%ARG4%" ECHO.%COLOR4%ERROR:%$$% pack "%PackFolder%\%ARG4%" doesn't exist&&EXIT /B
-IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-LIST" IF DEFINED ARG4 IF NOT EXIST "%ListFolder%\%ARG4%" ECHO.%COLOR4%ERROR:%$$% list "%ListFolder%\%ARG4%" doesn't exist&&EXIT /B
-IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-VHDX" IF DEFINED ARG6 IF NOT EXIST "%ImageFolder%\%ARG6%" ECHO.%COLOR4%ERROR:%$$% vhdx "%ImageFolder%\%ARG6%" doesn't exist&&EXIT /B
-IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-PATH" IF NOT DEFINED ARG6 ECHO.%COLOR4%ERROR:%$$% path [%ARG6%] is not defined&&EXIT /B
-IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-PATH" IF DEFINED ARG6 IF NOT EXIST "%ARG6%\*" ECHO.%COLOR4%ERROR:%$$% path "%ARG6%" doesn't exist&&EXIT /B
+IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-PACK" IF DEFINED ARG4 IF NOT EXIST "%PackFolder%\%ARG4%" ECHO.%COLOR4%ERROR:%CT% pack "%PackFolder%\%ARG4%" doesn't exist&&EXIT /B
+IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-LIST" IF DEFINED ARG4 IF NOT EXIST "%ListFolder%\%ARG4%" ECHO.%COLOR4%ERROR:%CT% list "%ListFolder%\%ARG4%" doesn't exist&&EXIT /B
+IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-VHDX" IF DEFINED ARG6 IF NOT EXIST "%ImageFolder%\%ARG6%" ECHO.%COLOR4%ERROR:%CT% vhdx "%ImageFolder%\%ARG6%" doesn't exist&&EXIT /B
+IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-PATH" IF NOT DEFINED ARG6 ECHO.%COLOR4%ERROR:%CT% path [%ARG6%] is not defined&&EXIT /B
+IF "%ARG2%"=="-RUN" IF "%ARG5%"=="-PATH" IF DEFINED ARG6 IF NOT EXIST "%ARG6%\*" ECHO.%COLOR4%ERROR:%CT% path "%ARG6%" doesn't exist&&EXIT /B
 IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-PACK" IF DEFINED ARG4 IF EXIST "%PackFolder%\%ARG4%" SET "$PACK_FILE=%PackFolder%\%ARG4%"&&SET "$LISTPACK=%ARG4%"
 IF "%ARG2%"=="-RUN" IF "%ARG3%"=="-LIST" IF DEFINED ARG4 IF EXIST "%ListFolder%\%ARG4%" SET "$LIST_FILE=%ListFolder%\%ARG4%"&&SET "$LISTPACK=%ARG4%"
 IF NOT DEFINED $LISTPACK GOTO:COMMAND_IMAGEMGR_END
@@ -173,7 +173,7 @@ SET "$PASS="&&FOR %%▓ in (DISKLIST INSPECT ERASE CHANGEUID CREATE FORMAT DELET
 IF NOT DEFINED $PASS ECHO.ERROR: ARG2 not -DISKLIST, -INSPECT, -ERASE, -CREATE, -FORMAT, -DELETE, -MOUNT, or -UNMOUNT&&EXIT /B
 IF DEFINED ARG2 IF "%ARG3%"=="-DISKUID" IF DEFINED ARG4 SET "DISK_TARGET=%ARG4%"&&CALL:DISK_DETECT>NUL 2>&1
 IF DEFINED ARG2 IF "%ARG3%"=="-DISKUID" IF DEFINED ARG4 SET "ARG3=-DISK"&&SET "ARG4=%DISK_DETECT%"
-IF DEFINED ARG2 IF "%ARG3%"=="-DISK" IF "%DISK_TARGET%"=="00000000" ECHO.%COLOR4%ERROR:%$$% Disk uid 00000000 can not be addressed by uid. Convert to GPT first (erase).&&EXIT /B
+IF DEFINED ARG2 IF "%ARG3%"=="-DISK" IF "%DISK_TARGET%"=="00000000" ECHO.%COLOR4%ERROR:%CT% Disk uid 00000000 can not be addressed by uid. Convert to GPT first (erase).&&EXIT /B
 IF "%ARG3%"=="-DISK" IF DEFINED ARG4 CALL:DISK_DETECT>NUL 2>&1
 IF "%ARG2%"=="-LIST" CALL:DISK_LIST
 IF "%ARG2%"=="-INSPECT" IF "%ARG3%"=="-DISK" IF DEFINED ARG4 SET "DISK_NUMBER=%ARG4%"&&CALL:DISKMGR_INSPECT
@@ -189,69 +189,69 @@ IF "%ARG2%"=="-UNMOUNT" IF "%ARG3%"=="-LETTER" IF DEFINED ARG4 IF "%ARG5%"=="-HI
 IF "%ARG2%"=="-UNMOUNT" IF "%ARG3%"=="-LETTER" IF DEFINED ARG4 SET "$LTR=%ARG4%"&&CALL:DISKMGR_UNMOUNT
 EXIT /B
 :COMMAND_BOOTCREATOR
-IF "%ARG2%"=="-CREATE" IF NOT EXIST "%CacheFolder%\BOOT.SAV" ECHO.%COLOR4%ERROR:%$$% Boot media %CacheFolder%\boot.sav doesn't exist&&EXIT /B
+IF "%ARG2%"=="-CREATE" IF NOT EXIST "%CacheFolder%\BOOT.SAV" ECHO.%COLOR4%ERROR:%CT% Boot media %CacheFolder%\boot.sav doesn't exist&&EXIT /B
 IF DEFINED ARG2 IF "%ARG3%"=="-DISKUID" IF DEFINED ARG4 SET "DISK_TARGET=%ARG4%"&&CALL:DISK_DETECT>NUL 2>&1
 IF DEFINED ARG2 IF "%ARG3%"=="-DISKUID" IF DEFINED ARG4 SET "ARG3=-DISK"&&SET "ARG4=%DISK_DETECT%"
-IF DEFINED ARG2 IF "%ARG3%"=="-DISK" IF "%DISK_TARGET%"=="00000000" ECHO.%COLOR4%ERROR:%$$% Disk uid 00000000 can not addressed by uid. Convert to GPT first (erase).&&EXIT /B
+IF DEFINED ARG2 IF "%ARG3%"=="-DISK" IF "%DISK_TARGET%"=="00000000" ECHO.%COLOR4%ERROR:%CT% Disk uid 00000000 can not addressed by uid. Convert to GPT first (erase).&&EXIT /B
 IF "%ARG2%"=="-CREATE" IF "%ARG3%"=="-DISK" IF DEFINED ARG4 SET "DISK_NUMBER=%ARG4%"&&IF DEFINED ARG6 SET "VHDX_SLOTX=%ARG6%"&&CALL:BOOT_CREATOR_START
 EXIT /B
 :COMMAND_HELP
 ECHO. winploy Command Line Parameters
 ECHO.
-ECHO.   %##%Miscellaneous%$$%
+ECHO.   %CB%Miscellaneous%CT%
 ECHO.   -help                                                           This menu
 ECHO.   -nextboot -vhdx                                                 Schedule next boot to vhdx
 ECHO.   -nextboot -recovery                                             Schedule next boot to recovery
 ECHO.   -autoboot -install                                              Install reboot to recovery switcher service
 ECHO.   -autoboot -remove                                               Remove reboot to recovery switcher service
 ECHO.
-ECHO.   %##%Image Processing%$$%
-ECHO.   -imageproc -wim %@@%x.wim%$$% -index %@@%#%$$% -vhdx %@@%x.vhdx%$$% -size %@@%GB%$$%
-ECHO.   -imageproc -vhdx %@@%x.vhdx%$$% -index %@@%#%$$% -wim %@@%x.wim%$$% -xlvl %@@%fast/max%$$%
+ECHO.   %CB%Image Processing%CT%
+ECHO.   -imageproc -wim %CA%x.wim%CT% -index %CA%#%CT% -vhdx %CA%x.vhdx%CT% -size %CA%GB%CT%
+ECHO.   -imageproc -vhdx %CA%x.vhdx%CT% -index %CA%#%CT% -wim %CA%x.wim%CT% -xlvl %CA%fast/max%CT%
 ECHO. Examples:
-ECHO.   %@@%-imageproc -wim x.wim -index 1 -path "c:\abc"%$$%
-ECHO.   %@@%-imageproc -path "c:\abc" -wim x.wim -xlvl fast%$$%
-ECHO.   %@@%-imageproc -wim x.wim -index 1 -vhdx x.vhdx -size 25%$$%
-ECHO.   %@@%-imageproc -vhdx x.vhdx -index 1 -wim x.wim -xlvl fast%$$%
+ECHO.   %CA%-imageproc -wim x.wim -index 1 -path "c:\abc"%CT%
+ECHO.   %CA%-imageproc -path "c:\abc" -wim x.wim -xlvl fast%CT%
+ECHO.   %CA%-imageproc -wim x.wim -index 1 -vhdx x.vhdx -size 25%CT%
+ECHO.   %CA%-imageproc -vhdx x.vhdx -index 1 -wim x.wim -xlvl fast%CT%
 ECHO.
-ECHO.   %##%Image Management%$$%
-ECHO.   -imagemgr -run -list %@@%x.list%$$% -live /or/ -vhdx /or/ -path /or/ -quick%$$%
-ECHO.   -imagemgr -run -pack %@@%x.pkx%$$% -live /or/ -vhdx /or/ -path /or/ -quick%$$%
-ECHO.   -imagemgr -create -base %@@%x.base%$$% -live /or/ -vhdx %@@%x.vhdx%$$%
+ECHO.   %CB%Image Management%CT%
+ECHO.   -imagemgr -run -list %CA%x.list%CT% -live /or/ -vhdx /or/ -path /or/ -quick%CT%
+ECHO.   -imagemgr -run -pack %CA%x.pkx%CT% -live /or/ -vhdx /or/ -path /or/ -quick%CT%
+ECHO.   -imagemgr -create -base %CA%x.base%CT% -live /or/ -vhdx %CA%x.vhdx%CT%
 ECHO. Examples:
-ECHO.   %@@%-imagemgr -run -list "x y z.list" -live%$$%
-ECHO.   %@@%-imagemgr -run -pack x.pkx -vhdx x.vhdx%$$%
-ECHO.   %@@%-imagemgr -run -list "x y z.list" -quick%$$%
-ECHO.   %@@%-imagemgr -create -base x.base -live "1 2 3 4 5 6 7"%$$%
-ECHO.   %@@%-imagemgr -create -base x.base -vhdx x.vhdx "1 2 3 4 5 6 7"%$$%
+ECHO.   %CA%-imagemgr -run -list "x y z.list" -live%CT%
+ECHO.   %CA%-imagemgr -run -pack x.pkx -vhdx x.vhdx%CT%
+ECHO.   %CA%-imagemgr -run -list "x y z.list" -quick%CT%
+ECHO.   %CA%-imagemgr -create -base x.base -live "1 2 3 4 5 6 7"%CT%
+ECHO.   %CA%-imagemgr -create -base x.base -vhdx x.vhdx "1 2 3 4 5 6 7"%CT%
 ECHO.
-ECHO.   %##%File Management%$$%
-ECHO.   -filemgr -grant %@@%file/folder%$$%
+ECHO.   %CB%File Management%CT%
+ECHO.   -filemgr -grant %CA%file/folder%CT%
 ECHO. Examples:
-ECHO.   %@@%-filemgr -grant c:\x.txt%$$%
+ECHO.   %CA%-filemgr -grant c:\x.txt%CT%
 ECHO.
-ECHO.   %##%Disk Management%$$%
+ECHO.   %CB%Disk Management%CT%
 ECHO.   -diskmgr -list                                                  Condensed list of disks
-ECHO.   -diskmgr -inspect -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$%                     DiskPart inquiry on specified disk
-ECHO.   -diskmgr -erase -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$%                       Delete all partitions on specified disk
-ECHO.   -diskmgr -create -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$% -size %@@%GB%$$%             Create NTFS partition on specified disk
-ECHO.   -diskmgr -format -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$% -part %@@%#%$$%              Format partition w/NTFS on specified disk
-ECHO.   -diskmgr -delete -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$% -part %@@%#%$$%              Delete partition on specified disk
-ECHO.   -diskmgr -changeuid -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$% %@@%new-uid%$$%           Change disk uid of specified disk
-ECHO.   -diskmgr -mount -disk %@@%#%$$% /or/ -diskuid %@@%uid%$$% -part %@@%#%$$% -letter %@@%letter%$$%         Assign drive letter
-ECHO.   -diskmgr -unmount -letter %@@%letter%$$%                                         Remove drive letter
-ECHO.   -diskmgr -mount -vhdx %@@%x.vhdx%$$% -letter %@@%letter%$$%                              Mount virtual disk
+ECHO.   -diskmgr -inspect -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT%                     DiskPart inquiry on specified disk
+ECHO.   -diskmgr -erase -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT%                       Delete all partitions on specified disk
+ECHO.   -diskmgr -create -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT% -size %CA%GB%CT%             Create NTFS partition on specified disk
+ECHO.   -diskmgr -format -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT% -part %CA%#%CT%              Format partition w/NTFS on specified disk
+ECHO.   -diskmgr -delete -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT% -part %CA%#%CT%              Delete partition on specified disk
+ECHO.   -diskmgr -changeuid -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT% %CA%new-uid%CT%           Change disk uid of specified disk
+ECHO.   -diskmgr -mount -disk %CA%#%CT% /or/ -diskuid %CA%uid%CT% -part %CA%#%CT% -letter %CA%letter%CT%         Assign drive letter
+ECHO.   -diskmgr -unmount -letter %CA%letter%CT%                                         Remove drive letter
+ECHO.   -diskmgr -mount -vhdx %CA%x.vhdx%CT% -letter %CA%letter%CT%                              Mount virtual disk
 ECHO. Examples:
-ECHO.   %@@%-diskmgr -create -disk 0 -size 25%$$%
-ECHO.   %@@%-diskmgr -mount -disk 0 -part 1 -letter e%$$%
-ECHO.   %@@%-diskmgr -unmount -letter e%$$%
+ECHO.   %CA%-diskmgr -create -disk 0 -size 25%CT%
+ECHO.   %CA%-diskmgr -mount -disk 0 -part 1 -letter e%CT%
+ECHO.   %CA%-diskmgr -unmount -letter e%CT%
 ECHO.
-ECHO.   %##%BootDisk Creator%$$%
-ECHO.   -bootcreator -create -disk %@@%#%$$% -vhdx %@@%x.vhdx%$$%                         Erase specified disk and make bootable
-ECHO.   -bootcreator -create -diskuid %@@%uid%$$% -vhdx %@@%x.vhdx%$$%                    Erase specified disk and make bootable
+ECHO.   %CB%BootDisk Creator%CT%
+ECHO.   -bootcreator -create -disk %CA%#%CT% -vhdx %CA%x.vhdx%CT%                         Erase specified disk and make bootable
+ECHO.   -bootcreator -create -diskuid %CA%uid%CT% -vhdx %CA%x.vhdx%CT%                    Erase specified disk and make bootable
 ECHO. Examples:
-ECHO.   %@@%-bootcreator -create -disk 0 -vhdx x.vhdx%$$%
-ECHO.   %@@%-bootcreator -create -diskuid 12345678-1234-1234-1234-123456781234 -vhdx x.vhdx
+ECHO.   %CA%-bootcreator -create -disk 0 -vhdx x.vhdx%CT%
+ECHO.   %CA%-bootcreator -create -diskuid 12345678-1234-1234-1234-123456781234 -vhdx x.vhdx
 ECHO.
 EXIT /B
 :BASE_EXAMPLE
@@ -472,7 +472,7 @@ ECHO.❕Session❕-imageproc -wim "backup.wim" -index 1 -vhdx "current.vhdx" -si
 ECHO.❕Command❕PAUSE❕Normal❕DX❕
 EXIT /B
 :GET_INIT
-SET "ERROR="&&SET "MENU_EXIT="&&SET "SETS_LOAD="&&SET "GUI_ACTIVE="&&CD /D "%~DP0"
+SET "ERROR="&&SET "MENU_EXIT="&&SET "SETS_LOAD="&&SET "GUI_ACTIVE="&&SET "PSEXE="&&CD /D "%~DP0"
 SET "CMD=CMD.EXE"&&SET "DISM=DISM.EXE"&&SET "REG=REG.EXE"&&SET "BCDEDIT=BCDEDIT.EXE"&&FOR %%G in ("%~f0") DO SET "PATH_TEST=%%~nG%%~xG"
 SET "ORIG_CD=%CD%"&&SET "ProgFolder0=%CD%"&&FOR /F "TOKENS=1-2 DELIMS=:" %%a IN ("%CD%") DO (IF "%%b"=="\" SET "ProgFolder0=%%a:")
 IF EXIST "%ProgFolder0%\$CON" SET "GUI_ACTIVE=1"&DEL /F /Q "%ProgFolder0%\$CON">NUL 2>&1
@@ -484,8 +484,11 @@ IF NOT DEFINED ERROR FOR /F "TOKENS=1-9 DELIMS=\" %%a IN ("%ProgFolder0%") DO (I
 IF /I "%%a\%%b\%%d\%%e\%%f"=="%SystemDrive%\Users\AppData\Local\Temp" SET "ERROR=This should not be run from a temp folder. Extract zip into a new folder, then launch again.")
 IF NOT DEFINED ERROR SET "$ENG="&&FOR /F "TOKENS=4-5 DELIMS= " %%a IN ('DIR') DO (IF "%%a %%b"=="bytes free" SET "$ENG=1")
 IF NOT DEFINED ERROR IF NOT DEFINED $ENG SET "ERROR=Non-english host language/locale."
+IF NOT DEFINED ERROR IF EXIST "%WinDir%\System32\WindowsPowerShell\v1.0\powershell.exe" FOR /F %%a in ('powershell.exe -? 2^>NUL') do (SET "PSEXE=powershell.exe")
+IF NOT DEFINED ERROR IF NOT DEFINED PSEXE FOR /F %%a in ('pwsh.exe -v 2^>NUL') do (SET "PSEXE=pwsh.exe")
 IF NOT DEFINED ERROR %REG% query "HKU\S-1-5-19\Environment">NUL 2>&1
-IF NOT DEFINED ERROR IF NOT "%ERRORLEVEL%" EQU "0" IF NOT EXIST "$ELEV" ECHO.>"$ELEV"&%CMD% /C powershell -noprofile -WindowStyle Hidden -executionpolicy bypass -Command "Start-Process -Verb RunAs -FilePath $env:comspec -ArgumentList '/c \"%~f0\" %*'"&DEL /Q /F "$ELEV"&GOTO:QUIT
+IF NOT DEFINED ERROR IF NOT "%ERRORLEVEL%" EQU "0" IF NOT EXIST "$ELEV" IF DEFINED PSEXE ECHO.>"$ELEV"&%CMD% /C %PSEXE% -noprofile -WindowStyle Hidden -executionpolicy bypass -Command "Start-Process -Verb RunAs -FilePath $env:comspec -ArgumentList '/c \"%~f0\" %*'"&DEL /Q /F "$ELEV"&GOTO:QUIT
+IF NOT DEFINED ERROR IF NOT "%ERRORLEVEL%" EQU "0" SET "ERROR=If experiencing user elevation failure, right-click and run as administrator."
 IF EXIST "$ELEV" SET "ERROR=If experiencing user elevation failure, right-click and run as administrator."&DEL /Q /F "$ELEV">NUL 2>&1
 IF NOT DEFINED ERROR FOR /F "TOKENS=2 DELIMS=:" %%a IN ('CHCP') DO (SET "CODEPAGE=%%a")
 IF NOT DEFINED ERROR SET "VER_GET=%~f0"&&CALL:GET_PROGVER&&CHCP 65001>NUL
@@ -518,7 +521,7 @@ ECHO.%@1%       ███▄█▄███ ███ ███▀████�
 ECHO.%@2%       █████████ ███ ███  ▀███ ███      ███    ████████ ████
 ECHO.%@3%        ▀█▀ ▀█▀   ▀█  ▀█    ▀█  ▀█       ▀████▄ ▀████▀   ▀█
 ECHO.&ECHO.                          %COLOR0%RECOVERY ENVIRONMENT&ECHO.
-ECHO.%@B%%@B%%@B%%@B%%@B%%@B%%@B%%@B%%@B%&ECHO.%@X%%@X%%@X%%@X%%@X%%@X%%@X%%@X%%@X%%$$%
+ECHO.%@B%%@B%%@B%%@B%%@B%%@B%%@B%%@B%%@B%&ECHO.%@X%%@X%%@X%%@X%%@X%%@X%%@X%%@X%%@X%%CT%
 SET "@X1=%@X2%"&SET "@X2=%@X3%"&SET "@X3=%@X4%"&SET "@X4=%@X5%"&SET "@X5=%@X6%"&SET "@X6=%@X7%"&SET "@X7=%@X8%"&SET "@X8=%@X1%"
 SET "@T1=%@T2%"&SET "@T2=%@T3%"&SET "@T3=%@T4%"&SET "@T4=%@T5%"&SET "@T5=%@T6%"&SET "@T6=%@T7%"&SET "@T7=%@T8%"&SET "@T8=%@T1%"
 SET "@B1=%@B2%"&SET "@B2=%@B3%"&SET "@B3=%@B4%"&SET "@B4=%@B5%"&SET "@B5=%@B6%"&SET "@B6=%@B7%"&SET "@B7=%@B8%"&SET "@B8=%@B1%"
@@ -540,6 +543,7 @@ IF NOT "%PROG_MODE%"=="RAMDISK" SET "ProgFolder=%ProgFolder0%"
 IF "%PROG_MODE%"=="RAMDISK" IF NOT EXIST "%ProgFolder%" SET "ProgFolder=%ProgFolder0%"
 CD /D "%ProgFolder%"&&IF "%PROG_MODE%"=="PORTABLE" IF NOT EXIST "winploy.ini" IF NOT DEFINED SETS_LOAD CALL:SETS_MAIN
 IF EXIST "winploy.ini" IF NOT DEFINED SETS_LOAD SET "SETS_LOAD=1"&&CALL:SETS_LOAD
+::SET "SETS_CHECK=%SETS_LIST: =^! ^!%"::SET "SETS_CHECK=!%SETS_CHECK%!"::IF NOT "%SETS_CHECK%"=="%SETS_LAST%" SET "SETS_SAVE=1"::SET "SETS_LAST=%SETS_CHECK%"
 CALL:SETS_LIST&&ECHO.winploy v %VER_CUR% Settings>"winploy.ini"
 FOR %%■ in (%SETS_LIST%) DO (ECHO.%%■=!%%■!>>"winploy.ini")
 SET "SETS_LIST="&&IF "%PROG_MODE%"=="RAMDISK" IF "%ProgFolder%"=="X:\$" SET "HOST_GET=1"
@@ -547,7 +551,7 @@ IF "%PROG_MODE%"=="RAMDISK" IF NOT "%DISK_TARGET%"=="%HOST_TARGET%" SET "HOST_GE
 IF DEFINED HOST_GET SET "HOST_GET="&&CALL:HOST_AUTO
 IF "%PROG_MODE%"=="RAMDISK" IF EXIST "Z:\%HOST_FOLDERX%" COPY /Y "winploy.ini" "Z:\%HOST_FOLDERX%">NUL
 :SETS_MAIN
-IF NOT "%BOOTLOADER%"=="New" IF NOT "%BOOTLOADER%"=="Old" IF NOT "%BOOTLOADER%"=="boot.efi" SET "BOOTLOADER=New"
+IF NOT DEFINED PSEXE SET "GUI_LAUNCH=DISABLED"
 IF NOT DEFINED IMAGE_LAST SET "IMAGE_LAST=IMAGE"
 IF NOT DEFINED MISC_LAST SET "MISC_LAST=FILE"
 IF NOT DEFINED PAD_TYPE SET "PAD_TYPE=1"
@@ -574,28 +578,24 @@ IF EXIST "%ProgFolder%\CACHE" IF EXIST "%ProgFolder%\IMAGE" IF EXIST "%ProgFolde
 IF "%FOLDER_MODE%"=="ISOLATED" FOR %%a in (Cache Image Pack List) DO (SET "%%aFolder=%ProgFolder%\%%a")
 IF "%FOLDER_MODE%"=="UNIFIED" FOR %%a in (Cache Image Pack List) DO (SET "%%aFolder=%ProgFolder%")
 IF "%BOOTLOADER%"=="boot.efi" IF NOT EXIST "%CacheFolder%\boot.efi" SET "BOOTLOADER=New"
+IF NOT "%BOOTLOADER%"=="New" IF NOT "%BOOTLOADER%"=="Old" IF NOT "%BOOTLOADER%"=="boot.efi" SET "BOOTLOADER=New"
 IF DEFINED REFERENCE IF /I NOT "%REFERENCE%"=="DISABLED" IF NOT EXIST "%ImageFolder%\%REFERENCE%" SET "REFERENCE=LIVE"
 FOR %%a in (MOUNT TARGET_PATH PATH_APPLY LIVE_APPLY VDISK_APPLY ERROR $NO_MOUNT $HALT $ONLY1 $ONLY2 $ONLY3 $VERBOSE $VHDX VDISK VDISK_LTR QUICK_MENU CUSTOM_SESSION MENU_SKIP DELETE_DONE FEAT_QRY DRVR_QRY SC_PREPARE RO_PREPARE VAR_ITEMS) DO (SET "%%a=")
-CHCP 65001>NUL&IF NOT DEFINED U00 SET "U00=❕"&&SET "U01=❗"&&SET "U02=🗂 "&&SET "U03=🛠️"&&SET "U04=💾"&&SET "U05=🗳 "&&SET "U06=🪟"&&SET "U07=🔄"&&SET "U08=🔃"&&SET "U09=🥾"&&SET "U10=✒ "&&SET "U11=🗃 "&&SET "U12=🎨"&&SET "U13=📜"&&SET "U14=⏳"&&SET "U15=✅"&&SET "U16=❎"&&SET "U17=🚫"&&SET "U18=🗜 "&&SET "U19=🛡 "&&SET "U20=🪛"&&SET "U21=⚙️"&&SET "U22=📢"&&SET "U0L=◁"&&SET "U0R=▷"&&SET "U0P=％"&&SET "U0D=＄"&&SET "COLOR0=[97m"&&SET "COLOR1=[31m"&&SET "COLOR2=[91m"&&SET "COLOR3=[33m"&&SET "COLOR4=[93m"&&SET "COLOR5=[92m"&&SET "COLOR6=[96m"&&SET "COLOR7=[94m"&&SET "COLOR8=[34m"&&SET "COLOR9=[95m"
-CALL SET "@@=%%COLOR%ACC_COLOR%%%"&&CALL SET "##=%%COLOR%BTN_COLOR%%%"&&CALL SET "$$=%%COLOR%TXT_COLOR%%%"
-SET "COLORA=%@@%"&&SET "COLORB=%##%"&&SET "COLORT=%$$%"
+CHCP 65001>NUL&IF NOT DEFINED U00 SET "U00=❕"&SET "U01=❗"&SET "U02=🗂 "&SET "U03=🛠️"&SET "U04=💾"&SET "U05=🗳 "&SET "U06=🪟"&SET "U07=🔄"&SET "U08=🔃"&SET "U09=🥾"&SET "U10=✒ "&SET "U11=🗃 "&SET "U12=🎨"&SET "U13=📜"&SET "U14=⏳"&SET "U15=✅"&SET "U16=❎"&SET "U17=🚫"&SET "U18=🗜 "&SET "U19=🛡 "&SET "U20=🪛"&SET "U21=⚙️"&SET "U22=📢"&SET "U0L=◁"&SET "U0R=▷"&SET "U0P=％"&SET "U0D=＄"&SET "COLOR0=[97m"&SET "COLOR1=[31m"&SET "COLOR2=[91m"&SET "COLOR3=[33m"&SET "COLOR4=[93m"&SET "COLOR5=[92m"&SET "COLOR6=[96m"&SET "COLOR7=[94m"&SET "COLOR8=[34m"&SET "COLOR9=[95m"
+FOR /F "TOKENS=1-3 DELIMS=@" %%a in ("%ACC_COLOR%@%BTN_COLOR%@%TXT_COLOR%") DO (SET "CA=!COLOR%%a!"&SET "CB=!COLOR%%b!"&SET "CT=!COLOR%%c!")
+SET "COLORA=%CA%"&SET "COLORB=%CB%"&SET "COLORT=%CT%"
 FOR %%a in (COMMAND GUI) DO (IF "%PROG_MODE%"=="%%a" EXIT /B)
-FOR %%a in (MENU_LIST) DO (SET "OBJ_FLD=%ListFolder%"&&CALL SET "OBJ_CHK=%%a"&&CALL:OBJ_CLEAR)
-FOR %%a in (PE_WALLPAPER) DO (SET "OBJ_FLD=%CacheFolder%"&&CALL SET "OBJ_CHK=%%a"&&CALL:OBJ_CLEAR)
-FOR %%a in (VHDX_SLOTX WIM_SOURCE VHDX_SOURCE) DO (SET "OBJ_FLD=%ImageFolder%"&&CALL SET "OBJ_CHK=%%a"&&CALL:OBJ_CLEAR)
-IF "%PROG_MODE%"=="RAMDISK" FOR %%a in (VHDX_SLOT0 VHDX_SLOT1 VHDX_SLOT2 VHDX_SLOT3 VHDX_SLOT4 VHDX_SLOT5) DO (SET "OBJ_FLD=%ProgFolder%"&&CALL SET "OBJ_CHK=%%a"&&CALL:OBJ_CLEAR)
+FOR %%a in (PE_WALLPAPER) DO (IF DEFINED %%a IF NOT "%%a"=="SELECT" IF NOT EXIST "%CacheFolder%\!%%a!" SET "%%a=SELECT")
+FOR %%a in (VHDX_SLOTX WIM_SOURCE VHDX_SOURCE) DO (IF DEFINED %%a IF NOT "%%a"=="SELECT" IF NOT EXIST "%ImageFolder%\!%%a!" SET "%%a=SELECT")
+IF "%PROG_MODE%"=="RAMDISK" FOR %%a in (MENU_LIST) DO (IF DEFINED %%a IF NOT "%%a"=="SELECT" IF NOT EXIST "%ListFolder%\!%%a!" SET "%%a=SELECT")
+IF "%PROG_MODE%"=="RAMDISK" FOR %%a in (VHDX_SLOT0 VHDX_SLOT1 VHDX_SLOT2 VHDX_SLOT3 VHDX_SLOT4 VHDX_SLOT5) DO (IF DEFINED %%a IF NOT "%%a"=="SELECT" IF NOT EXIST "%ProgFolder%\!%%a!" SET "%%a=SELECT")
 FOR %%a in (MENU_LIST PE_WALLPAPER PATH_SOURCE PATH_TARGET WIM_SOURCE VHDX_SOURCE WIM_TARGET VHDX_TARGET VHDX_SLOTX VHDX_SLOT0 VHDX_SLOT1 VHDX_SLOT2 VHDX_SLOT3 VHDX_SLOT4 VHDX_SLOT5) DO (IF NOT DEFINED %%a SET "%%a=SELECT")
 IF NOT EXIST "%PATH_SOURCE%\" SET "PATH_SOURCE=SELECT"
 IF NOT EXIST "%PATH_TARGET%\" SET "PATH_TARGET=SELECT"
-FOR %%a in (OBJ_FLD OBJ_CHK OBJ_CHKX) DO (SET "%%a=")
-EXIT /B
-:OBJ_CLEAR
-CALL SET "OBJ_CHKX=%%%OBJ_CHK%%%"
-IF NOT EXIST "%OBJ_FLD%\%OBJ_CHKX%" CALL SET "%OBJ_CHK%=SELECT"
 EXIT /B
 :FOLDER_MODE
 IF "%FOLDER_MODE%"=="UNIFIED" (SET "FOLDDSP=isolated") else (SET "FOLDDSP=unified")
-SET "$HEADERS= %U01% %U01% %U01%        The folder structure will be regenerated. If a file is %U01%    open or mounted and cannot be moved it's possible to lose data.%U01% %U01%                   Switching to %FOLDDSP% folder mode %U01% %U01%                         Press (%##%X%$$%) to proceed"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
+SET "$HEADERS= %U01% %U01% %U01%        The folder structure will be regenerated. If a file is %U01%    open or mounted and cannot be moved it's possible to lose data.%U01% %U01%                   Switching to %FOLDDSP% folder mode %U01% %U01%                         Press (%CB%X%CT%) to proceed"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
 IF NOT "%CONFIRM%"=="X" EXIT /B
 IF "%FOLDER_MODE%"=="UNIFIED" SET "FOLDER_MODE=ISOLATED"&&GOTO:FOLDER_ISOLATED
 IF "%FOLDER_MODE%"=="ISOLATED" SET "FOLDER_MODE=UNIFIED"&&GOTO:FOLDER_UNIFIED
@@ -620,7 +620,7 @@ IF NOT DEFINED BTN_COLOR SET "BTN_COLOR=7"
 IF NOT DEFINED TXT_COLOR SET "TXT_COLOR=0"
 IF NOT DEFINED PAD_SIZE SET "PAD_SIZE=LARGE"
 IF NOT DEFINED PAD_SEQ SET "PAD_SEQ=0000000000"
-IF "%PAD_TYPE%"=="0" SET "PADX= "&&ECHO.%$$%&&EXIT /B
+IF "%PAD_TYPE%"=="0" SET "PADX= "&&ECHO.%CT%&&EXIT /B
 IF "%PAD_TYPE%"=="1" SET "PADX=─"
 IF "%PAD_TYPE%"=="2" SET "PADX=━"
 IF "%PAD_TYPE%"=="3" SET "PADX=◌"
@@ -637,25 +637,22 @@ IF "%PAD_TYPE%"=="13" SET "PADX=▓"
 IF "%PAD_TYPE%"=="14" SET "PADX=~"
 IF "%PAD_TYPE%"=="15" SET "PADX=="
 IF "%PAD_TYPE%"=="16" SET "PADX=#"
-SET "PAD_SEQX=%PAD_SEQ%"&&IF NOT "%PAD_SEQ%X"=="%PAD_SEQX%X" SET "XNTX=0"&&SET "COLORX="&&FOR /F "DELIMS=" %%G IN ('%CMD% /D /U /C ECHO.%PAD_SEQ%^| FIND /V ""') do (CALL SET "COLORX=%%G"&&CALL:COLOR_ASSIGN&&CALL SET /A XNTX+=1)
+SET "PAD_LAST=%PAD_SEQ%"&&IF NOT "%PAD_SEQ%"=="%PAD_LAST%" SET "XNTX=0"&&FOR /F "DELIMS=" %%G IN ('%CMD% /D /U /C ECHO.%PAD_SEQ%^| FIND /V ""') do (SET "C!XNTX!=!COLOR%%G!"&SET /A XNTX+=1)
 IF "%PAD_SIZE%"=="LARGE" SET "PAD_BLK=%PADX%%PADX%%PADX%%PADX%%PADX%%PADX%%PADX%%PADX%%PADX%%PADX%"
-IF "%PAD_SIZE%"=="SMALL" SET "PAD_BLK=%#0%%PADX%%#1%%PADX%%#2%%PADX%%#3%%PADX%%#4%%PADX%%#5%%PADX%%#6%%PADX%%#7%%PADX%%#8%%PADX%%#9%%PADX%"
-IF "%PAD_SIZE%"=="LARGE" ECHO.%#0%%PAD_BLK%%#1%%PAD_BLK%%#2%%PAD_BLK%%#3%%PAD_BLK%%#4%%PAD_BLK%%#5%%PAD_BLK%%#6%%PAD_BLK%%$$%
-IF "%PAD_SIZE%"=="SMALL" ECHO.%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%$$%
-SET "#Z=%$$%"&&SET "#0=%#1%"&SET "#1=%#2%"&SET "#2=%#3%"&SET "#3=%#4%"&SET "#4=%#5%"&SET "#5=%#6%"&SET "#6=%#7%"&SET "#7=%#8%"&SET "#8=%#9%"&SET "#9=%#0%"&&SET "PAD_BLK="&&SET "PADX="&&SET "COLORX=%$$%"
-EXIT /B
-:COLOR_ASSIGN
-IF DEFINED XNTX CALL SET "#%XNTX%=%%COLOR%COLORX%%%"
+IF "%PAD_SIZE%"=="SMALL" SET "PAD_BLK=%C0%%PADX%%C1%%PADX%%C2%%PADX%%C3%%PADX%%C4%%PADX%%C5%%PADX%%C6%%PADX%%C7%%PADX%%C8%%PADX%%C9%%PADX%"
+IF "%PAD_SIZE%"=="LARGE" ECHO.%C0%%PAD_BLK%%C1%%PAD_BLK%%C2%%PAD_BLK%%C3%%PAD_BLK%%C4%%PAD_BLK%%C5%%PAD_BLK%%C6%%PAD_BLK%%CT%
+IF "%PAD_SIZE%"=="SMALL" ECHO.%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%PAD_BLK%%CT%
+SET "CZ=%CT%"&SET "C0=%C1%"&SET "C1=%C2%"&SET "C2=%C3%"&SET "C3=%C4%"&SET "C4=%C5%"&SET "C5=%C6%"&SET "C6=%C7%"&SET "C7=%C8%"&SET "C8=%C9%"&SET "C9=%C0%"&SET "PAD_BLK="&SET "PADX="&SET "COLORX=%CT%"
 EXIT /B
 :PAD_WRITE
 ::ECHO.>>"TXT.TXT" 2>&1
 EXIT /B
 :BOX_DISP
 IF "%PAD_BOX%"=="DISABLED" EXIT /B
-IF "%$BOX%"=="RT" ECHO.%##%╭────────────────────────────────────────────────────────────────────╮%$$%
-IF "%$BOX%"=="RB" ECHO.%##%╰────────────────────────────────────────────────────────────────────╯%$$%
-IF "%$BOX%"=="ST" ECHO.%##%┌────────────────────────────────────────────────────────────────────┐%$$%
-IF "%$BOX%"=="SB" ECHO.%##%└────────────────────────────────────────────────────────────────────┘%$$%
+IF "%$BOX%"=="RT" ECHO.%CB%╭────────────────────────────────────────────────────────────────────╮%CT%
+IF "%$BOX%"=="RB" ECHO.%CB%╰────────────────────────────────────────────────────────────────────╯%CT%
+IF "%$BOX%"=="ST" ECHO.%CB%┌────────────────────────────────────────────────────────────────────┐%CT%
+IF "%$BOX%"=="SB" ECHO.%CB%└────────────────────────────────────────────────────────────────────┘%CT%
 EXIT /B
 :MENU_SELECT
 IF DEFINED ERROR SET "ERROR="&&IF "%DEBUG%"=="ENABLED" CALL:DEBUG
@@ -670,10 +667,10 @@ IF NOT DEFINED ERROR SET "CHECK_VAR=%SELECT_VAR%"&&CALL:CHECK
 IF NOT DEFINED ERROR IF /I "%$CASE%"=="ANY" SET "%$SELECT%=%SELECT_VAR%"
 IF NOT DEFINED ERROR FOR %%■ in (UPPER LOWER) DO (IF /I "%%■"=="%$CASE%" SET "CAPS_SET=%$SELECT%"&&SET "CAPS_VAR=%SELECT_VAR%"&&CALL:CAPS_SET)
 IF NOT DEFINED ERROR IF NOT DEFINED %$SELECT% SET "ERROR=MENU_SELECT"
-IF DEFINED ERROR SET "%$SELECT%="&&IF DEFINED $VERBOSE FOR /F "TOKENS=*" %%■ in ("%SELECT_VAR% ") DO (ECHO.%COLOR4%ERROR:%$$% input [ %COLOR4%%%■%$$%] is invalid)
+IF DEFINED ERROR SET "%$SELECT%="&&IF DEFINED $VERBOSE FOR /F "TOKENS=*" %%■ in ("%SELECT_VAR% ") DO (ECHO.%COLOR4%ERROR:%CT% input [ %COLOR4%%%■%CT%] is invalid)
 SET "SELECT_LAST=%SELECT_VAR%"
 IF DEFINED $CHOICE SET "$CHOICE_LAST=%$CHOICE%"
-ECHO.%$$%&&CALL SET "$CHOICE=%%$ITEM%SELECT_VAR%%%"
+ECHO.%CT%&&CALL SET "$CHOICE=%%$ITEM%SELECT_VAR%%%"
 FOR %%a in ($CASE $SELECT SELECT_VAR) DO (SET "%%a=")
 IF NOT DEFINED $PICKER EXIT /B
 FOR %%a in ($PICKER $PICK $PATH $BODY $EXT) DO (SET "%%a=")
@@ -855,7 +852,7 @@ SET /P $HEAD=<"%$HEAD_CHECK%"
 IF NOT DEFINED $HEAD SET "ERROR=HEADER"&&GOTO:HEADER_SKIP
 FOR /F "TOKENS=1-9 DELIMS= " %%a IN ("!$HEAD!") DO (IF /I "%%a"=="MENU-SCRIPT" SET "$HEAD=%%a"&&IF /I "%%b"=="QUICK" SET "QUICK_MENU=1")
 :HEADER_SKIP
-IF /I NOT "!$HEAD!"=="MENU-SCRIPT" SET "ERROR=HEADER"&&ECHO.%COLOR2%ERROR:%$$% Header is not MENU-SCRIPT, check file.&&IF "%DEBUG%"=="ENABLED" CALL:DEBUG
+IF /I NOT "!$HEAD!"=="MENU-SCRIPT" SET "ERROR=HEADER"&&ECHO.%COLOR2%ERROR:%CT% Header is not MENU-SCRIPT, check file.&&IF "%DEBUG%"=="ENABLED" CALL:DEBUG
 SET "$HEAD_CHECK="&&EXIT /B
 :GET_RANDOM
 IF NOT DEFINED RND_TYPE SET "RND_TYPE=1"
@@ -906,14 +903,14 @@ ICACLS "%FOLDER_DEL%" /grant %USERNAME%:F /T>NUL 2>&1
 RD /S /Q "\\?\%FOLDER_DEL%">NUL 2>&1
 SET "FOLDER_DEL="&&EXIT /B
 :PAD_PREV
-ECHO.               Press (%##%Enter%$$%) to return to previous menu
+ECHO.               Press (%CB%Enter%CT%) to return to previous menu
 EXIT /B
 :PAUSED
-IF NOT DEFINED NO_PAUSE SET /P "PAUSED=.                      Press (%##%Enter%$$%) to continue..."
+IF NOT DEFINED NO_PAUSE SET /P "PAUSED=.                      Press (%CB%Enter%CT%) to continue..."
 SET "NO_PAUSE="&&EXIT /B
 :CONFIRM
 IF DEFINED ERROR EXIT /B
-SET "$HEADERS= %U01% %U01% %U01% %U01%                  %COLOR4%Are you sure?%$$% Press (%##%X%$$%) to proceed%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
+SET "$HEADERS= %U01% %U01% %U01% %U01%                  %COLOR4%Are you sure?%CT% Press (%CB%X%CT%) to proceed%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
 IF NOT "%CONFIRM%"=="X" SET "ERROR=CONFIRM"&&IF "%DEBUG%"=="ENABLED" CALL:DEBUG
 EXIT /B
 :RECOVERY_LOCK
@@ -925,7 +922,7 @@ EXIT /B
 :DEBUG
 IF NOT "%DEBUG%"=="ENABLED" EXIT /B
 IF NOT DEFINED ERROR EXIT /B
-ECHO.%COLOR4%ERROR:%$$% %ERROR%
+ECHO.%COLOR4%ERROR:%CT% %ERROR%
 CALL:PAUSED
 EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
@@ -936,7 +933,7 @@ SET "$FOLD=!$FOLD:◁=%%!"&&SET "$FOLD=!$FOLD:▷=%%!"
 SET "$FILT=!$FILT:◁=%%!"&&SET "$FILT=!$FILT:▷=%%!"
 FOR /F "TOKENS=*" %%a IN ("!$FOLD!") DO (SET "$FOLD=%%a")
 FOR /F "TOKENS=*" %%a IN ("!$FILT!") DO (SET "$FILT=%%a")
-ECHO.&&ECHO.  %@@%AVAILABLE %$FILT%s:%$$%&&ECHO.&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
+ECHO.&&ECHO.  %CA%AVAILABLE %$FILT%s:%CT%&&ECHO.&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
 IF NOT DEFINED $NO_ERRORS CALL:PAD_PREV
 IF DEFINED $CHOICEMINO SET "$CHOICEMIN=0"
 IF NOT DEFINED $CHOICEMINO SET "$CHOICEMIN=1"
@@ -967,8 +964,8 @@ FOR /F "TOKENS=*" %%■ in ('DIR /A: /B /O:GN "!$FOLD!\!$FILTARG!"') DO (SET /A 
 EXIT /B
 :FILE_LISTX
 SET "$ITEM%$XNT%=!$VCLM$!"
-IF EXIST "!$FOLD!\!$VCLM$!\*" (SET "$LCLR1=%@@%"&&SET "$LCLR2=%$$%") ELSE (SET "$LCLR1="&&SET "$LCLR2=")
-IF "%$DISP%"=="NUM" FOR /F "TOKENS=*" %%● in ("!$VCLM$!") DO (ECHO. %$$%^( %##%%$XNT%%$$% ^) %$LCLR1%%%●%$LCLR2%)
+IF EXIST "!$FOLD!\!$VCLM$!\*" (SET "$LCLR1=%CA%"&&SET "$LCLR2=%CT%") ELSE (SET "$LCLR1="&&SET "$LCLR2=")
+IF "%$DISP%"=="NUM" FOR /F "TOKENS=*" %%● in ("!$VCLM$!") DO (ECHO. %CT%^( %CB%%$XNT%%CT% ^) %$LCLR1%%%●%$LCLR2%)
 IF "%$DISP%"=="BAS" FOR /F "TOKENS=*" %%● in ("!$VCLM$!") DO (ECHO.   %$LCLR1%%%●%$LCLR2%)
 EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
@@ -992,15 +989,15 @@ IF DEFINED ERROR SET "$ONLY1="&&GOTO:LIST_VIEWER_END
 SET "INPUT=%$LIST_FILE%"&&CALL:GET_FILEEXT&&CALL:SESSION_CLEAR
 IF DEFINED BASE_EXEC (SET "$LIST_MODE=Execute") else (SET "$LIST_MODE=Builder")
 CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&SET "$CENTERED=1"&&SET "$HEADERS=%U13% !$FILE_X!%$EXT_X%%U01% %U01%!$ONLY2!%U01% %U01%"&&CALL:BOX_HEADERS&&SET "$LIST_SCOPE=SUBGROUP"&&CALL:LIST_FILE
-ECHO.&&ECHO.                        Multiples OK ( %##%1 2 3%$$% )
+ECHO.&&ECHO.                        Multiples OK ( %CB%1 2 3%CT% )
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV
 SET "$VERBOSE=1"&&SET "LIST_START="&&SET "$CHECK=PATH"&&CALL:MENU_SELECT
 IF NOT DEFINED ERROR FOR %%a in (%SELECT%) DO (SET "FULL_TARGET=!$ITEM%%a!"&&CALL:UNIFIED_PARSE_BUILDER)
-IF NOT DEFINED LIST_START IF DEFINED SELECT SET "ERROR=1"&&FOR /F "TOKENS=*" %%■ in ("%SELECT_LAST% ") DO (ECHO.%COLOR4%ERROR:%$$% input [ %COLOR4%%%■%$$%] is invalid)
+IF NOT DEFINED LIST_START IF DEFINED SELECT SET "ERROR=1"&&FOR /F "TOKENS=*" %%■ in ("%SELECT_LAST% ") DO (ECHO.%COLOR4%ERROR:%CT% input [ %COLOR4%%%■%CT%] is invalid)
 IF DEFINED ERROR SET "ERROR="&&SET "$ONLY2="&&GOTO:LIST_VIEWER
 :LIST_VIEWER_APPEND
 IF DEFINED BASE_EXEC SET "$LIST_FILE=%ListFolder%\$LIST"&&GOTO:LIST_VIEWER_END
-SET "$CENTERED="&&SET "$HEADERS=                            %U04% Append Items%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) Create new list"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$CENTERED="&&SET "$HEADERS=                            %U04% Append Items%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) Create new list"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" CALL:LIST_MAKE
 IF "%SELECT%"=="0" IF NOT DEFINED ERROR MOVE /Y "$LIST" "%$PICK%">NUL&GOTO:LIST_VIEWER_END
 IF DEFINED ERROR SET "ERROR="&&SET "$ONLY3="&&GOTO:SUBGROUP_BOX
@@ -1033,7 +1030,7 @@ IF /I "%%1"=="GROUP" IF "%$LIST_SCOPE%"=="SUBGROUP" IF NOT "%%2"=="%$ONLY2%" SET
 IF /I "%%1"=="GROUP" IF "%$LIST_SCOPE%"=="SUBGROUP" IF "%%2"=="%$ONLY2%" SET "$LIST_FILEX=1"&&IF /I NOT "%REFERENCE%"=="DISABLED" SET "$LIST_FILEZ=1"
 IF DEFINED $LIST_FILEZ IF NOT "%%1"=="" FOR /F "TOKENS=* DELIMS=📜" %%░ IN ("%%1") DO (IF NOT "%%1"=="%%░" SET "$VCLMX=%%░"&&CALL:LIST_FILEX_SKIP)
 IF DEFINED $LIST_FILEX SET "$LIST_FILEX="&&SET "$VCLM1=%%1"&&SET "$VCLM2=%%2"&&SET "$VCLM3=%%3"&&SET "$VCLM4=%%4"&&SET "$VCLM5=%%5"&&SET "$VCLM6=%%6"&&SET "$VCLM7=%%7"&&SET "$VCLM8=%%8"&&SET "$VCLM9=%%9"&&CALL:LIST_FILEX)
-IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $SUBGROUP_LAST SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:◁=%%!"&&SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:▷=%%!"&&CALL SET "$SUBGROUP_LAST=!$SUBGROUP_LAST!"&&FOR /F "TOKENS=*" %%░ IN ("!$SUBGROUP_LAST!") DO (ECHO. %%░%$$%)
+IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $SUBGROUP_LAST SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:◁=%%!"&&SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:▷=%%!"&&CALL SET "$SUBGROUP_LAST=!$SUBGROUP_LAST!"&&FOR /F "TOKENS=*" %%░ IN ("!$SUBGROUP_LAST!") DO (ECHO. %%░%CT%)
 IF NOT DEFINED $ITEM1 ECHO.&&ECHO.   Empty.&&ECHO.
 IF DEFINED $ITEMSBTM CALL:ITEMSBTM
 :LIST_FILE_SKIP
@@ -1058,9 +1055,9 @@ IF DEFINED $VCLM3 SET "$VCLM3=!$VCLM3:"=!"
 IF "%$LIST_SCOPE%"=="GROUP" IF DEFINED $VCLM2 FOR /F "TOKENS=*" %%░ IN ("!$VCLM2!") DO (IF "%%░"=="!$VCLM2_LAST!" EXIT /B
 SET "$VCLM2_LAST=%%░")
 SET /A "$XNT+=1"
-IF "%$LIST_SCOPE%"=="GROUP" IF DEFINED $VCLM2 FOR /F "TOKENS=*" %%░ IN ("!$VCLM2!") DO (ECHO. %$$%^( %##%%$XNT%%$$% ^) %%░%$$%)
-IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $SUBGROUP_LAST SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:◁=%%!"&&SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:▷=%%!"&&CALL SET "$SUBGROUP_LAST=!$SUBGROUP_LAST!"&&FOR /F "TOKENS=*" %%░ IN ("!$SUBGROUP_LAST!") DO (ECHO. %%░%$$%)
-IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $VCLM3 FOR /F "TOKENS=*" %%░ IN ("!$VCLM3!") DO (SET "$SUBGROUP_LAST=%$$%( %##%%$XNT%%$$% ) %%░%$$%")
+IF "%$LIST_SCOPE%"=="GROUP" IF DEFINED $VCLM2 FOR /F "TOKENS=*" %%░ IN ("!$VCLM2!") DO (ECHO. %CT%^( %CB%%$XNT%%CT% ^) %%░%CT%)
+IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $SUBGROUP_LAST SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:◁=%%!"&&SET "$SUBGROUP_LAST=!$SUBGROUP_LAST:▷=%%!"&&CALL SET "$SUBGROUP_LAST=!$SUBGROUP_LAST!"&&FOR /F "TOKENS=*" %%░ IN ("!$SUBGROUP_LAST!") DO (ECHO. %%░%CT%)
+IF "%$LIST_SCOPE%"=="SUBGROUP" IF DEFINED $VCLM3 FOR /F "TOKENS=*" %%░ IN ("!$VCLM3!") DO (SET "$SUBGROUP_LAST=%CT%( %CB%%$XNT%%CT% ) %%░%CT%")
 FOR %%░ IN (X) DO (
 IF NOT "%%1"=="" SET "$ITEM%$XNT%=%U00%%%1%U00%"
 IF NOT "%%2"=="" SET "$ITEM%$XNT%=%U00%%%1%U00%%%2%U00%"
@@ -1166,10 +1163,10 @@ EXIT /B
 IF NOT DEFINED FULL_TARGET EXIT /B
 CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&SET "$CENTERED=1"&&SET "$HEADERS=!GROUP_TARGET!%U01% %U01%!SUB_TARGET!%U01% %U01%"&&CALL:BOX_HEADERS&&CALL:DRAWER_LIST
 IF NOT DEFINED $ITEMD1 ECHO.   Empty.
-ECHO.&&ECHO.                        Multiples OK ( %##%1 2 3%$$% )&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
+ECHO.&&ECHO.                        Multiples OK ( %CB%1 2 3%CT% )&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
 SET "LIST_STARTZ="&&SET "$CHECK=PATH"&&CALL:MENU_SELECT
 IF DEFINED SELECT FOR %%a in (%SELECT%) DO (CALL SET "$DRAWER_ITEM=%%$ITEMD%%a%%"&&CALL:DRAWER_WRITE)
-IF NOT DEFINED LIST_STARTZ IF DEFINED SELECT FOR /F "TOKENS=*" %%■ in ("%SELECT_LAST% ") DO (ECHO.%COLOR4%ERROR:%$$% input [ %COLOR4%%%■%$$%] is invalid)
+IF NOT DEFINED LIST_STARTZ IF DEFINED SELECT FOR /F "TOKENS=*" %%■ in ("%SELECT_LAST% ") DO (ECHO.%COLOR4%ERROR:%CT% input [ %COLOR4%%%■%CT%] is invalid)
 IF NOT DEFINED $ITEMD1 SET "ERROR="&&SET "$CENTERED="&&EXIT /B
 IF NOT DEFINED LIST_STARTZ SET "ERROR="&&GOTO:DRAWER_BOX
 SET "$CENTERED="&&EXIT /B
@@ -1196,8 +1193,8 @@ EXIT /B
 :DRAWER_LISTX
 IF NOT DEFINED $XNT SET "$XNT=0"&&EXIT /B
 SET /A "$XNT+=1"
-IF /I "!GROUP_TYPE!"=="DRAWER" FOR /F "TOKENS=*" %%□ IN ("!$DRAWER_ITEM!") DO (SET "$ITEMD%$XNT%=%%□"&&ECHO. %$$%^( %##%%$XNT%%$$% ^) %%□%$$%)
-IF /I "!GROUP_TYPE!"=="SCOPED" FOR /F "TOKENS=*" %%□ IN ("!$DRAWER_ITEM!") DO (SET "$ITEMD%$XNT%=%%□"&&ECHO. %$$%^( %##%%$XNT%%$$% ^) %%b%$$%)
+IF /I "!GROUP_TYPE!"=="DRAWER" FOR /F "TOKENS=*" %%□ IN ("!$DRAWER_ITEM!") DO (SET "$ITEMD%$XNT%=%%□"&&ECHO. %CT%^( %CB%%$XNT%%CT% ^) %%□%CT%)
+IF /I "!GROUP_TYPE!"=="SCOPED" FOR /F "TOKENS=*" %%□ IN ("!$DRAWER_ITEM!") DO (SET "$ITEMD%$XNT%=%%□"&&ECHO. %CT%^( %CB%%$XNT%%CT% ^) %%b%CT%)
 EXIT /B
 :DRAWER_WRITE
 IF NOT DEFINED LIST_START SET "LIST_START=1"&&(ECHO.MENU-SCRIPT)>"$LIST"
@@ -1263,7 +1260,7 @@ EXIT /B
 :CHOICE_LISTX
 CALL SET /A "$XNT+=1"
 CALL SET "$ITEMC%$XNT%=!$VCLM$!"
-FOR /F "TOKENS=*" %%# in ("!$VCLM$!") DO (ECHO. %$$%^( %##%%$XNT%%$$% ^) %%#)
+FOR /F "TOKENS=*" %%# in ("!$VCLM$!") DO (ECHO. %CT%^( %CB%%$XNT%%CT% ^) %%#)
 EXIT /B
 :ITEMSTOP
 FOR /F "TOKENS=1-9 DELIMS=%U01%" %%a IN ("!$ITEMSTOP!") DO (IF NOT "%%a"=="" ECHO.%%a&&IF NOT "%%b"=="" ECHO.%%b&&IF NOT "%%c"=="" ECHO.%%c&&IF NOT "%%d"=="" ECHO.%%d&&IF NOT "%%e"=="" ECHO.%%e&&IF NOT "%%f"=="" ECHO.%%f&&IF NOT "%%g"=="" ECHO.%%g&&IF NOT "%%h"=="" ECHO.%%h&&IF NOT "%%i"=="" ECHO.%%i)
@@ -1296,10 +1293,10 @@ EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 CLS&&CALL:SETS_HANDLER&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP
 ECHO.                              %U21% Settings&&ECHO.&&ECHO.
-ECHO. (%##% 1 %$$%) %U12% Appearance&&ECHO. (%##% 2 %$$%) %U02% Folder Layout
-IF NOT "%PROG_MODE%"=="GUI" ECHO. (%##% 3 %$$%) %U04% Bootloader&&ECHO. (%##% 4 %$$%) %U15% Shortcuts
-IF "%PROG_MODE%"=="RAMDISK" ECHO. (%##% 5 %$$%) %U19% Host Hide&&ECHO. (%##% 6 %$$%) %U07% Update
-ECHO. (%##% . %$$%) %U17% Clear Settings&&IF "%PROG_MODE%"=="RAMDISK" ECHO. (%##% * %$$%) %U01% %COLOR2%Enable Custom Menu%$$%
+ECHO. (%CB% 1 %CT%) %U12% Appearance&&ECHO. (%CB% 2 %CT%) %U02% Folder Layout
+IF NOT "%PROG_MODE%"=="GUI" ECHO. (%CB% 3 %CT%) %U04% Bootloader&&ECHO. (%CB% 4 %CT%) %U15% Shortcuts
+IF "%PROG_MODE%"=="RAMDISK" ECHO. (%CB% 5 %CT%) %U19% Host Hide&&ECHO. (%CB% 6 %CT%) %U07% Update
+ECHO. (%CB% . %CT%) %U17% Clear Settings&&IF "%PROG_MODE%"=="RAMDISK" ECHO. (%CB% * %CT%) %U01% %COLOR2%Enable Custom Menu%CT%
 ECHO.&&ECHO.&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT IF DEFINED MENU_EXIT GOTO:QUIT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
@@ -1333,12 +1330,12 @@ IF "%SELECT%"=="2" SET "BOOTLOADER=Old"
 IF "%SELECT%"=="3" SET "BOOTLOADER=boot.efi"
 EXIT /B
 :MENU_LIST
-SET "$HEADERS=                        %U01% Custom Main Menu %U01%%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) Create new template"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                        %U01% Custom Main Menu %U01%%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) Create new template"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF DEFINED ERROR GOTO:SETTINGS_MENU
 IF "%SELECT%"=="0" CALL:MENU_TEMPLATE&GOTO:MENU_LIST
-SET "MENU_LISTX=%$CHOICE%"&&SET "$HEADERS= %U01%                %COLOR2%Attention:%$$% This is an advanced feature%U01%    that can be used in reboot to restore and many other scenerios.%U01% %U01% %U01%         Proceeding will load a list instead of the main menu.%U01% %U01% %U01%                         Press (%##%X%$$%) to proceed"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
+SET "MENU_LISTX=%$CHOICE%"&&SET "$HEADERS= %U01%                %COLOR2%Attention:%CT% This is an advanced feature%U01%    that can be used in reboot to restore and many other scenerios.%U01% %U01% %U01%         Proceeding will load a list instead of the main menu.%U01% %U01% %U01%                         Press (%CB%X%CT%) to proceed"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
 IF NOT "%CONFIRM%"=="X" GOTO:MENU_LIST
-SET "MENU_LIST=%MENU_LISTX%"&&SET "MENU_MODE=CUSTOM"&&ECHO.&&ECHO.Using %@@%%MENU_LISTX%%$$% instead of the main menu.&&ECHO.&&CALL:PAUSED&GOTO:CUSTOM_MODE
+SET "MENU_LIST=%MENU_LISTX%"&&SET "MENU_MODE=CUSTOM"&&ECHO.&&ECHO.Using %CA%%MENU_LISTX%%CT% instead of the main menu.&&ECHO.&&CALL:PAUSED&GOTO:CUSTOM_MODE
 GOTO:MENU_LIST
 :MENU_TEMPLATE
 SET "$HEADERS=                     Custom Recovery Menu Template"&&SET "$CHOICE_LIST=Base-List%U01%Exec-List"&&SET "$SELECT=SELECTX"&&CALL:CHOICE_BOX
@@ -1352,7 +1349,7 @@ IF "%SELECTX%"=="2" CALL:MENU_EXAMPLE_EXEC>"%ListFolder%\%NEW_NAME%.%REC_LIST%"
 START NOTEPAD.EXE "%ListFolder%\%NEW_NAME%.%REC_LIST%"
 EXIT /B
 :APPEARANCE
-CLS&&CALL:SETS_HANDLER&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U12% Appearance&&ECHO.&&ECHO.&&ECHO. (%##% 1 %$$%) Pad Type           %@@%PAD %PAD_TYPE%%$$%&&ECHO. (%##% 2 %$$%) Pad Size           %@@%%PAD_SIZE%%$$%&&ECHO. (%##% 3 %$$%) Pad Sequence       %@@%%PAD_SEQ%%$$%&&CALL ECHO. (%##% 4 %$$%) Text Color         %@@%COLOR %%COLOR%TXT_COLOR%%%%TXT_COLOR%%$$%&&CALL ECHO. (%##% 5 %$$%) Accent Color       %@@%COLOR %%COLOR%ACC_COLOR%%%%ACC_COLOR%%$$%&&CALL ECHO. (%##% 6 %$$%) Button Color       %@@%COLOR %%COLOR%BTN_COLOR%%%%BTN_COLOR%%$$%&&ECHO. (%##% 7 %$$%) Pad Box            %@@%%PAD_BOX%%$$%&&ECHO.&&ECHO.&&ECHO.                         Color (%##% - %$$%/%##% + %$$%) Shift&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
+CLS&&CALL:SETS_HANDLER&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U12% Appearance&&ECHO.&&ECHO.&&ECHO. (%CB% 1 %CT%) Pad Type           %CA%PAD %PAD_TYPE%%CT%&&ECHO. (%CB% 2 %CT%) Pad Size           %CA%%PAD_SIZE%%CT%&&ECHO. (%CB% 3 %CT%) Pad Sequence       %CA%%PAD_SEQ%%CT%&&CALL ECHO. (%CB% 4 %CT%) Text Color         %CA%COLOR %%COLOR%TXT_COLOR%%%%TXT_COLOR%%CT%&&CALL ECHO. (%CB% 5 %CT%) Accent Color       %CA%COLOR %%COLOR%ACC_COLOR%%%%ACC_COLOR%%CT%&&CALL ECHO. (%CB% 6 %CT%) Button Color       %CA%COLOR %%COLOR%BTN_COLOR%%%%BTN_COLOR%%CT%&&ECHO. (%CB% 7 %CT%) Pad Box            %CA%%PAD_BOX%%CT%&&ECHO.&&ECHO.&&ECHO.                         Color (%CB% - %CT%/%CB% + %CT%) Shift&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:SETTINGS_MENU
@@ -1361,7 +1358,7 @@ IF "%SELECT%"=="-" CALL:COLOR_SHIFT_PAD&SET "SELECT="
 IF "%SELECT%"=="1" CALL:PAD_TYPE&SET "SELECT="
 IF "%SELECT%"=="2" IF "%PAD_SIZE%"=="LARGE" SET "PAD_SIZE=SMALL"&SET "SELECT="
 IF "%SELECT%"=="2" IF "%PAD_SIZE%"=="SMALL" SET "PAD_SIZE=LARGE"&SET "SELECT="
-IF "%SELECT%"=="3" SET "$HEADERS=                             %U12% Appearance%U01% %U01%                  Enter 10 digit color sequence seed%U01% %U01% %U01% %U01% %U01%          [ %COLOR0%0%COLOR0%0%COLOR0%0%COLOR0%0%COLOR0%0%COLOR6%6%COLOR6%6%COLOR6%6%COLOR6%6%COLOR6%6%$$% ]    [ %COLOR0%0%COLOR1%1%COLOR2%2%COLOR3%3%COLOR4%4%COLOR5%5%COLOR6%6%COLOR7%7%COLOR8%8%COLOR9%9%$$% ]    [ %COLOR1%11%COLOR2%22%COLOR3%33%COLOR4%44%COLOR5%55%$$% ]%U01% %U01% "&&SET "$SELECT=COLOR_XXX"&&SET "$CHECK=NUMBER"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
+IF "%SELECT%"=="3" SET "$HEADERS=                             %U12% Appearance%U01% %U01%                  Enter 10 digit color sequence seed%U01% %U01% %U01% %U01% %U01%          [ %COLOR0%0%COLOR0%0%COLOR0%0%COLOR0%0%COLOR0%0%COLOR6%6%COLOR6%6%COLOR6%6%COLOR6%6%COLOR6%6%CT% ]    [ %COLOR0%0%COLOR1%1%COLOR2%2%COLOR3%3%COLOR4%4%COLOR5%5%COLOR6%6%COLOR7%7%COLOR8%8%COLOR9%9%CT% ]    [ %COLOR1%11%COLOR2%22%COLOR3%33%COLOR4%44%COLOR5%55%CT% ]%U01% %U01% "&&SET "$SELECT=COLOR_XXX"&&SET "$CHECK=NUMBER"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
 IF "%SELECT%"=="3" SET "XNTX="&&FOR /F "DELIMS=" %%G IN ('%CMD% /D /U /C ECHO.%COLOR_XXX%^| FIND /V ""') do (CALL SET /A XNTX+=1)
 IF "%SELECT%"=="3" IF "%XNTX%"=="10" SET "PAD_SEQ=%COLOR_XXX%"&&SET "COLOR_XXX="&SET "SELECT="
 IF "%SELECT%"=="4" SET "COLOR_TMP=TXT_COLOR"&&CALL:COLOR_CHOICE&SET "SELECT="
@@ -1371,22 +1368,24 @@ IF "%SELECT%"=="7" IF "%PAD_BOX%"=="DISABLED" SET "PAD_BOX=ENABLED"&SET "SELECT=
 IF "%SELECT%"=="7" IF "%PAD_BOX%"=="ENABLED" SET "PAD_BOX=DISABLED"&SET "SELECT="
 GOTO:APPEARANCE
 :PAD_TYPE
-SET "$HEADERS=                             %U12% Appearance%U01% %U01%                           Select a pad type%U01% %U01% %U01% (%##%0%$$%) %@@%None%$$%  (%##%1%$$%) %@@%─%$$%  (%##%2%$$%) %@@%━%$$%  (%##%3%$$%) %@@%◌%$$%  (%##%4%$$%) %@@%○%$$%  (%##%5%$$%) %@@%●%$$%  (%##%6%$$%) %@@%❍%$$%  (%##%7%$$%) %@@%□%$$%  (%##%8%$$%) %@@%■%$$%%U01% %U01%    (%##%9%$$%) %@@%☰%$$%  (%##%10%$$%) %@@%☲%$$%  (%##%11%$$%) %@@%░%$$%  (%##%12%$$%) %@@%▒%$$%  (%##%13%$$%) %@@%▓%$$%   (%##%14%$$%) %@@%~%$$%  (%##%15%$$%) %@@%=%$$%  (%##%16%$$%) %@@%#%$$%%U01% "&&SET "$SELECT=SELECTX"&&SET "$CHECK=NUMBER❗0-16"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
+SET "$HEADERS=                             %U12% Appearance%U01% %U01%                           Select a pad type%U01% %U01% %U01% (%CB%0%CT%) %CA%None%CT%  (%CB%1%CT%) %CA%─%CT%  (%CB%2%CT%) %CA%━%CT%  (%CB%3%CT%) %CA%◌%CT%  (%CB%4%CT%) %CA%○%CT%  (%CB%5%CT%) %CA%●%CT%  (%CB%6%CT%) %CA%❍%CT%  (%CB%7%CT%) %CA%□%CT%  (%CB%8%CT%) %CA%■%CT%%U01% %U01%    (%CB%9%CT%) %CA%☰%CT%  (%CB%10%CT%) %CA%☲%CT%  (%CB%11%CT%) %CA%░%CT%  (%CB%12%CT%) %CA%▒%CT%  (%CB%13%CT%) %CA%▓%CT%   (%CB%14%CT%) %CA%~%CT%  (%CB%15%CT%) %CA%=%CT%  (%CB%16%CT%) %CA%#%CT%%U01% "&&SET "$SELECT=SELECTX"&&SET "$CHECK=NUMBER❗0-16"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
 IF NOT DEFINED ERROR SET "PAD_TYPE=%SELECTX%"
 EXIT /B
 :COLOR_CHOICE
-SET "$HEADERS=                             %U12% Appearance%U01% %U01%                             Select a color%U01% %U01% %U01% %U01%                  [ %COLOR0% 0 %COLOR1% 1 %COLOR2% 2 %COLOR3% 3 %COLOR4% 4 %COLOR5% 5 %COLOR6% 6 %COLOR7% 7 %COLOR8% 8 %COLOR9% 9 %$$% ]%U01% %U01% "&&SET "$SELECT=SELECTX"&&SET "$CHECK=NUMBER❗0-9"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
-IF NOT DEFINED ERROR SET "%COLOR_TMP%=%SELECTX%"
+SET "$HEADERS=                             %U12% Appearance%U01% %U01%                             Select a color%U01% %U01% %U01% %U01%                  [ %COLOR0% 0 %COLOR1% 1 %COLOR2% 2 %COLOR3% 3 %COLOR4% 4 %COLOR5% 5 %COLOR6% 6 %COLOR7% 7 %COLOR8% 8 %COLOR9% 9 %CT% ]%U01% %U01% "&&SET "$SELECT=SELECTX"&&SET "$CHECK=NUMBER❗0-9"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
+IF NOT DEFINED ERROR SET "%COLOR_TMP%=%SELECTX%"&&CALL:SETS_MAIN
 SET "COLOR_TMP="&&EXIT /B
 :COLOR_SHIFT_PAD
 FOR /F "DELIMS=" %%G in ('%CMD% /D /U /C ECHO.%PAD_SEQ%^| FIND /V ""') do (SET "XXX_XXX=%%G"&&SET /A "PAD_XNT+=1"&&CALL:PAD_XNT)
 SET "PAD_SEQ=%PAD_SHIFT%"&&FOR %%a in (PAD_SHIFT PAD_XNT XXX_XXX) DO (SET "%%a=")
+CALL:SETS_MAIN
 EXIT /B
 :COLOR_SHIFT_TXT
 FOR %%a in (TXT_COLOR ACC_COLOR BTN_COLOR) DO (SET /A "%%a+=1")
 IF "%TXT_COLOR%"=="10" SET "TXT_COLOR=0"
 IF "%ACC_COLOR%"=="10" SET "ACC_COLOR=0"
 IF "%BTN_COLOR%"=="10" SET "BTN_COLOR=0"
+CALL:SETS_MAIN
 EXIT /B
 :PAD_XNT
 IF %PAD_XNT% GTR 10 EXIT /B
@@ -1418,18 +1417,18 @@ CALL START %SHORT_RUN%
 SET "SHORT_RUN="&&EXIT /B
 :AUTOBOOT_SVC
 CALL:GET_NEXTBOOT
-IF NOT DEFINED BOOT_OK ECHO.%COLOR4%ERROR:%$$% The boot environment is not installed on this system.&&EXIT /B
+IF NOT DEFINED BOOT_OK ECHO.%COLOR4%ERROR:%CT% The boot environment is not installed on this system.&&EXIT /B
 IF "%BOOTSVC%"=="INSTALL" ECHO.Recovery switcher service is installed.&&SC CREATE AutoBoot binpath="%WinDir%\SYSTEM32\%CMD% /C %BCDEDIT% /displayorder %GUID_TMP% /addfirst" start=auto>NUL 2>&1
 IF "%BOOTSVC%"=="REMOVE" ECHO.Recovery switcher service is removed.&&SC DELETE AutoBoot>NUL 2>&1
 SET "BOOTSVC="&&EXIT /B
 :UPDATE_RECOVERY
-CLS&&CALL:SETS_HANDLER&&CALL:GET_SPACE_ENV&&SET "$HEADERS=                            Recovery Update"&&SET "$CHOICE_LIST=Program  (%##%*%$$%) Test%U01%Recovery Wallpaper%U01%Recovery Password%U01%Boot Media%U01%Host Folder%U01%EFI Files%U01%winploy.ini"&&SET "$CHECKO=MENU"&&SET "$VERBOSE=1"&&CALL:CHOICE_BOX
+CLS&&CALL:SETS_HANDLER&&CALL:GET_SPACE_ENV&&SET "$HEADERS=                            Recovery Update"&&SET "$CHOICE_LIST=Program  (%CB%*%CT%) Test%U01%Recovery Wallpaper%U01%Recovery Password%U01%Boot Media%U01%Host Folder%U01%EFI Files%U01%winploy.ini"&&SET "$CHECKO=MENU"&&SET "$VERBOSE=1"&&CALL:CHOICE_BOX
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:SETTINGS_MENU
 IF "%SELECT%"=="*" IF EXIST "%ProgFolder%\winploy.cmd" SET "VER_GET=%ProgFolder%\winploy.cmd"&&CALL:GET_PROGVER&&COPY /Y "%ProgFolder%\winploy.cmd" "%ProgFolder0%"&GOTO:MAIN_MENU
 SET "$GO="&&FOR %%a in (1 2 3 4 5 6 7) DO (IF "%SELECT%"=="%%a" SET "$GO=1")
 IF NOT DEFINED $GO GOTO:UPDATE_RECOVERY
-FOR %%a in (0 1 2 3 4 5 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%$$% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END)
+FOR %%a in (0 1 2 3 4 5 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%CT% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END)
 IF "%SELECT%"=="1" SET "UPDATE_TYPE=PROG"
 IF "%SELECT%"=="2" SET "UPDATE_TYPE=WALL"
 IF "%SELECT%"=="3" SET "UPDATE_TYPE=PASS"
@@ -1441,49 +1440,49 @@ IF "%UPDATE_TYPE%"=="SETS" SET "$HEADERS=                           Default Sett
 IF "%UPDATE_TYPE%"=="SETS" IF DEFINED ERROR GOTO:UPDATE_RECOVERY
 IF "%UPDATE_TYPE%"=="SETS" IF "%SELECT%"=="1" SET "UPDATE_TYPE=CONFIG"
 IF "%UPDATE_TYPE%"=="SETS" IF "%SELECT%"=="2" SET "UPDATE_TYPE=DEL_CONFIG"
-IF "%UPDATE_TYPE%"=="CONFIG" IF NOT EXIST "%ProgFolder%\winploy.ini" ECHO.%COLOR4%ERROR:%$$% File winploy.ini is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
-IF "%UPDATE_TYPE%"=="EFI" IF NOT EXIST "%CacheFolder%\boot.sdi" IF NOT EXIST "%CacheFolder%\boot.efi" ECHO.%COLOR4%ERROR:%$$% Files boot.sdi and boot.efi are not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
-IF "%UPDATE_TYPE%"=="BOOT" IF NOT EXIST "%CacheFolder%\boot.sav" ECHO.%COLOR4%ERROR:%$$% File boot.sav is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
-IF "%UPDATE_TYPE%"=="PROG" IF NOT EXIST "%ProgFolder%\winploy.cmd" ECHO.%COLOR4%ERROR:%$$% File winploy.cmd is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="CONFIG" IF NOT EXIST "%ProgFolder%\winploy.ini" ECHO.%COLOR4%ERROR:%CT% File winploy.ini is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="EFI" IF NOT EXIST "%CacheFolder%\boot.sdi" IF NOT EXIST "%CacheFolder%\boot.efi" ECHO.%COLOR4%ERROR:%CT% Files boot.sdi and boot.efi are not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="BOOT" IF NOT EXIST "%CacheFolder%\boot.sav" ECHO.%COLOR4%ERROR:%CT% File boot.sav is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="PROG" IF NOT EXIST "%ProgFolder%\winploy.cmd" ECHO.%COLOR4%ERROR:%CT% File winploy.cmd is not located in folder. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="PROG" SET "VER_GET=%ProgFolder%\winploy.cmd"&&SET "VER_SET=VER_X"&&CALL:GET_PROGVER
 IF "%UPDATE_TYPE%"=="PROG" SET "VER_GET=%ProgFolder0%\winploy.cmd"&&SET "VER_SET=VER_Y"&&CALL:GET_PROGVER
-IF "%UPDATE_TYPE%"=="PROG" IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% File winploy.cmd is corrupt. Abort.&&CALL:PAUSED&GOTO:UPDATE_END
-IF "%UPDATE_TYPE%"=="PASS" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.        %COLOR4%Important:%$$% Do not use any of these symbols [%COLOR2% ^< ^> %% ^^! ^& ^^^^ %$$%].&&ECHO.&&ECHO.                       Enter new recovery password&&ECHO.               Press (%##%0%$$%) to remove the recovery password&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&SET "$SELECT=RECOVERY_LOCK"&&SET "$CASE=ANY"&&SET "$CHECK=MOST"&&SET "$VERBOSE=1"&&CALL:MENU_SELECT
+IF "%UPDATE_TYPE%"=="PROG" IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% File winploy.cmd is corrupt. Abort.&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="PASS" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.        %COLOR4%Important:%CT% Do not use any of these symbols [%COLOR2% ^< ^> %% ^^! ^& ^^^^ %CT%].&&ECHO.&&ECHO.                       Enter new recovery password&&ECHO.               Press (%CB%0%CT%) to remove the recovery password&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&SET "$SELECT=RECOVERY_LOCK"&&SET "$CASE=ANY"&&SET "$CHECK=MOST"&&SET "$VERBOSE=1"&&CALL:MENU_SELECT
 IF "%UPDATE_TYPE%"=="PASS" IF DEFINED ERROR CALL:PAUSED&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="PASS" IF "%RECOVERY_LOCK%"=="0" SET "RECOVERY_LOCK="
 IF "%UPDATE_TYPE%"=="WALL" CALL:PE_WALLPAPER
 IF "%UPDATE_TYPE%"=="WALL" IF NOT DEFINED $PICK SET "ERROR=UPDATE_RECOVERY"&&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="HOST" CALL:HOST_FOLDER
 IF "%UPDATE_TYPE%"=="HOST" IF DEFINED ERROR GOTO:UPDATE_END
-IF "%UPDATE_TYPE%"=="HOST" IF EXIST "Z:\%HOST_FOLDER%" ECHO.%COLOR2%ERROR:%$$% Host folder %@@%%HOST_FOLDER%%$$% already exists. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="HOST" IF EXIST "Z:\%HOST_FOLDER%" ECHO.%COLOR2%ERROR:%CT% Host folder %CA%%HOST_FOLDER%%CT% already exists. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="HOST" REN "Z:\%HOST_FOLDERX%" "%HOST_FOLDER%">NUL 2>&1
-IF "%UPDATE_TYPE%"=="HOST" IF NOT EXIST "Z:\%HOST_FOLDER%" ECHO.%COLOR2%ERROR:%$$% Host folder is currently in use. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="HOST" IF NOT EXIST "Z:\%HOST_FOLDER%" ECHO.%COLOR2%ERROR:%CT% Host folder is currently in use. Abort.&&SET "ERROR=UPDATE_RECOVERY"&&CALL:PAUSED&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="HOST" REN "Z:\%HOST_FOLDER%" "%HOST_FOLDERX%">NUL 2>&1
 IF "%UPDATE_TYPE%"=="BOOT" SET "$PATH_X=%SYSTEMDRIVE%"&&CALL:GET_PATHINFO&MOVE /Y "%CacheFolder%\boot.sav" "%CacheFolder%\$BOOT.wim">NUL
 IF "%UPDATE_TYPE%"=="BOOT" SET "INDEX_WORD=Setup"&&SET "$IMAGE_X=%CacheFolder%\$BOOT.wim"&&CALL:GET_WIMINDEX
 IF "%UPDATE_TYPE%"=="BOOT" IF NOT DEFINED INDEX_Z SET "INDEX_Z=1"
 IF "%UPDATE_TYPE%"=="BOOT" SET "$IMAGE_X=%CacheFolder%\$BOOT.wim"&&SET "INDEX_X=%INDEX_Z%"&&CALL:GET_IMAGEINFO
 IF "%UPDATE_TYPE%"=="BOOT" MOVE /Y "%CacheFolder%\$BOOT.wim" "%CacheFolder%\boot.sav">NUL
-IF "%UPDATE_TYPE%"=="BOOT" IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% File boot.sav is corrupt. Abort.&&CALL:PAUSED&GOTO:UPDATE_END
+IF "%UPDATE_TYPE%"=="BOOT" IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% File boot.sav is corrupt. Abort.&&CALL:PAUSED&GOTO:UPDATE_END
 CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.
 IF "%UPDATE_TYPE%"=="DEL_CONFIG" ECHO.           This will remove the default winploy.ini file.
 IF "%UPDATE_TYPE%"=="CONFIG" ECHO.           This will replace the default winploy.ini file.
 IF "%UPDATE_TYPE%"=="EFI" ECHO.             This will replace the current EFI boot files.
-IF "%UPDATE_TYPE%"=="BOOT" ECHO.        This will replace %@@%v%$PATHVER%%$$% with %@@%v%$IMGVER%%$$%
-IF "%UPDATE_TYPE%"=="PROG" ECHO.                  This will replace %@@%v%VER_Y%%$$% with %@@%v%VER_X%%$$%.
-IF "%UPDATE_TYPE%"=="PASS" IF DEFINED RECOVERY_LOCK ECHO.           Recovery password will be changed to %@@%%RECOVERY_LOCK%%$$%.
+IF "%UPDATE_TYPE%"=="BOOT" ECHO.        This will replace %CA%v%$PATHVER%%CT% with %CA%v%$IMGVER%%CT%
+IF "%UPDATE_TYPE%"=="PROG" ECHO.                  This will replace %CA%v%VER_Y%%CT% with %CA%v%VER_X%%CT%.
+IF "%UPDATE_TYPE%"=="PASS" IF DEFINED RECOVERY_LOCK ECHO.           Recovery password will be changed to %CA%%RECOVERY_LOCK%%CT%.
 IF "%UPDATE_TYPE%"=="PASS" IF NOT DEFINED RECOVERY_LOCK ECHO.                  Recovery password will be cleared.
 IF "%UPDATE_TYPE%"=="WALL" ECHO.              This will replace the recovery background.
-IF "%UPDATE_TYPE%"=="HOST" ECHO.              Host folder will be changed to %@@%%HOST_FOLDER%%$$%.&&ECHO.       %COLOR4%NOTE:%$$% The boot menu will need to be configured next boot.
+IF "%UPDATE_TYPE%"=="HOST" ECHO.              Host folder will be changed to %CA%%HOST_FOLDER%%CT%.&&ECHO.       %COLOR4%NOTE:%CT% The boot menu will need to be configured next boot.
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&SET "TIMER=5"&&CALL:TIMER&&CALL:CONFIRM
 IF NOT "%CONFIRM%"=="X" SET "ERROR=UPDATE_RECOVERY"&&GOTO:UPDATE_END
-SET "REBOOT_MAN=1"&&CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.                  %COLOR4%Recovery update has been initiated.%$$%&&ECHO.  %COLOR2%Caution:%$$% Interrupting this process can render the disk unbootable.&&ECHO.
+SET "REBOOT_MAN=1"&&CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.                  %COLOR4%Recovery update has been initiated.%CT%&&ECHO.  %COLOR2%Caution:%CT% Interrupting this process can render the disk unbootable.&&ECHO.
 CALL:EFI_MOUNT
 IF DEFINED ERROR GOTO:UPDATE_END
 SET "GET_BYTES=MB"&&SET "INPUT=%EFI_LETTER%:"&&SET "OUTPUT=EFI_FREE"&&CALL:GET_FREE_SPACE
 IF NOT DEFINED ERROR SET "GET_BYTES=MB"&&SET "INPUT=%EFI_LETTER%:\$.WIM"&&SET "OUTPUT=BOOT_X"&&CALL:GET_FILESIZE
 IF NOT DEFINED ERROR SET /A "EFI_FREE+=%BOOT_X%"
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% Unable to get file size or free space. Abort.&&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% Unable to get file size or free space. Abort.&&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="EFI" IF EXIST "%CacheFolder%\boot.sdi" ECHO.Using boot.sdi located in folder, for efi image boot support.&&COPY /Y "%CacheFolder%\boot.sdi" "%EFI_LETTER%:\Boot">NUL
 IF "%UPDATE_TYPE%"=="EFI" IF EXIST "%CacheFolder%\boot.efi" ECHO.Using boot.efi located in folder, for the efi bootloader.&&COPY /Y "%CacheFolder%\boot.efi" "%EFI_LETTER%:\EFI\Boot\bootx64.efi">NUL
 IF "%UPDATE_TYPE%"=="EFI" FOR %%a in (boot.sdi boot.efi) DO (IF NOT EXIST "%CacheFolder%\%%a" ECHO.File %%a is not located in folder, skipping.)
@@ -1497,7 +1496,7 @@ IF NOT DEFINED INDEX_Z SET "INDEX_Z=1"
 IF NOT "%UPDATE_TYPE%"=="BOOT" %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%EFI_LETTER%:\$.WIM" /INDEX:1 /APPLYDIR:"%VDISK_LTR%:"&ECHO.&SET "INDEX_Z="
 IF "%UPDATE_TYPE%"=="BOOT" %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%CacheFolder%\$BOOT.wim" /INDEX:%INDEX_Z% /APPLYDIR:"%VDISK_LTR%:"&ECHO.&SET "INDEX_Z="
 IF "%UPDATE_TYPE%"=="BOOT" MOVE /Y "%CacheFolder%\$BOOT.wim" "%CacheFolder%\boot.sav">NUL
-IF NOT EXIST "%VDISK_LTR%:\Windows" ECHO.%COLOR2%ERROR:%$$% BOOT MEDIA&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
+IF NOT EXIST "%VDISK_LTR%:\Windows" ECHO.%COLOR2%ERROR:%CT% BOOT MEDIA&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
 IF "%UPDATE_TYPE%"=="BOOT" MD "%VDISK_LTR%:\$">NUL 2>&1
 IF "%UPDATE_TYPE%"=="BOOT" COPY /Y "%ProgFolder0%\winploy.cmd" "%VDISK_LTR%:\$">NUL 2>&1
 IF "%UPDATE_TYPE%"=="BOOT" COPY /Y "%ProgFolder0%\HOST_TARGET" "%VDISK_LTR%:\$">NUL 2>&1
@@ -1509,26 +1508,26 @@ IF "%UPDATE_TYPE%"=="BOOT" IF EXIST "%ProgFolder0%\SETTINGS_INI" COPY /Y "%ProgF
 IF "%UPDATE_TYPE%"=="BOOT" IF EXIST "%ProgFolder0%\RECOVERY_LOCK" COPY /Y "%ProgFolder0%\RECOVERY_LOCK" "%VDISK_LTR%:\$">NUL 2>&1
 IF "%UPDATE_TYPE%"=="BOOT" IF EXIST "%VDISK_LTR%:\setup.exe" DEL /Q /F "\\?\%VDISK_LTR%:\setup.exe">NUL 2>&1
 IF "%UPDATE_TYPE%"=="BOOT" (ECHO.[LaunchApp]&&ECHO.AppPath=X:\$\winploy.cmd)>"%VDISK_LTR%:\Windows\System32\winpeshl.ini"
-IF "%UPDATE_TYPE%"=="BOOT" ECHO.Updating boot media %@@%v%$PATHVER%%$$% to %@@%v%$IMGVER%%$$%.
+IF "%UPDATE_TYPE%"=="BOOT" ECHO.Updating boot media %CA%v%$PATHVER%%CT% to %CA%v%$IMGVER%%CT%.
 IF "%UPDATE_TYPE%"=="DEL_CONFIG" ECHO.Removing default winploy.ini file.&&DEL /Q /F "\\?\%VDISK_LTR%:\$\SETTINGS_INI">NUL 2>&1
 IF "%UPDATE_TYPE%"=="CONFIG" ECHO.Updating default winploy.ini file.&&COPY /Y "%ProgFolder%\winploy.ini" "%VDISK_LTR%:\$\SETTINGS_INI">NUL
-IF "%UPDATE_TYPE%"=="PROG" ECHO.Updating winploy.cmd %@@%v%VER_Y%%$$% to %@@%v%VER_X%%$$%.&&COPY /Y "%ProgFolder%\winploy.cmd" "%VDISK_LTR%:\$">NUL
+IF "%UPDATE_TYPE%"=="PROG" ECHO.Updating winploy.cmd %CA%v%VER_Y%%CT% to %CA%v%VER_X%%CT%.&&COPY /Y "%ProgFolder%\winploy.cmd" "%VDISK_LTR%:\$">NUL
 IF "%UPDATE_TYPE%"=="PROG" ECHO.Removing default winploy.ini file to ensure compatibility.&&DEL /Q /F "\\?\%VDISK_LTR%:\$\SETTINGS_INI">NUL 2>&1
-IF "%UPDATE_TYPE%"=="PASS" IF DEFINED RECOVERY_LOCK ECHO.Recovery password will be changed to %@@%%RECOVERY_LOCK%%$$%.&&ECHO.%RECOVERY_LOCK%>"%VDISK_LTR%:\$\RECOVERY_LOCK"
+IF "%UPDATE_TYPE%"=="PASS" IF DEFINED RECOVERY_LOCK ECHO.Recovery password will be changed to %CA%%RECOVERY_LOCK%%CT%.&&ECHO.%RECOVERY_LOCK%>"%VDISK_LTR%:\$\RECOVERY_LOCK"
 IF "%UPDATE_TYPE%"=="PASS" IF NOT DEFINED RECOVERY_LOCK ECHO.Recovery password will be cleared.&&DEL /Q /F "\\?\%VDISK_LTR%:\$\RECOVERY_LOCK">NUL 2>&1
 IF "%UPDATE_TYPE%"=="WALL" ECHO.Using %PE_WALLPAPER% located in folder for the recovery wallpaper.
 IF "%UPDATE_TYPE%"=="WALL" TAKEOWN /F "%VDISK_LTR%:\Windows\System32\setup.bmp">NUL 2>&1
 IF "%UPDATE_TYPE%"=="WALL" ICACLS "%VDISK_LTR%:\Windows\System32\setup.bmp" /grant %USERNAME%:F>NUL 2>&1
 IF "%UPDATE_TYPE%"=="WALL" COPY /Y "%CacheFolder%\%PE_WALLPAPER%" "%VDISK_LTR%:\Windows\System32\setup.bmp">NUL 2>&1
-IF "%UPDATE_TYPE%"=="HOST" ECHO.Host folder will be changed to %@@%%HOST_FOLDER%%$$%.&&ECHO.%HOST_FOLDER%>"%VDISK_LTR%:\$\HOST_FOLDER"
+IF "%UPDATE_TYPE%"=="HOST" ECHO.Host folder will be changed to %CA%%HOST_FOLDER%%CT%.&&ECHO.%HOST_FOLDER%>"%VDISK_LTR%:\$\HOST_FOLDER"
 ECHO.Saving boot-media...&&%DISM% /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"%VDISK_LTR%:" /IMAGEFILE:"%ImageFolder%\$TEMP.wim" /COMPRESS:%COMPRESS% /NAME:"WindowsPE" /CheckIntegrity /Verify /Bootable&ECHO.
 SET "$IMAGE_X=%ImageFolder%\$TEMP.wim"&&SET "INDEX_X=1"&&CALL:GET_IMAGEINFO
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% File boot.sav is corrupt. Abort.&&ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% File boot.sav is corrupt. Abort.&&ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
 SET "GET_BYTES=MB"&&SET "INPUT=%ImageFolder%\$TEMP.wim"&&SET "OUTPUT=BOOT_X"&&CALL:GET_FILESIZE
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% Unable to get file size or free space. Abort.&&ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% Unable to get file size or free space. Abort.&&ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
 CALL:GET_SPACE_ENV&&FOR %%a in (EFI_FREE BOOT_X) DO (IF NOT DEFINED %%a SET "%%a=0")
-IF %EFI_FREE% LEQ %BOOT_X% ECHO.%COLOR2%ERROR:%$$% File boot.sav %BOOT_X%MB exceeds %EFI_FREE%MB. Abort.&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
-FOR %%a in (0 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%$$% Not enough free space. Clear some space and try again. Abort.&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END)
+IF %EFI_FREE% LEQ %BOOT_X% ECHO.%COLOR2%ERROR:%CT% File boot.sav %BOOT_X%MB exceeds %EFI_FREE%MB. Abort.&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END
+FOR %%a in (0 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%CT% Not enough free space. Clear some space and try again. Abort.&&ECHO.Unmounting EFI...&&SET "ERROR=UPDATE_RECOVERY"&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT&GOTO:UPDATE_END)
 DEL /Q /F "%EFI_LETTER%:\$.WIM">NUL 2>&1
 MOVE /Y "%ImageFolder%\$TEMP.wim" "%EFI_LETTER%:\$.WIM">NUL
 ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT
@@ -1536,7 +1535,7 @@ ECHO.Unmounting EFI...&&CALL:VTEMP_DELETE&CALL:EFI_UNMOUNT
 IF EXIST "%ImageFolder%\$TEMP.wim" DEL /Q /F "%ImageFolder%\$TEMP.wim">NUL 2>&1
 IF "%UPDATE_TYPE%"=="HOST" IF NOT DEFINED ERROR REN "Z:\%HOST_FOLDERX%" "%HOST_FOLDER%">NUL 2>&1
 IF NOT DEFINED ERROR FOR %%a in (Z:\%HOST_FOLDER% Z:) DO (ICACLS "%%a" /deny everyone:^(DE,WA,WDAC^)>NUL 2>&1)
-IF DEFINED REBOOT_MAN ECHO.&&ECHO.                       THE SYSTEM WILL NOW RESTART.&&ECHO.&&ECHO.              %@@%UPDATE FINISH:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED&GOTO:QUIT
+IF DEFINED REBOOT_MAN ECHO.&&ECHO.                       THE SYSTEM WILL NOW RESTART.&&ECHO.&&ECHO.              %CA%UPDATE FINISH:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED&GOTO:QUIT
 SET "RECOVERY_LOCK="&&GOTO:UPDATE_RECOVERY
 :VTEMP_CREATE
 IF DEFINED ERROR EXIT /B
@@ -1549,7 +1548,7 @@ IF EXIST "%ImageFolder%\$TEMP.vhdx" ECHO.Unmounting temporary vdisk...&&SET "$VD
 IF EXIST "%ImageFolder%\$TEMP.vhdx" DEL /Q /F "%ImageFolder%\$TEMP.vhdx">NUL 2>&1
 EXIT /B
 :PE_WALLPAPER
-SET "$HEADERS=                          Recovery Wallpaper"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.JPG *.PNG"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                          Recovery Wallpaper"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.JPG *.PNG"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=WALL"&&CALL:BASIC_FILE&EXIT /B
 IF DEFINED $PICK SET "PE_WALLPAPER=%$CHOICE%"
 IF NOT DEFINED $PICK SET "PE_WALLPAPER=SELECT"
@@ -1569,23 +1568,23 @@ IF "%SOURCE_TYPE%"=="WIM" SET "SOURCEDISP=%U07%"
 IF "%SOURCE_TYPE%"=="VHDX" SET "SOURCEDISP=%U08%"
 IF "%SOURCE_TYPE%"=="PATH" SET "SOURCEDISP=%U08%"
 SET "PROC_DISPLAY="&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                        %SOURCEDISP% Image Processing^|%SOURCE_TYPE%&&ECHO.
-IF DEFINED SOURCE_LOCATION ECHO. (%##%-%$$%) Import Boot  %COLOR5%Windows Installation Media Detected%$$%  Import WIM (%##%+%$$%)&&ECHO.
-IF NOT EXIST "%ImageFolder%\*.WIM" ECHO.        %@@%Insert a Windows Disc/ISO to import installation media%$$%&&ECHO.
-IF NOT EXIST "%CacheFolder%\BOOT.SAV" ECHO.            %@@%Insert a Windows Disc/ISO to import boot media%$$%&&ECHO.
+IF DEFINED SOURCE_LOCATION ECHO. (%CB%-%CT%) Import Boot  %COLOR5%Windows Installation Media Detected%CT%  Import WIM (%CB%+%CT%)&&ECHO.
+IF NOT EXIST "%ImageFolder%\*.WIM" ECHO.        %CA%Insert a Windows Disc/ISO to import installation media%CT%&&ECHO.
+IF NOT EXIST "%CacheFolder%\BOOT.SAV" ECHO.            %CA%Insert a Windows Disc/ISO to import boot media%CT%&&ECHO.
 IF "%SOURCE_TYPE%"=="WIM" IF "%WIM_SOURCE%"=="SELECT" SET "WIM_INDEX=1"&&SET "$IMGEDIT="
 IF NOT DEFINED $IMGEDIT SET "$IMGEDIT=SELECT"&&SET "WIM_INDEX=1"
 FOR %%G in (%SOURCE_TYPE% %TARGET_TYPE%) DO (IF "%%G"=="VHDX" SET "PROC_DISPLAY=1")
 FOR %%G in (%SOURCE_TYPE% %TARGET_TYPE%) DO (IF "%%G"=="PATH" SET "PROC_DISPLAY=2")
-IF "%PROC_DISPLAY%"=="1" ECHO.  %@@%AVAILABLE %@@%%SOURCE_TYPE%s%$$% (%##%X%$$%) %@@%%TARGET_TYPE%s%$$%:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST
-IF "%PROC_DISPLAY%"=="2" ECHO.  %@@%AVAILABLE %@@%%SOURCE_TYPE%s%$$% (%##%X%$$%) %@@%%TARGET_TYPE%s%$$%:%$$%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO.   %%G:)
+IF "%PROC_DISPLAY%"=="1" ECHO.  %CA%AVAILABLE %CA%%SOURCE_TYPE%s%CT% (%CB%X%CT%) %CA%%TARGET_TYPE%s%CT%:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST
+IF "%PROC_DISPLAY%"=="2" ECHO.  %CA%AVAILABLE %CA%%SOURCE_TYPE%s%CT% (%CB%X%CT%) %CA%%TARGET_TYPE%s%CT%:%CT%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO.   %%G:)
 IF "%PROC_DISPLAY%"=="2" SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM"&&SET "$DISP=BAS"&&CALL:FILE_LIST
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
-IF "%SOURCE_TYPE%"=="PATH" ECHO. [%@@%PATH%$$%] (%##%S%$$%)ource %@@%%PATH_SOURCE%%$$%&&CALL:PAD_LINE
-IF "%SOURCE_TYPE%"=="VHDX" ECHO. [%@@%VHDX%$$%] (%##%S%$$%)ource %@@%%VHDX_SOURCE%%$$%&&CALL:PAD_LINE
-IF "%SOURCE_TYPE%"=="WIM" ECHO. [%@@%WIM%$$%] (%##%S%$$%)ource %@@%%WIM_SOURCE%%$$%   (%##%I%$$%)ndex %@@%%WIM_INDEX%%$$%   Edition: %@@%%$IMGEDIT%%$$%&&CALL:PAD_LINE
-IF "%TARGET_TYPE%"=="VHDX" ECHO. [%@@%VHDX%$$%] (%##%T%$$%)arget %@@%%VHDX_TARGET%%$$%        (%##%C%$$%)onvert      (%##%V%$$%)disk Size %@@%%VHDX_SIZE%GB%$$%&&CALL:PAD_LINE
-IF "%TARGET_TYPE%"=="WIM" ECHO. [%@@%WIM%$$%] (%##%T%$$%)arget %@@%%WIM_TARGET%%$$%         (%##%C%$$%)onvert          (%##%.%$$%)Compression %@@%%COMPRESS%%$$%&&CALL:PAD_LINE
-IF "%TARGET_TYPE%"=="PATH" ECHO. [%@@%PATH%$$%] (%##%T%$$%)arget %@@%%PATH_TARGET%%$$%        (%##%C%$$%)onvert&&CALL:PAD_LINE
+IF "%SOURCE_TYPE%"=="PATH" ECHO. [%CA%PATH%CT%] (%CB%S%CT%)ource %CA%%PATH_SOURCE%%CT%&&CALL:PAD_LINE
+IF "%SOURCE_TYPE%"=="VHDX" ECHO. [%CA%VHDX%CT%] (%CB%S%CT%)ource %CA%%VHDX_SOURCE%%CT%&&CALL:PAD_LINE
+IF "%SOURCE_TYPE%"=="WIM" ECHO. [%CA%WIM%CT%] (%CB%S%CT%)ource %CA%%WIM_SOURCE%%CT%   (%CB%I%CT%)ndex %CA%%WIM_INDEX%%CT%   Edition: %CA%%$IMGEDIT%%CT%&&CALL:PAD_LINE
+IF "%TARGET_TYPE%"=="VHDX" ECHO. [%CA%VHDX%CT%] (%CB%T%CT%)arget %CA%%VHDX_TARGET%%CT%        (%CB%C%CT%)onvert      (%CB%V%CT%)disk Size %CA%%VHDX_SIZE%GB%CT%&&CALL:PAD_LINE
+IF "%TARGET_TYPE%"=="WIM" ECHO. [%CA%WIM%CT%] (%CB%T%CT%)arget %CA%%WIM_TARGET%%CT%         (%CB%C%CT%)onvert          (%CB%.%CT%)Compression %CA%%COMPRESS%%CT%&&CALL:PAD_LINE
+IF "%TARGET_TYPE%"=="PATH" ECHO. [%CA%PATH%CT%] (%CB%T%CT%)arget %CA%%PATH_TARGET%%CT%        (%CB%C%CT%)onvert&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
@@ -1601,17 +1600,17 @@ IF "%SELECT%"=="." CALL:COMPRESS_LVL&SET "SELECT="
 GOTO:IMAGE_PROCESSING
 :IMAGEPROC_START
 SET "SOURCE_X="&&SET "TARGET_X="&&IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.         %@@%IMAGE PROCESSING START:%$$%  %DATE%  %TIME%
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.         %CA%IMAGE PROCESSING START:%CT%  %DATE%  %TIME%
 CALL SET "SOURCE_X=%%%SOURCE_TYPE%_SOURCE%%%"
 CALL SET "TARGET_X=%%%TARGET_TYPE%_TARGET%%%"
 FOR %%a in (SOURCE_X TARGET_X) DO (IF NOT DEFINED %%a SET "%%a=SELECT")
-IF "%SOURCE_X%"=="SELECT" ECHO.&&ECHO.                          %COLOR4%Source %SOURCE_TYPE% not set.%$$%&&GOTO:IMAGEPROC_END
-IF "%TARGET_X%"=="SELECT" ECHO.&&ECHO.                          %COLOR4%Target %TARGET_TYPE% not set.%$$%&&GOTO:IMAGEPROC_END
-IF "%SOURCE_TYPE%"=="PATH" IF NOT EXIST "%PATH_SOURCE%\" ECHO.&&ECHO.                         %COLOR4%Source %SOURCE_TYPE% doesn't exist.%$$%&&GOTO:IMAGEPROC_END
-IF "%TARGET_TYPE%"=="PATH" IF NOT EXIST "%PATH_TARGET%\" ECHO.&&ECHO.                         %COLOR4%Target %TARGET_TYPE% doesn't exist.%$$%&&GOTO:IMAGEPROC_END
-IF "%TARGET_TYPE%"=="WIM" IF EXIST "%ImageFolder%\%WIM_TARGET%" ECHO.&&ECHO. %COLOR4%Target %WIM_TARGET% exists. Try another name or delete the existing file.%$$%&&GOTO:IMAGEPROC_END
-IF "%TARGET_TYPE%"=="VHDX" IF EXIST "%ImageFolder%\%VHDX_TARGET%" SET "$HEADERS= %U01% %U01%                  File %@@%%VHDX_TARGET%%$$% already exists.%U01% %U01%  %COLOR2%Note:%$$% Updating can cause loss of data. Create a backup beforehand.%U01% %U01%                         Press (%##%X%$$%) to proceed%U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
-IF "%TARGET_TYPE%"=="VHDX" IF EXIST "%ImageFolder%\%VHDX_TARGET%" IF NOT "%CONFIRM%"=="X" ECHO.&&ECHO. %##%Abort.%$$%&&GOTO:IMAGEPROC_END
+IF "%SOURCE_X%"=="SELECT" ECHO.&&ECHO.                          %COLOR4%Source %SOURCE_TYPE% not set.%CT%&&GOTO:IMAGEPROC_END
+IF "%TARGET_X%"=="SELECT" ECHO.&&ECHO.                          %COLOR4%Target %TARGET_TYPE% not set.%CT%&&GOTO:IMAGEPROC_END
+IF "%SOURCE_TYPE%"=="PATH" IF NOT EXIST "%PATH_SOURCE%\" ECHO.&&ECHO.                         %COLOR4%Source %SOURCE_TYPE% doesn't exist.%CT%&&GOTO:IMAGEPROC_END
+IF "%TARGET_TYPE%"=="PATH" IF NOT EXIST "%PATH_TARGET%\" ECHO.&&ECHO.                         %COLOR4%Target %TARGET_TYPE% doesn't exist.%CT%&&GOTO:IMAGEPROC_END
+IF "%TARGET_TYPE%"=="WIM" IF EXIST "%ImageFolder%\%WIM_TARGET%" ECHO.&&ECHO. %COLOR4%Target %WIM_TARGET% exists. Try another name or delete the existing file.%CT%&&GOTO:IMAGEPROC_END
+IF "%TARGET_TYPE%"=="VHDX" IF EXIST "%ImageFolder%\%VHDX_TARGET%" SET "$HEADERS= %U01% %U01%                  File %CA%%VHDX_TARGET%%CT% already exists.%U01% %U01%  %COLOR2%Note:%CT% Updating can cause loss of data. Create a backup beforehand.%U01% %U01%                         Press (%CB%X%CT%) to proceed%U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
+IF "%TARGET_TYPE%"=="VHDX" IF EXIST "%ImageFolder%\%VHDX_TARGET%" IF NOT "%CONFIRM%"=="X" ECHO.&&ECHO. %CB%Abort.%CT%&&GOTO:IMAGEPROC_END
 IF NOT DEFINED WIM_INDEX SET "WIM_INDEX=1"
 IF NOT DEFINED VHDX_SIZE SET "VHDX_SIZE=25"
 IF "%SOURCE_TYPE%"=="WIM" IF "%TARGET_TYPE%"=="VHDX" CALL:WIM2VHDX
@@ -1621,19 +1620,19 @@ IF "%SOURCE_TYPE%"=="PATH" IF "%TARGET_TYPE%"=="WIM" IF NOT DEFINED $PATHEDIT SE
 IF "%SOURCE_TYPE%"=="PATH" IF "%TARGET_TYPE%"=="WIM" ECHO.Capturing %PATH_SOURCE% to target image %WIM_TARGET%...&&%DISM% /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"%PATH_SOURCE%" /IMAGEFILE:"%ImageFolder%\%WIM_TARGET%" /COMPRESS:%COMPRESS% /NAME:"%$PATHEDIT%"
 IF "%SOURCE_TYPE%"=="WIM" IF "%TARGET_TYPE%"=="PATH" ECHO.Applying image %WIM_SOURCE% index %WIM_INDEX% to %PATH_TARGET%...&&%DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%ImageFolder%\%WIM_SOURCE%" /INDEX:%WIM_INDEX% /APPLYDIR:"%PATH_TARGET%"
 :IMAGEPROC_END
-ECHO.&&ECHO.          %@@%IMAGE PROCESSING END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
+ECHO.&&ECHO.          %CA%IMAGE PROCESSING END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :WIM2VHDX
 ECHO.&&IF EXIST "%ImageFolder%\%VHDX_TARGET%" SET "$VDISK_FILE=%ImageFolder%\%VHDX_TARGET%"&&SET "VDISK_LTR=ANY"&&CALL:VDISK_ATTACH
 IF NOT EXIST "%ImageFolder%\%VHDX_TARGET%" SET "$VDISK_FILE=%ImageFolder%\%VHDX_TARGET%"&&SET "VDISK_LTR=ANY"&&CALL:VDISK_CREATE
-IF NOT EXIST "%VDISK_LTR%:\" ECHO.&&ECHO.          %COLOR4%Vdisk Error. If VHDX refuses mounting, try another.%$$%
+IF NOT EXIST "%VDISK_LTR%:\" ECHO.&&ECHO.          %COLOR4%Vdisk Error. If VHDX refuses mounting, try another.%CT%
 IF EXIST "%VDISK_LTR%:\" ECHO.Applying image %WIM_SOURCE% index %WIM_INDEX% to %VDISK_LTR%:...
 IF EXIST "%VDISK_LTR%:\" %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%ImageFolder%\%WIM_SOURCE%" /INDEX:%WIM_INDEX% /APPLYDIR:"%VDISK_LTR%:"
 ECHO.&&CALL:VDISK_DETACH
 EXIT /B
 :VHDX2WIM
 ECHO.&&SET "$VDISK_FILE=%ImageFolder%\%VHDX_SOURCE%"&&SET "VDISK_LTR=ANY"&&CALL:VDISK_ATTACH
-IF NOT EXIST "%VDISK_LTR%:\" ECHO.&&ECHO.          %COLOR4%Vdisk Error. If VHDX refuses mounting, try another.%$$%
+IF NOT EXIST "%VDISK_LTR%:\" ECHO.&&ECHO.          %COLOR4%Vdisk Error. If VHDX refuses mounting, try another.%CT%
 IF EXIST "%VDISK_LTR%:\" SET "$PATH_X=%VDISK_LTR%:"&&CALL:GET_PATHINFO
 IF EXIST "%VDISK_LTR%:\" IF NOT DEFINED $PATHEDIT SET "$PATHEDIT=Index_1"
 IF EXIST "%VDISK_LTR%:\" ECHO.Capturing %VDISK_LTR%: to target image %WIM_TARGET%...
@@ -1641,17 +1640,17 @@ IF EXIST "%VDISK_LTR%:\" %DISM% /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"%VDISK_LTR%
 ECHO.&&CALL:VDISK_DETACH
 EXIT /B
 :BASIC_BACKUP
-SET "$HEADERS=                          %U07% Image Processing%U01% %U01%              Select a virtual hard disk image to backup"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                          %U07% Image Processing%U01% %U01%              Select a virtual hard disk image to backup"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=VHDX"&&CALL:BASIC_FILE&EXIT /B
 IF NOT DEFINED $PICK EXIT /B
 SET "VHDX_SOURCE=%$BODY%%$EXT%"
 SET "SOURCE_TYPE=VHDX"&&SET "TARGET_TYPE=WIM"&&CALL:IMAGEPROC_TARGET
 IF NOT DEFINED WIM_TARGET EXIT /B
-IF EXIST "%ImageFolder%\%WIM_TARGET%" ECHO.&&ECHO.%COLOR2%ERROR:%$$% File already exists.&&EXIT /B
+IF EXIST "%ImageFolder%\%WIM_TARGET%" ECHO.&&ECHO.%COLOR2%ERROR:%CT% File already exists.&&EXIT /B
 SET "WIM_INDEX=1"&&CALL:IMAGEPROC_START
 EXIT /B
 :BASIC_RESTORE
-SET "$HEADERS=                          %U07% Image Processing%U01% %U01%                      Select an image to restore"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                          %U07% Image Processing%U01% %U01%                      Select an image to restore"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=WIM"&&CALL:BASIC_FILE&EXIT /B
 IF NOT DEFINED $PICK EXIT /B
 SET "WIM_SOURCE=%$BODY%%$EXT%"
@@ -1659,23 +1658,23 @@ CALL:WIM_INDEX_MENU
 IF DEFINED ERROR EXIT /B
 SET "SOURCE_TYPE=WIM"&&SET "TARGET_TYPE=VHDX"&&CALL:IMAGEPROC_TARGET
 IF NOT DEFINED VHDX_TARGET EXIT /B
-IF EXIST "%ImageFolder%\%VHDX_TARGET%" ECHO.&&ECHO.%COLOR2%ERROR:%$$% File already exists.&&EXIT /B
+IF EXIST "%ImageFolder%\%VHDX_TARGET%" ECHO.&&ECHO.%COLOR2%ERROR:%CT% File already exists.&&EXIT /B
 CALL:IMAGEPROC_VSIZE
 IF DEFINED ERROR EXIT /B
 CALL:IMAGEPROC_START
 EXIT /B
 :BOOT_IMPORT
-IF EXIST "%CacheFolder%\boot.sav" SET "$HEADERS= %U01% %U01% %U01% %U01%         File boot.sav already exists. Press (%##%X%$$%) to overwrite%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
+IF EXIST "%CacheFolder%\boot.sav" SET "$HEADERS= %U01% %U01% %U01% %U01%         File boot.sav already exists. Press (%CB%X%CT%) to overwrite%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
 IF EXIST "%CacheFolder%\boot.sav" IF NOT "%CONFIRM%"=="X" EXIT /B
-IF EXIST "%SOURCE_LOCATION%\boot.wim" ECHO.Importing %@@%boot.wim%$$% to boot.sav...&&COPY /Y "%SOURCE_LOCATION%\boot.wim" "%CacheFolder%\boot.sav"
+IF EXIST "%SOURCE_LOCATION%\boot.wim" ECHO.Importing %CA%boot.wim%CT% to boot.sav...&&COPY /Y "%SOURCE_LOCATION%\boot.wim" "%CacheFolder%\boot.sav"
 EXIT /B
 :SOURCE_IMPORT
 SET "WIM_EXT="&&FOR %%G in (wim esd) DO (IF EXIST "%SOURCE_LOCATION%\install.%%G" SET "WIM_EXT=%%G")
 IF EXIST "%CacheFolder%\boot.sav" SET "$HEADERS= %U01% %U01% %U01% %U01%                        Enter name of new .WIM%U01% %U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&SET "$SELECT=NEW_NAME"&&CALL:PROMPT_BOX
 IF NOT DEFINED NEW_NAME EXIT /B
-IF EXIST "%ImageFolder%\%NEW_NAME%.wim" SET "$HEADERS= %U01% %U01% %U01% %U01%         File %NEW_NAME%.wim already exists. Press (%##%X%$$%) to overwrite.%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
+IF EXIST "%ImageFolder%\%NEW_NAME%.wim" SET "$HEADERS= %U01% %U01% %U01% %U01%         File %NEW_NAME%.wim already exists. Press (%CB%X%CT%) to overwrite.%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:PROMPT_BOX
 IF EXIST "%ImageFolder%\%NEW_NAME%.wim" IF NOT "%CONFIRM%"=="X" EXIT /B
-IF DEFINED NEW_NAME ECHO.Copying install.%WIM_EXT% to %@@%%NEW_NAME%.wim%$$%...&&COPY /Y "%SOURCE_LOCATION%\install.%WIM_EXT%" "%ImageFolder%\%NEW_NAME%.wim"&&SET "NEW_NAME="
+IF DEFINED NEW_NAME ECHO.Copying install.%WIM_EXT% to %CA%%NEW_NAME%.wim%CT%...&&COPY /Y "%SOURCE_LOCATION%\install.%WIM_EXT%" "%ImageFolder%\%NEW_NAME%.wim"&&SET "NEW_NAME="
 EXIT /B
 :IMAGEPROC_VSIZE
 SET "$HEADERS=                          %U07% Image Processing%U01% %U01% %U01% %U01%                       Enter new VHDX size in GB%U01% %U01% %U01% %U01%                 Note: 25GB or greater is recommended"&&SET "$SELECT=SELECTX"&&SET "$CHECK=NUMBER❗1-9999"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
@@ -1683,7 +1682,7 @@ IF DEFINED ERROR SET "ERROR=IMAGEPROC_VSIZE"&&EXIT /B
 SET "VHDX_SIZE=%SELECTX%"
 EXIT /B
 :IMAGEPROC_TARGET
-IF "%TARGET_TYPE%"=="PATH" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                         Enter the PATH target&&ECHO.&&ECHO.  %@@%AVAILABLE PATHs:%$$%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %##%%%G%$$% ^) Volume %%G:)
+IF "%TARGET_TYPE%"=="PATH" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                         Enter the PATH target&&ECHO.&&ECHO.  %CA%AVAILABLE PATHs:%CT%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %CB%%%G%CT% ^) Volume %%G:)
 IF "%TARGET_TYPE%"=="PATH" ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MOST"&&SET "$SELECT=PATH_LETTER"&&CALL:MENU_SELECT
 IF "%TARGET_TYPE%"=="PATH" IF DEFINED PATH_LETTER FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%PATH_LETTER%"=="%%G" IF EXIST "%%G:\" SET "PATH_TARGET=%PATH_LETTER%:"&&EXIT /B)
 IF "%TARGET_TYPE%"=="PATH" IF DEFINED PATH_LETTER SET "INPUT=%PATH_LETTER%"&&SET "OUTPUT=PATH_TARGET"&&CALL:SLASHER
@@ -1693,28 +1692,28 @@ IF "%TARGET_TYPE%"=="WIM" IF DEFINED SELECTX SET "WIM_TARGET=%SELECTX%.wim"
 IF "%TARGET_TYPE%"=="VHDX" IF DEFINED SELECTX SET "VHDX_TARGET=%SELECTX%.vhdx"
 EXIT /B
 :IMAGEPROC_SOURCE
-IF "%SOURCE_TYPE%"=="PATH" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                         Enter the PATH source&&ECHO.&&ECHO.  %@@%AVAILABLE PATHs:%$$%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %##%%%G%$$% ^) Volume %%G:)
+IF "%SOURCE_TYPE%"=="PATH" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                         Enter the PATH source&&ECHO.&&ECHO.  %CA%AVAILABLE PATHs:%CT%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %CB%%%G%CT% ^) Volume %%G:)
 IF "%SOURCE_TYPE%"=="PATH" ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MOST"&&SET "$SELECT=PATH_LETTER"&&CALL:MENU_SELECT
 IF "%SOURCE_TYPE%"=="PATH" FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%PATH_LETTER%"=="%%G" IF EXIST "%%G:\" SET "PATH_SOURCE=%PATH_LETTER%:"&&EXIT /B)
 IF "%SOURCE_TYPE%"=="PATH" IF DEFINED PATH_LETTER SET "INPUT=%PATH_LETTER%"&&SET "OUTPUT=PATH_SOURCE"&&CALL:SLASHER
 IF "%SOURCE_TYPE%"=="PATH" IF NOT DEFINED PATH_LETTER SET "PATH_SOURCE="
-IF NOT "%SOURCE_TYPE%"=="PATH" SET "$HEADERS=                          %U07% Image Processing%U01% %U01%                          Select a %SOURCE_TYPE% source"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) %U13% File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.%SOURCE_TYPE%"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF NOT "%SOURCE_TYPE%"=="PATH" SET "$HEADERS=                          %U07% Image Processing%U01% %U01%                          Select a %SOURCE_TYPE% source"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %U13% File Operation"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.%SOURCE_TYPE%"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF NOT "%SOURCE_TYPE%"=="PATH" IF "%SELECT%"=="0" SET "FILE_TYPE=%SOURCE_TYPE%"&&CALL:BASIC_FILE&EXIT /B
 IF NOT "%SOURCE_TYPE%"=="PATH" CALL SET "%SOURCE_TYPE%_SOURCE=%$CHOICE%"
 EXIT /B
 :WIM_INDEX_MENU
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                            Select an index&&ECHO.&&ECHO.  %@@%AVAILABLE INDEXs:%$$%&&ECHO.
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U07% Image Processing&&ECHO.&&ECHO.                            Select an index&&ECHO.&&ECHO.  %CA%AVAILABLE INDEXs:%CT%&&ECHO.
 SET "INDEX_DSP="&&SET "NAME_DSP="&&FOR /F "TOKENS=1-7 SKIP=5 DELIMS=:<> " %%a in ('%DISM% /ENGLISH /GET-IMAGEINFO /IMAGEFILE:"%ImageFolder%\%WIM_SOURCE%" 2^>NUL') DO (
 IF "%%a"=="Index" SET "INDEX_DSP=%%b"
 IF "%%a"=="Name" SET "NAME_DSP=%%b %%c %%d %%e %%f %%g"&&CALL:WIM_INDEX_LIST)
-IF NOT DEFINED INDEX_DSP ECHO.%COLOR2%ERROR%$$%&&SET "ERROR=WIM_INDEX_MENU"&&CALL:DEBUG&&EXIT /B
+IF NOT DEFINED INDEX_DSP ECHO.%COLOR2%ERROR%CT%&&SET "ERROR=WIM_INDEX_MENU"&&CALL:DEBUG&&EXIT /B
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT SET "ERROR=WIM_INDEX_MENU"&&CALL:DEBUG&&EXIT /B
 SET "$IMAGE_X=%ImageFolder%\%WIM_SOURCE%"&&SET "INDEX_X=%SELECT%"&&CALL:GET_IMAGEINFO
-SET "WIM_INDEX=%SELECT%"&&IF DEFINED ERROR SET "WIM_INDEX=1"&&ECHO.%COLOR2%ERROR%$$%
+SET "WIM_INDEX=%SELECT%"&&IF DEFINED ERROR SET "WIM_INDEX=1"&&ECHO.%COLOR2%ERROR%CT%
 EXIT /B
 :WIM_INDEX_LIST
-ECHO. ( %##%%INDEX_DSP%%$$% ) %NAME_DSP%
+ECHO. ( %CB%%INDEX_DSP%%CT% ) %NAME_DSP%
 EXIT /B
 :IMAGEPROC_SLOT
 IF "%SOURCE_TYPE%"=="WIM" IF "%TARGET_TYPE%"=="PATH" SET "SOURCE_TYPE=WIM"&&SET "TARGET_TYPE=VHDX"&&EXIT /B
@@ -1726,10 +1725,10 @@ EXIT /B
 :IMAGE_MANAGEMENT
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 @ECHO OFF&&CLS&&SET "IMAGE_LAST=IMAGE"&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U13% Image Management&&ECHO.
-ECHO.  %@@%AVAILABLE LISTs/BASEs:%$$%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$DISP=BAS"&&CALL:FILE_LIST
+ECHO.  %CA%AVAILABLE LISTs/BASEs:%CT%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$DISP=BAS"&&CALL:FILE_LIST
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
-ECHO. %@@%%U13%LIST%$$%(%##%X%$$%)PACK%U05%%$$%  (%##%R%$$%)un List  (%##%E%$$%)dit List  (%##%B%$$%)uild List  (%##%.%$$%)Reference&&CALL:PAD_LINE
-IF DEFINED ADV_IMGM ECHO. [%@@%OPTIONS%$$%] (%##%S%$$%)afe Exclude %@@%%SAFE_EXCLUDE%%$$%&&CALL:PAD_LINE
+ECHO. %CA%%U13%LIST%CT%(%CB%X%CT%)PACK%U05%%CT%  (%CB%R%CT%)un List  (%CB%E%CT%)dit List  (%CB%B%CT%)uild List  (%CB%.%CT%)Reference&&CALL:PAD_LINE
+IF DEFINED ADV_IMGM ECHO. [%CA%OPTIONS%CT%] (%CB%S%CT%)afe Exclude %CA%%SAFE_EXCLUDE%%CT%&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
@@ -1744,7 +1743,7 @@ IF "%SELECT%"=="S" IF "%SAFE_EXCLUDE%"=="DISABLED" SET "SAFE_EXCLUDE=ENABLED"&SE
 IF "%SELECT%"=="S" IF "%SAFE_EXCLUDE%"=="ENABLED" SET "SAFE_EXCLUDE=DISABLED"&SET "SELECT="
 GOTO:IMAGE_MANAGEMENT
 :REFERENCE
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U13% Reference&&ECHO.&&ECHO.            Select a reference image&&ECHO.&&ECHO.  %@@%AVAILABLE *.VHDXs:%$$%&&ECHO.&&ECHO. ( %##%0%$$% ) %U06% Current Environment&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO. ( %##%.%$$% ) Disabled&&ECHO.
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U13% Reference&&ECHO.&&ECHO.            Select a reference image&&ECHO.&&ECHO.  %CA%AVAILABLE *.VHDXs:%CT%&&ECHO.&&ECHO. ( %CB%0%CT% ) %U06% Current Environment&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO. ( %CB%.%CT% ) Disabled&&ECHO.
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=PATH"&&CALL:MENU_SELECT
 IF "%SELECT%"=="0" SET "REFERENCE=LIVE"
 IF "%SELECT%"=="." SET "REFERENCE=DISABLED"
@@ -1752,15 +1751,15 @@ IF NOT DEFINED $PICK EXIT /B
 SET "REFERENCE=%$CHOICE%"
 EXIT /B
 :LIST_EDIT
-SET "$HEADERS=                             %U13% Edit List%U01% %U01%                             Select a list"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                             %U13% Edit List%U01% %U01%                             Select a list"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=LISTS"&&CALL:BASIC_FILE&EXIT /B
 IF NOT DEFINED $PICK EXIT /B
 START NOTEPAD "%$PICK%"
 EXIT /B
 :IMAGEMGR_EXECUTE
-IF "%IMAGEMGR_TYPE%"=="LIST" SET "$HEADERS=                            %U13% List Execute%U01% %U01%                            Select an option"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF "%IMAGEMGR_TYPE%"=="LIST" SET "$HEADERS=                            %U13% List Execute%U01% %U01%                            Select an option"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF DEFINED ERROR EXIT /B
-IF "%IMAGEMGR_TYPE%"=="PACK" SET "$HEADERS=                            %U05% Pack Execute%U01% %U01%                            Select an option"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF "%IMAGEMGR_TYPE%"=="PACK" SET "$HEADERS=                            %U05% Pack Execute%U01% %U01%                            Select an option"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" IF "%IMAGEMGR_TYPE%"=="PACK" SET "FILE_TYPE=PKX"&&CALL:BASIC_FILE&EXIT /B
 IF "%SELECT%"=="0" IF "%IMAGEMGR_TYPE%"=="LIST" SET "FILE_TYPE=LISTS"&&CALL:BASIC_FILE&EXIT /B
 IF NOT DEFINED $PICK EXIT /B
@@ -1768,13 +1767,13 @@ SET "BASE_EXEC="&&SET "$LISTPACK=%$CHOICE%"&&FOR %%G in ("%$PICK%") DO (SET "CAP
 IF "%IMAGEMGR_EXT%"==".BASE" SET "$LIST_FILE=%$PICK%"&SET "BASE_EXEC=1"&CALL:LIST_VIEWER&SET "$HEAD=MENU-SCRIPT"&SET "$LISTPACK=$LIST"&IF "%FOLDER_MODE%"=="ISOLATED" IF EXIST "$LIST" MOVE /Y "$LIST" "%ListFolder%">NUL 2>&1
 IF DEFINED ERROR EXIT /B
 IF DEFINED QUICK_MENU CLS&&CALL %CMD% /C ""%ProgFolder%\winploy.cmd" -IMAGEMGR -RUN -%IMAGEMGR_TYPE% "%$LISTPACK%" -QUICK"&CALL:PAUSED&EXIT /B
-IF "%IMAGEMGR_EXT%"==".PKX" SET "$IMGMGRX=                           %U05% Pack Execute"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%Current Environment%$$%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF "%IMAGEMGR_EXT%"==".PKX" SET "$IMGMGRX=                           %U05% Pack Execute"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%Current Environment%CT%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%IMAGEMGR_EXT%"==".PKX" IF "%SELECT%"=="0" SET "LIVE_APPLY=1"
 IF "%IMAGEMGR_EXT%"==".PKX" IF NOT "%SELECT%"=="0" SET "LIVE_APPLY="&&SET "REFERENCE0=%$CHOICE%"
-IF "%IMAGEMGR_EXT%"==".LIST" SET "$IMGMGRX=                           %U13% List Execute"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%Current Environment%$$%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF "%IMAGEMGR_EXT%"==".LIST" SET "$IMGMGRX=                           %U13% List Execute"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%Current Environment%CT%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%IMAGEMGR_EXT%"==".LIST" IF "%SELECT%"=="0" SET "LIVE_APPLY=1"
 IF "%IMAGEMGR_EXT%"==".LIST" IF NOT "%SELECT%"=="0" SET "LIVE_APPLY="&&SET "REFERENCE0=%$CHOICE%"
-IF "%IMAGEMGR_EXT%"==".BASE" IF /I "%REFERENCE%"=="DISABLED" SET "$IMGMGRX=                           %U13% List Execute"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%Current Environment%$$%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+IF "%IMAGEMGR_EXT%"==".BASE" IF /I "%REFERENCE%"=="DISABLED" SET "$IMGMGRX=                           %U13% List Execute"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%Current Environment%CT%"&&SET "$HEADERS=%$IMGMGRX%%U01% %U01%                            Select a target"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$CHOICEMINO=1"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%IMAGEMGR_EXT%"==".BASE" IF /I "%REFERENCE%"=="DISABLED" IF "%SELECT%"=="0" SET "LIVE_APPLY=1"
 IF "%IMAGEMGR_EXT%"==".BASE" IF /I "%REFERENCE%"=="DISABLED" IF NOT "%SELECT%"=="0" SET "LIVE_APPLY="&&SET "REFERENCE0=%$CHOICE%"
 IF DEFINED ERROR EXIT /B
@@ -1791,7 +1790,7 @@ SET "MOUNT="&&CALL:MOUNT_INT&&FOR %%G in ("%$LIST_FILE%") DO SET "LIST_NAME=%%~n
 IF NOT DEFINED LIST_ITEMS_EXECUTE CALL:LIST_ITEMS
 IF NOT DEFINED SAFE_EXCLUDE SET "SAFE_EXCLUDE=ENABLED"
 SET "$BOX=ST"&&CALL:BOX_DISP
-IF NOT DEFINED CUSTOM_SESSION ECHO.             %@@%%CURR_SESSION%-LIST START:%$$%  %DATE%  %TIME%&&ECHO.
+IF NOT DEFINED CUSTOM_SESSION ECHO.             %CA%%CURR_SESSION%-LIST START:%CT%  %DATE%  %TIME%&&ECHO.
 SET "$HEAD_CHECK=%$LIST_FILE%"&&CALL:GET_HEADER
 IF DEFINED ERROR GOTO:LIST_EXEC_END
 IF DEFINED QUICK_MENU GOTO:LIST_EXEC_JUMP
@@ -1800,13 +1799,13 @@ IF DEFINED VDISK_APPLY SET "TARGET_PATH=%VDISK_LTR%:"
 IF DEFINED LIVE_APPLY SET "TARGET_PATH=%SYSTEMDRIVE%"
 IF DEFINED PATH_APPLY SET "TARGET_PATH=%TARGET_PATH%"
 IF DEFINED LIVE_APPLY IF NOT DEFINED CUSTOM_SESSION IF NOT DEFINED QUICK_MENU ECHO.Using live system as target.
-IF NOT EXIST "%TARGET_PATH%\" ECHO.&&ECHO.           %COLOR4%Path error or vdisk is not initialized.%$$%&&ECHO.&&GOTO:LIST_EXEC_END
+IF NOT EXIST "%TARGET_PATH%\" ECHO.&&ECHO.           %COLOR4%Path error or vdisk is not initialized.%CT%&&ECHO.&&GOTO:LIST_EXEC_END
 :LIST_EXEC_JUMP
 FOR %%□ in ($HALT GROUP SUBGROUP) DO (IF DEFINED %%□ SET "%%□=")
 CALL:SESSION_CLEAR&&CALL:RAS_DELETE
 COPY /Y "%$LIST_FILE%" "$TEMP">NUL 2>&1
 IF EXIST "$TEMP" FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ($TEMP) DO (
-SET "COLUMN0="&&IF DEFINED $HALT ECHO.%COLOR2%ERROR:%$$% HALT.&&GOTO:LIST_EXEC_END
+SET "COLUMN0="&&IF DEFINED $HALT ECHO.%COLOR2%ERROR:%CT% HALT.&&GOTO:LIST_EXEC_END
 IF NOT "%%a"=="" SET "COLUMN0=%U00%%%a%U00%"
 IF NOT "%%b"=="" SET "COLUMN0=%U00%%%a%U00%%%b%U00%"
 IF NOT "%%c"=="" SET "COLUMN0=%U00%%%a%U00%%%b%U00%%%c%U00%"
@@ -1820,7 +1819,7 @@ IF DEFINED COLUMN0 CALL:UNIFIED_PARSE_EXECUTE)
 :LIST_EXEC_END
 CALL:MOUNT_INT&IF DEFINED VDISK_APPLY CALL:VDISK_DETACH
 CALL:SESSION_CLEAR&&CALL:RAS_DELETE
-IF NOT DEFINED CUSTOM_SESSION ECHO.&&ECHO.             %@@%%CURR_SESSION%-LIST END:%$$%  %DATE%  %TIME%
+IF NOT DEFINED CUSTOM_SESSION ECHO.&&ECHO.             %CA%%CURR_SESSION%-LIST END:%CT%  %DATE%  %TIME%
 SET "$BOX=SB"&&CALL:BOX_DISP&&SET "MOUNT="&&CALL:MOUNT_INT&&CHCP 65001>NUL
 IF NOT EXIST "%ProgFolder%\$PKX" CALL:CLEAN
 FOR %%a in ($HALT LIST_ITEMS_EXECUTE LIST_ITEMS_BUILDER DRVR_QRY FEAT_QRY SC_PREPARE RO_PREPARE) DO (SET "%%a=")
@@ -1854,30 +1853,31 @@ EXIT /B
 :INFO_ITEM
 EXIT /B
 :TEXTHOST_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "DELIMS=%U01%"&&SET "$INPUT=!QCLM3!"&&SET "$OUTPUT=ZCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (FILE SCREEN) DO (IF /I "!$ZCLM1$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not valid. Example: 'SCREEN' or 'FILE❗C:\TEXT.TXT'&&EXIT /B
-IF /I "!$ZCLM1$!"=="FILE" IF EXIST "!$ZCLM2$!\*" ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not valid. Textfile target is a folder.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not valid. Example: 'SCREEN' or 'FILE❗C:\TEXT.TXT'&&EXIT /B
+IF /I "!$ZCLM1$!"=="FILE" IF EXIST "!$ZCLM2$!\*" ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not valid. Textfile target is a folder.&&EXIT /B
 IF DEFINED QCLM2 SET "$QCLM2$=!QCLM2:%%=％!"&&SET "$QCLM2$=!$QCLM2$:◁=%%!"&&SET "$QCLM2$=!$QCLM2$:▷=%%!"&&SET "$QCLM2$=!$QCLM2$:＄=$!"&&FOR /F "TOKENS=* DELIMS=" %%● in ("!$QCLM2$!") DO (CALL SET "$QCLM2$=%%●"&&SET "$QCLM2$=!$QCLM2$:％=%%!")
 IF /I "!$ZCLM1$!"=="FILE" FOR /F "TOKENS=* DELIMS=" %%● in ("!$QCLM2$!") DO (ECHO.%%●>>"!$ZCLM2$!")
 IF /I "!$ZCLM1$!"=="SCREEN" FOR /F "TOKENS=* DELIMS=" %%● in ("!$QCLM2$!") DO (ECHO.%%●)
 EXIT /B
 :POWERSHELL_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
+IF NOT DEFINED PSEXE ECHO.%COLOR4%ERROR:%CT% Powershell was not located on the system.&&EXIT /B
 SET "$PASS="&&FOR %%□ IN (NORMAL NOMOUNT NORMAL) DO (IF /I "!COLUMN3!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not NORMAL or NOMOUNT.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not NORMAL or NOMOUNT.&&EXIT /B
 IF /I "!COLUMN3!"=="NOMOUNT" CALL:IF_LIVE_MIX
 IF /I "!COLUMN3!"=="NORMAL" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "LISTCLM2=!$QCLM2$!"&&IF DEFINED CODEPAGE CHCP %CODEPAGE%>NUL
-%CMD% /C powershell -noprofile -executionpolicy bypass -command "[VOID][System.Text.Encoding]::Unicode;$PSHLExec = [ScriptBlock]::Create($env:LISTCLM2);Invoke-command $PSHLExec"
+%CMD% /C %PSEXE% -noprofile -executionpolicy bypass -command "[VOID][System.Text.Encoding]::Unicode;$PSHLExec = [ScriptBlock]::Create($env:LISTCLM2);Invoke-command $PSHLExec"
 SET "LISTCLM2="&&CHCP 65001>NUL
 EXIT /B
 :SESSION_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX&&IF DEFINED CODEPAGE CHCP %CODEPAGE%>NUL
 CALL %CMD% /C ""%ProgFolder%\winploy.cmd" !$QCLM2$!"
@@ -1892,21 +1892,21 @@ FOR %%○ in (1 2 3 4 5 6 7 8 9) DO (IF "%%●"=="%%○" FOR /F "TOKENS=1-9 DELI
 FOR %%● in (S I) DO (IF NOT DEFINED CHOICE0.%%● SET "CHOICE0.I="&&SET "CHOICE0.S=")
 EXIT /B
 :PICKER_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="PICKER" SET "$QCLM1$=!$QCLM1$!1"
 FOR /F "TOKENS=*" %%○ in ("!$QCLM4$!") DO (SET "!$QCLM1$!.I=1"&&SET "!$QCLM1$!.1=%%○"&&SET "!$QCLM1$!.S=%%○")
 EXIT /B
 :PROMPT_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="PROMPT" SET "$QCLM1$=!$QCLM1$!1"
 FOR /F "TOKENS=*" %%○ in ("!$QCLM4$!") DO (SET "!$QCLM1$!.I=1"&&SET "!$QCLM1$!.1=%%○"&&SET "!$QCLM1$!.S=%%○")
 EXIT /B
 :CHOICE_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="CHOICE" SET "$QCLM1$=!$QCLM1$!1"
@@ -1915,7 +1915,7 @@ FOR %%◌ in (1 2 3 4 5 6 7 8 9) DO (IF "%%○"=="%%◌" FOR /F "TOKENS=1-9 DELI
 FOR %%○ in (S I) DO (IF NOT DEFINED !$QCLM1$!.%%○ SET "!$QCLM1$!.I="&&SET "!$QCLM1$!.S=")
 EXIT /B
 :STRING_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="STRING" SET "$QCLM1$=!$QCLM1$!1"
@@ -2004,7 +2004,7 @@ IF "%WINPE_BOOT%"=="1" EXIT /B
 FOR /F "TOKENS=1 DELIMS= " %%a IN ('%REG% QUERY "HKLM\SYSTEM\ControlSet001\SERVICES\$RAS" /V ImagePath 2^>NUL') DO (IF "%%a"=="ImagePath" SC DELETE $RAS>NUL 2>&1)
 EXIT /B
 :ARRAY_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item 
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item 
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="ARRAY" SET "$QCLM1$=!$QCLM1$!1"
@@ -2025,16 +2025,16 @@ SET "ACTNX=!ACTN%$MATCH_XNT%!"&&SET "$ACTNX$=!$ACTN%$MATCH_XNT%$!"&&SET "MATCHX=
 IF /I NOT "!ACTNX!"=="◁NULL▷" IF /I "!MATCHX!"=="◁ELSE▷" SET "!$QCLM1$!.I=%$MATCH_XNT%"&&SET "!$QCLM1$!.S=!$ACTNX$!"&&SET "!$QCLM1$!.%$MATCH_XNT%=!$ACTNX$!"
 EXIT /B
 :ROUTINE_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="ROUTINE" SET "$QCLM1$=!$QCLM1$!1"
 SET "$PASS="&&FOR %%□ IN (SPLIT COMMAND REGISTRY) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not SPLIT, COMMAND, or REGISTRY.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not SPLIT, COMMAND, or REGISTRY.&&EXIT /B
 SET "DELIMS=%U01%"&&SET "$INPUT=!QCLM2!"&&SET "$OUTPUT=ROUT"&&CALL:EXPANDOFLEX
-IF /I "!$QCLM3$!"=="REGISTRY" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 is not valid. Example: 'HKCU❗FontSize'&&EXIT /B)
-IF /I "!$QCLM3$!"=="COMMAND" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 is not valid. Example: '^<^>❗DIR C:\ /B❗1❗TEST.TXT' or '^<^>❗DIR C:\ /B'&&EXIT /B)
-IF /I "!$QCLM3$!"=="SPLIT" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 is not valid. Example: ':❗A:B:C❗3❗C' or ':❗A:B:C'&&EXIT /B)
+IF /I "!$QCLM3$!"=="REGISTRY" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 is not valid. Example: 'HKCU❗FontSize'&&EXIT /B)
+IF /I "!$QCLM3$!"=="COMMAND" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 is not valid. Example: '^<^>❗DIR C:\ /B❗1❗TEST.TXT' or '^<^>❗DIR C:\ /B'&&EXIT /B)
+IF /I "!$QCLM3$!"=="SPLIT" FOR %%□ IN ($ROUT1$ $ROUT2$) DO (IF NOT DEFINED %%□ ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 is not valid. Example: ':❗A:B:C❗3❗C' or ':❗A:B:C'&&EXIT /B)
 GOTO:ROUTINE_%$QCLM3$%
 :ROUTINE_REGISTRY
 SET "$ROUTX$="&&SET "$INTG="
@@ -2064,24 +2064,24 @@ IF NOT DEFINED $ROUT3$ SET "!$QCLM1$!.S=%%%$QCLM4$%"&&SET /A "!$QCLM1$!.I=!$QCLM
 IF DEFINED $ROUT3$ IF /I "!$ROUT4$!"=="%%%$ROUT3$%" SET "!$QCLM1$!.S=%%%$QCLM4$%"&&SET "!$QCLM1$!.I=!$QCLM4$!")
 EXIT /B
 :MATH_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item 
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item 
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="MATH" SET "$QCLM1$=!$QCLM1$!1"
 SET "$PASS="&&FOR %%□ IN (+ - /) DO (IF "!$QCLM3$!"=="*" SET "$PASS=1"
 IF "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 OPERATION is not *, /, +, or -.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 OPERATION is not *, /, +, or -.&&EXIT /B
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET /A "!$QCLM1$!.I=1"&&SET /A "!$QCLM1$!.S=!$QCLM2$!"&&SET /A "!$QCLM1$!.S!$QCLM3$!=!$QCLM4$!"&&SET /A "!$QCLM1$!.1=!$QCLM1$!.S!"
 EXIT /B
 :CONDIT_ITEM
-IF DEFINED @VERBOSE ECHO.Executing %@@%!COLUMN1!%$$% item 
+IF DEFINED @VERBOSE ECHO.Executing %CA%!COLUMN1!%CT% item 
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "!$QCLM1$!"=="CONDIT" SET "$QCLM1$=!$QCLM1$!1"
 SET "DELIMS=%U01%"&&SET "$INPUT=!QCLM2!"&&SET "$OUTPUT=COND"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (EXIST NEXIST DEFINED NDEFINED EQ NE LE GE GT LT) DO (IF /I "!$COND2$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 2 CONDITION is not EQ, NE, LE, GE, GT, LT, EXIST, NEXIST, DEFINED or NDEFINED. Example: 'c:\❗EXIST' or '1❗EQ❗1' or 'CHOICE1❗DEFINED'&&EXIT /B
-FOR %%□ IN (EQ NE LE GE GT LT) DO (IF /I "!$COND2$!"=="%%□" IF NOT DEFINED $COND3$ ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 3 COMPARE is not specified. Example: '1❗EQ❗1'&&EXIT /B)
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 2 CONDITION is not EQ, NE, LE, GE, GT, LT, EXIST, NEXIST, DEFINED or NDEFINED. Example: 'c:\❗EXIST' or '1❗EQ❗1' or 'CHOICE1❗DEFINED'&&EXIT /B
+FOR %%□ IN (EQ NE LE GE GT LT) DO (IF /I "!$COND2$!"=="%%□" IF NOT DEFINED $COND3$ ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 3 COMPARE is not specified. Example: '1❗EQ❗1'&&EXIT /B)
 SET "DELIMS=%U01%"&&SET "$INPUT=!QCLM3!%U01%!QCLM4!"&&SET "$OUTPUT=ACTN"&&CALL:EXPANDOFLEX
 IF DEFINED $ACTN2$ FOR %%□ IN (EQ NE LE GE GT LT) DO (IF /I "!$COND2$"=="%%□" SET /A "$COND1$=!$COND1$!"&&SET /A "$COND3$=!$COND3$!")
 IF /I NOT "!ACTN1!"=="◁NULL▷" IF /I "!$COND2$!"=="DEFINED" IF DEFINED !$COND1$! SET "!$QCLM1$!.I=1"&&SET "!$QCLM1$!.1=!$ACTN1$!"&&SET "!$QCLM1$!.S=!$ACTN1$!"
@@ -2109,14 +2109,14 @@ EXIT /B
 IF NOT "%MOUNT%"=="EXT" CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$FILE_OBJ="&&SET "$PASS="&&FOR %%□ IN (CREATE DELETE RENAME COPY MOVE TAKEOWN) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not CREATE, DELETE, RENAME, COPY, MOVE, or TAKEOWN.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not CREATE, DELETE, RENAME, COPY, MOVE, or TAKEOWN.&&EXIT /B
 FOR /F "TOKENS=*" %%a in ("!$QCLM3$!") DO (SET "$FILEOPER=%%a"&&SET "$RAS=%%b")
 FOR /F "TOKENS=1-4 DELIMS=%U01%" %%a in ("!$QCLM2$!") DO (SET "$OBJONE=%%a"&&SET "$OBJTWO=%%b")
-IF /I "%$FILEOPER%"=="COPY" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
-IF /I "%$FILEOPER%"=="MOVE" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
-IF /I "%$FILEOPER%"=="RENAME" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
-SET "$EXIT="&&FOR %%□ IN (DELETE RENAME COPY MOVE TAKEOWN) DO (IF /I "%$FILEOPER%"=="%%□" IF NOT EXIST "!$OBJONE!" SET "$EXIT=1"&&IF DEFINED @VERBOSE ECHO.%COLOR4%ERROR:%$$% !$OBJONE! doesn't exist.)
-IF /I "%$FILEOPER%"=="CREATE" IF EXIST "!$OBJONE!" SET "$EXIT=1"&&IF DEFINED @VERBOSE ECHO.%COLOR4%ERROR:%$$% !$OBJONE! already exists.
+IF /I "%$FILEOPER%"=="COPY" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
+IF /I "%$FILEOPER%"=="MOVE" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
+IF /I "%$FILEOPER%"=="RENAME" IF NOT DEFINED $OBJTWO ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 2 OBJ_TAR is not specified.&&EXIT /B
+SET "$EXIT="&&FOR %%□ IN (DELETE RENAME COPY MOVE TAKEOWN) DO (IF /I "%$FILEOPER%"=="%%□" IF NOT EXIST "!$OBJONE!" SET "$EXIT=1"&&IF DEFINED @VERBOSE ECHO.%COLOR4%ERROR:%CT% !$OBJONE! doesn't exist.)
+IF /I "%$FILEOPER%"=="CREATE" IF EXIST "!$OBJONE!" SET "$EXIT=1"&&IF DEFINED @VERBOSE ECHO.%COLOR4%ERROR:%CT% !$OBJONE! already exists.
 IF DEFINED $EXIT EXIT /B
 IF EXIST "!$OBJONE!\*" SET "$FILE_OBJ=FOLD"
 IF NOT EXIST "!$OBJONE!\*" SET "$FILE_OBJ=FILE"
@@ -2125,7 +2125,7 @@ IF NOT DEFINED $RAS SET "RUN_AS=user"
 IF /I "!$RAS!"=="RAU" SET "RUN_AS=user"&&SET "$RAS="
 IF /I "!$RAS!"=="RAS" SET "RUN_AS=system"
 IF /I "!$RAS!"=="RATI" SET "RUN_AS=trustedinstaller"
-IF DEFINED @VERBOSE ECHO.Executing %@@%!$QCLM1$!%$$% !$FILEOPER! !$FILE_OBJ! !$OBJONE! as %##%%RUN_AS%%$$%!
+IF DEFINED @VERBOSE ECHO.Executing %CA%!$QCLM1$!%CT% !$FILEOPER! !$FILE_OBJ! !$OBJONE! as %CB%%RUN_AS%%CT%!
 IF /I "%$FILEOPER%"=="CREATE" IF /I "%$FILE_OBJ%"=="FOLD" MD "\\?\!$OBJONE!">NUL 2>&1
 IF /I "%$FILEOPER%"=="DELETE" IF /I "%$FILE_OBJ%"=="FOLD" IF EXIST "!$OBJONE!" RD /S /Q "\\?\!$OBJONE!"
 IF /I "%$FILEOPER%"=="DELETE" IF /I "%$FILE_OBJ%"=="FILE" IF EXIST "!$OBJONE!" DEL /Q /F "\\?\!$OBJONE!"
@@ -2143,19 +2143,19 @@ EXIT /B
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$REG_OBJ="&&SET "$PASS="&&FOR %%□ IN (CREATE DELETE IMPORT EXPORT IMPORT%U01%RAS IMPORT%U01%RATI EXPORT%U01%RAS EXPORT%U01%RATI CREATE%U01%RAS CREATE%U01%RATI DELETE%U01%RAS DELETE%U01%RATI) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not CREATE, DELETE, IMPORT, EXPORT, CREATE%U01%RAS, CREATE%U01%RATI, DELETE%U01%RAS, or DELETE%U01%RATI.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not CREATE, DELETE, IMPORT, EXPORT, CREATE%U01%RAS, CREATE%U01%RATI, DELETE%U01%RAS, or DELETE%U01%RATI.&&EXIT /B
 FOR /F "TOKENS=1-2 DELIMS=%U01%" %%a in ("!$QCLM3$!") DO (SET "$QCLM3$=%%a"&&SET "$REG_OPER=%%a"&&SET "$RAS=%%b")
 SET "DELIMS=%U01%"&&SET "$INPUT=!QCLM2!"&&SET "$OUTPUT=RCLM"&&CALL:EXPANDOFLEX
 SET "$REG_KEY=!$RCLM1$!"&&SET "$REG_VAL=!$RCLM2$!"&&SET "$REG_TYPE=!$RCLM4$!"
 IF DEFINED RCLM3 SET "$RCLM3$=!RCLM3:%%=％!"&&SET "$RCLM3$=!$RCLM3$:◁=%%!"&&SET "$RCLM3$=!$RCLM3$:▷=%%!"&&SET "$RCLM3$=!$RCLM3$:＄=$!"&&FOR /F "TOKENS=* DELIMS=" %%● in ("!$RCLM3$!") DO (CALL SET "$RCLM3$=%%●"&&SET "$RCLM3$=!$RCLM3$:％=%%!")
 IF DEFINED $RCLM3$ SET "$REG_DAT=!$RCLM3$:"=""!"
-IF /I "%$REG_OPER%"=="IMPORT" IF DEFINED $REG_KEY IF NOT EXIST "!$REG_KEY!" ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 .reg file does not exist.&&EXIT /B
-IF /I "%$REG_OPER%"=="IMPORT" IF NOT DEFINED $REG_KEY ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 .reg file location is not specified.&&EXIT /B
-IF /I "%$REG_OPER%"=="EXPORT" IF DEFINED $REG_KEY IF NOT DEFINED $REG_VAL ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 2 "REG KEY" is not specified.&&EXIT /B
-IF /I "%$REG_OPER%"=="EXPORT" IF NOT DEFINED $REG_KEY ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 .reg "file location" is not specified.&&EXIT /B
-IF /I "%$REG_OPER%"=="CREATE" IF DEFINED $REG_VAL IF NOT DEFINED $REG_DAT ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 3 "registry value data" is not specified.&&EXIT /B
+IF /I "%$REG_OPER%"=="IMPORT" IF DEFINED $REG_KEY IF NOT EXIST "!$REG_KEY!" ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 .reg file does not exist.&&EXIT /B
+IF /I "%$REG_OPER%"=="IMPORT" IF NOT DEFINED $REG_KEY ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 .reg file location is not specified.&&EXIT /B
+IF /I "%$REG_OPER%"=="EXPORT" IF DEFINED $REG_KEY IF NOT DEFINED $REG_VAL ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 2 "REG KEY" is not specified.&&EXIT /B
+IF /I "%$REG_OPER%"=="EXPORT" IF NOT DEFINED $REG_KEY ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 .reg "file location" is not specified.&&EXIT /B
+IF /I "%$REG_OPER%"=="CREATE" IF DEFINED $REG_VAL IF NOT DEFINED $REG_DAT ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 3 "registry value data" is not specified.&&EXIT /B
 IF /I "%$REG_OPER%"=="CREATE" IF DEFINED $REG_VAL SET "$PASS="&&FOR %%□ IN (DWORD QWORD BINARY STRING EXPAND MULTI) DO (IF /I "!$REG_TYPE!"=="%%□" SET "$PASS=1")
-IF /I "%$REG_OPER%"=="CREATE" IF DEFINED $REG_VAL IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 2 object 4 "registry value type" is not DWORD, QWORD, BINARY, STRING, EXPAND, or MULTI.&&EXIT /B
+IF /I "%$REG_OPER%"=="CREATE" IF DEFINED $REG_VAL IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 2 object 4 "registry value type" is not DWORD, QWORD, BINARY, STRING, EXPAND, or MULTI.&&EXIT /B
 IF NOT DEFINED $RAS SET "RUN_AS=user"
 IF /I "!$RAS!"=="RAU" SET "RUN_AS=user"&&SET "$RAS="
 IF /I "!$RAS!"=="RAS" SET "RUN_AS=system"
@@ -2173,8 +2173,8 @@ IF /I "%$REG_TYPE%"=="EXPAND" SET "$REG_TYPEX=REG_EXPAND_SZ"
 IF /I "%$REG_TYPE%"=="MULTI" SET "$REG_TYPEX=REG_MULTI_SZ"
 IF /I "!$REG_DAT!"=="◁NULL▷" SET "$REG_DAT="
 IF /I "!$REG_VAL!"=="◁NULL▷" SET "$REG_VAL="&&SET "$REG_TYPEX=REG_SZ"
-IF DEFINED @VERBOSE IF /I "%$REG_OBJ%"=="KEY" ECHO.Executing %@@%!$QCLM1$!%$$% !$REG_OPER! as %##%%RUN_AS%%$$% key !$REG_KEY!
-IF DEFINED @VERBOSE IF /I "%$REG_OBJ%"=="VAL" ECHO.Executing %@@%!$QCLM1$!%$$% !$REG_OPER! as %##%%RUN_AS%%$$% key !$REG_KEY! value !$REG_VAL!
+IF DEFINED @VERBOSE IF /I "%$REG_OBJ%"=="KEY" ECHO.Executing %CA%!$QCLM1$!%CT% !$REG_OPER! as %CB%%RUN_AS%%CT% key !$REG_KEY!
+IF DEFINED @VERBOSE IF /I "%$REG_OBJ%"=="VAL" ECHO.Executing %CA%!$QCLM1$!%CT% !$REG_OPER! as %CB%%RUN_AS%%CT% key !$REG_KEY! value !$REG_VAL!
 IF /I "%$REG_OPER%"=="DELETE" IF /I "%$REG_OBJ%"=="KEY" IF NOT DEFINED $RAS %CMD% /C %REG% DELETE "!$REG_KEY!" /f>NUL 2>&1
 IF /I "%$REG_OPER%"=="DELETE" IF /I "%$REG_OBJ%"=="VAL" IF NOT DEFINED $RAS %CMD% /C %REG% DELETE "!$REG_KEY!" /v "!$REG_VAL!" /f>NUL 2>&1
 IF /I "%$REG_OPER%"=="CREATE" IF /I "%$REG_OBJ%"=="KEY" IF NOT DEFINED $RAS %CMD% /C %REG% ADD "!$REG_KEY!" /f>NUL 2>&1
@@ -2184,8 +2184,8 @@ IF /I "%$REG_OPER%"=="DELETE" IF /I "%$REG_OBJ%"=="VAL" IF DEFINED $RAS ECHO.%CM
 IF /I "%$REG_OPER%"=="CREATE" IF /I "%$REG_OBJ%"=="KEY" IF DEFINED $RAS ECHO.%CMD% /C %REG% ADD "!$REG_KEY!" /f ^>NUL 2^>^&^1>"$LIST"
 IF /I "%$REG_OPER%"=="CREATE" IF /I "%$REG_OBJ%"=="VAL" IF DEFINED $RAS ECHO.%CMD% /C %REG% ADD "!$REG_KEY!" /v "!$REG_VAL!" /t "!$REG_TYPEX!" /d "!$REG_DAT!" /f ^>NUL 2^>^&^1>"$LIST"
 :REGISTRY_ITEM_END
-IF /I "%$REG_OPER%"=="IMPORT" IF DEFINED @VERBOSE ECHO.Executing %@@%!$QCLM1$!%$$% !$REG_OPER! as %##%%RUN_AS%%$$%
-IF /I "%$REG_OPER%"=="EXPORT" IF DEFINED @VERBOSE ECHO.Executing %@@%!$QCLM1$!%$$% !$REG_OPER! as %##%%RUN_AS%%$$%
+IF /I "%$REG_OPER%"=="IMPORT" IF DEFINED @VERBOSE ECHO.Executing %CA%!$QCLM1$!%CT% !$REG_OPER! as %CB%%RUN_AS%%CT%
+IF /I "%$REG_OPER%"=="EXPORT" IF DEFINED @VERBOSE ECHO.Executing %CA%!$QCLM1$!%CT% !$REG_OPER! as %CB%%RUN_AS%%CT%
 IF /I "%$REG_OPER%"=="IMPORT" IF NOT DEFINED $RAS %CMD% /C %REG% IMPORT "!$REG_KEY!" >NUL 2>&1
 IF /I "%$REG_OPER%"=="IMPORT" IF DEFINED $RAS ECHO.%CMD% /C %REG% IMPORT "!$REG_KEY!" ^>NUL 2^>^&^1>"$LIST"
 IF /I "%$REG_OPER%"=="EXPORT" IF NOT DEFINED $RAS %CMD% /C %REG% EXPORT "!$REG_KEY!" "!$REG_VAL!" /Y>NUL 2>&1
@@ -2195,7 +2195,7 @@ EXIT /B
 :COMMAND_ITEM
 SET "$INPUT=!COLUMN3!"&&SET "$OUTPUT=COLUMN3"&&CALL:EXPAND_INPUT
 SET "$PASS="&&FOR %%□ IN (NORMAL NOMOUNT NORMAL%U01%RAU NORMAL%U01%RAS NORMAL%U01%RATI NOMOUNT%U01%RAU NOMOUNT%U01%RAS NOMOUNT%U01%RATI) DO (IF /I "!COLUMN3!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not NORMAL, NOMOUNT, NORMAL%U01%RAU, NORMAL%U01%RAS, NORMAL%U01%RATI, NOMOUNT%U01%RAU, NOMOUNT%U01%RAS, or NOMOUNT%U01%RATI.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not NORMAL, NOMOUNT, NORMAL%U01%RAU, NORMAL%U01%RAS, NORMAL%U01%RATI, NOMOUNT%U01%RAU, NOMOUNT%U01%RAS, or NOMOUNT%U01%RATI.&&EXIT /B
 IF /I "!COLUMN3!"=="NOMOUNT" CALL:IF_LIVE_MIX
 IF /I "!COLUMN3!"=="NORMAL" CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
@@ -2207,7 +2207,7 @@ IF /I "!$RAS!"=="RATI" SET "RUN_AS=trustedinstaller"
 IF "%WINPE_BOOT%"=="1" SET "$RAS="
 IF DEFINED COLUMN0 SET "$COLUMN0=!COLUMN0:%%=％!"&&SET "$COLUMN0=!$COLUMN0:◁=%%!"&&SET "$COLUMN0=!$COLUMN0:▷=%%!"&&SET "$COLUMN0=!$COLUMN0:＄=$!"&&SET "$COLUMN0=!$COLUMN0:％=%%!"
 FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ("!$COLUMN0!") DO (SET "$COLUMN2=%%b")
-IF DEFINED @VERBOSE ECHO.Executing %@@%!$QCLM1$!%$$% as %##%%RUN_AS%%$$% !$COLUMN2!
+IF DEFINED @VERBOSE ECHO.Executing %CA%!$QCLM1$!%CT% as %CB%%RUN_AS%%CT% !$COLUMN2!
 IF DEFINED $RAS ECHO.!$COLUMN2!>"$LIST"
 IF DEFINED $RAS CALL:RASTI_CREATE
 IF NOT DEFINED $RAS %CMD% /C !$COLUMN2!
@@ -2217,43 +2217,43 @@ EXIT /B
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (INSTALL) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not INSTALL.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not INSTALL.&&EXIT /B
 FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (SET "EXTPACKAGE=%PackFolder%\%%□"
-IF NOT EXIST "%PackFolder%\%%□" ECHO.%COLOR4%ERROR:%$$% %PackFolder%\%%□ doesn't exist.&&EXIT /B)
+IF NOT EXIST "%PackFolder%\%%□" ECHO.%COLOR4%ERROR:%CT% %PackFolder%\%%□ doesn't exist.&&EXIT /B)
 SET "PACK_GOOD=The operation completed successfully"
 FOR %%G in ("%EXTPACKAGE%") DO (SET "PACKFULL=%%~nG%%~xG"&&SET "PACKEXT=%%~xG")
 IF /I "%PACKEXT%"==".PKX" CALL %CMD% /C ""%ProgFolder%\winploy.cmd" -IMAGEMGR -RUN -PACK "!$QCLM2$!" -path "%DrvTar%""&EXIT /B
 FOR %%G in (APPXBUNDLE MSIXBUNDLE) DO (IF /I "%PACKEXT%"==".%%G" SET "PACKEXT=.APPX")
-IF DEFINED @VERBOSE ECHO.Installing %@@%%PACKFULL%%$$%...
-IF /I "%PACKEXT%"==".APPX" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PROVISIONEDAPPXPACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" ECHO.%COLOR5%%PACK_GOOD%.%$$%&&EXIT /B)
-IF /I "%PACKEXT%"==".APPX" FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PROVISIONEDAPPXPACKAGE /PACKAGEPATH:"%EXTPACKAGE%" /SKIPLICENSE 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%$$%
+IF DEFINED @VERBOSE ECHO.Installing %CA%%PACKFULL%%CT%...
+IF /I "%PACKEXT%"==".APPX" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PROVISIONEDAPPXPACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" ECHO.%COLOR5%%PACK_GOOD%.%CT%&&EXIT /B)
+IF /I "%PACKEXT%"==".APPX" FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PROVISIONEDAPPXPACKAGE /PACKAGEPATH:"%EXTPACKAGE%" /SKIPLICENSE 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%CT%
 IF "%%1"=="%PACK_GOOD%" EXIT /B)
-IF /I "%PACKEXT%"==".APPX" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "%PACKEXT%"==".CAB" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%$$%
+IF /I "%PACKEXT%"==".APPX" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B
+IF /I "%PACKEXT%"==".CAB" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%CT%
 IF "%%1"=="%PACK_GOOD%" EXIT /B)
 IF /I "%PACKEXT%"==".CAB" GOTO:CAB_EXEC
-IF /I "%PACKEXT%"==".MSU" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%$$%
+IF /I "%PACKEXT%"==".MSU" SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ADD-PACKAGE /PACKAGEPATH:"%EXTPACKAGE%" 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%CT%
 IF "%%1"=="%PACK_GOOD%" EXIT /B)
-IF /I "%PACKEXT%"==".MSU" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
+IF /I "%PACKEXT%"==".MSU" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B
 EXIT /B
 :PKX_EXEC
-IF EXIST "%ProgFolder%\$PKX" ECHO.%COLOR4%ERROR:%$$% A package is already in session. Delete the $PKX folder before proceeding.&&EXIT /B
+IF EXIST "%ProgFolder%\$PKX" ECHO.%COLOR4%ERROR:%CT% A package is already in session. Delete the $PKX folder before proceeding.&&EXIT /B
 FOR %%G in ("%$PACK_FILE%") DO (SET "PKX_NAME=%%~nG%%~xG")
 SET "PkxFolder=%ProgFolder%\$PKX"&&MD "%ProgFolder%\$PKX">NUL 2>&1
-FOR /F "TOKENS=*" %%□ IN ("%PKX_NAME%") DO (ECHO.Extracting %@@%%%□%$$%...)
+FOR /F "TOKENS=*" %%□ IN ("%PKX_NAME%") DO (ECHO.Extracting %CA%%%□%CT%...)
 %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%$PACK_FILE%" /INDEX:1 /APPLYDIR:"%ProgFolder%\$PKX">NUL 2>&1
-IF NOT EXIST "%ProgFolder%\$PKX\package.list" ECHO.%COLOR2%ERROR:%$$% Package is either missing package.list or unable to extract.
+IF NOT EXIST "%ProgFolder%\$PKX\package.list" ECHO.%COLOR2%ERROR:%CT% Package is either missing package.list or unable to extract.
 SET "ListFolder=%ProgFolder%\$PKX"&&SET "PackFolder=%ProgFolder%\$PKX"&&SET "CacheFolder=%ProgFolder%\$PKX"&&IF EXIST "%ProgFolder%\$PKX\package.list" SET "$LIST_FILE=%ProgFolder%\$PKX\package.list"&&CALL:LIST_EXEC
 CD /D "%ProgFolder%">NUL
 FOR %%a in ($PACK_FILE PkxFolder PKX_NAME) DO (SET "%%a=")
 IF EXIST "%ProgFolder%\$PKX" SET "FOLDER_DEL=%ProgFolder%\$PKX"&&CALL:FOLDER_DEL
-IF EXIST "%ProgFolder%\$PKX" ECHO.%COLOR4%ERROR:%$$% Unable to complete package cleanup as the package is still active. Do not spawn commands asynchronously.
+IF EXIST "%ProgFolder%\$PKX" ECHO.%COLOR4%ERROR:%CT% Unable to complete package cleanup as the package is still active. Do not spawn commands asynchronously.
 IF NOT EXIST "%ProgFolder%\$PKX" CALL:CLEAN
 EXIT /B
 :CAB_EXEC
-IF EXIST "%ProgFolder%\$CAB" ECHO.%COLOR4%ERROR:%$$% A package is already in session. Delete the $CAB folder before proceeding.&&EXIT /B
+IF EXIST "%ProgFolder%\$CAB" ECHO.%COLOR4%ERROR:%CT% A package is already in session. Delete the $CAB folder before proceeding.&&EXIT /B
 IF EXIST "%ProgFolder%\$CAB" SET "FOLDER_DEL=%ProgFolder%\$CAB"&&CALL:FOLDER_DEL
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%PACKFULL%") DO (ECHO.Extracting %@@%%%□%$$%...)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%PACKFULL%") DO (ECHO.Extracting %CA%%%□%CT%...)
 MD "%ProgFolder%\$CAB">NUL 2>&1
 EXPAND "%EXTPACKAGE%" -F:* "%ProgFolder%\$CAB">NUL 2>&1
 SET "$QCLM2$=%ProgFolder%\$CAB"&&CALL:DRVR_INSTALL
@@ -2263,13 +2263,13 @@ EXIT /B
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing AppX %@@%%%□%$$%...)
-IF DEFINED APPX_SKIP FOR %%1 in (!APPX_SKIP!) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&GOTO:APPX_END)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing AppX %CA%%%□%CT%...)
+IF DEFINED APPX_SKIP FOR %%1 in (!APPX_SKIP!) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%CT%&&GOTO:APPX_END)
 FOR /F "TOKENS=1-1* DELIMS=\" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications" /F "%$QCLM2$%" 2^>NUL') DO (IF "%%a"=="HKEY_LOCAL_MACHINE" SET "APPX_KEY=%%a\%%b"&&CALL:APPX_NML)
 IF NOT DEFINED APPX_KEY FOR /F "TOKENS=1-1* DELIMS=\" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\InboxApplications" /F "%$QCLM2$%" 2^>NUL') DO (IF "%%a"=="HKEY_LOCAL_MACHINE" SET "APPX_KEY=%%a\%%b"&&CALL:APPX_IBX)
-IF NOT DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% AppX %%□ doesn't exist.)
-IF DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% AppX %%□ is a stub or unable to remove.)
+IF NOT DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% AppX %%□ doesn't exist.)
+IF DEFINED APPX_KEY IF NOT DEFINED APPX_DONE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%CT% AppX %%□ is a stub or unable to remove.)
 :APPX_END
 FOR %%a in (APPX_DONE APPX_PATH APPX_VER APPX_KEY) DO (SET "%%a=")
 EXIT /B
@@ -2278,7 +2278,7 @@ FOR /F "TOKENS=1-9 SKIP=2 DELIMS=\ " %%a in ('%REG% QUERY "%APPX_KEY%" /V Path 2
 FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("!APPX_KEY!") DO (SET "APPX_VER=%%d")
 IF DEFINED APPX_PATH IF DEFINED APPX_VER CALL:IF_LIVE_MIX
 IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-Provisionedappxpackage /PACKAGENAME:"%$QCLM2$%_%APPX_VER%" 2^>NUL') DO (
-IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&IF DEFINED @VERBOSE ECHO.%COLOR5%%%1.%$$%
+IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&IF DEFINED @VERBOSE ECHO.%COLOR5%%%1.%CT%
 IF "%%1"=="The operation completed successfully" IF EXIST "!APPX_PATH!\*" SET "FOLDER_DEL=!APPX_PATH!"&&CALL:FOLDER_DEL)
 IF DEFINED APPX_DONE CALL:IF_LIVE_EXT
 IF DEFINED APPX_DONE %REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\!$QCLM2$!_!APPX_VER!" /f>NUL 2>&1
@@ -2287,30 +2287,30 @@ EXIT /B
 CALL:IF_LIVE_EXT
 FOR /F "TOKENS=1-9 SKIP=2 DELIMS=\ " %%a in ('%REG% QUERY "%APPX_KEY%" /V Path 2^>NUL') DO (IF "%%a"=="Path" SET "APPX_PATH=%DrvTar%\Windows\SystemApps\%%f")
 FOR /F "TOKENS=1-3* DELIMS=_" %%a IN ("!APPX_KEY!") DO (SET "APPX_VER=%%d")
-IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%REG% DELETE "%APPX_KEY%" /F 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&ECHO. %COLOR5%%%1.%$$%&&IF EXIST "!APPX_PATH!\*" SET "FOLDER_DEL=!APPX_PATH!"&&CALL:FOLDER_DEL&%REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\!$QCLM2$!_!APPX_VER!" /f>NUL 2>&1)
+IF DEFINED APPX_PATH IF DEFINED APPX_VER FOR /F "TOKENS=1 DELIMS=." %%1 in ('%REG% DELETE "%APPX_KEY%" /F 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "APPX_DONE=1"&&ECHO. %COLOR5%%%1.%CT%&&IF EXIST "!APPX_PATH!\*" SET "FOLDER_DEL=!APPX_PATH!"&&CALL:FOLDER_DEL&%REG% ADD "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\!$QCLM2$!_!APPX_VER!" /f>NUL 2>&1)
 EXIT /B
 :CAPABILITY_ITEM
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Capability %@@%%%□%$$%...)
-SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-CAPABILITY /CAPABILITYNAME:"%$QCLM2$%" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" CALL ECHO.%COLOR5%%%1.%$$%&&EXIT /B)
-FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Capability %%□ doesn't exist.)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Capability %CA%%%□%CT%...)
+SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-CAPABILITY /CAPABILITYNAME:"%$QCLM2$%" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" CALL ECHO.%COLOR5%%%1.%CT%&&EXIT /B)
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Capability %%□ doesn't exist.)
 EXIT /B
 :COMPONENT_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Component %@@%%%□%$$%...)
-IF DEFINED COMP_SKIP FOR %%1 in (%COMP_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Component %CA%%%□%CT%...)
+IF DEFINED COMP_SKIP FOR %%1 in (%COMP_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%CT%&&EXIT /B)
 SET "X0Z="&&SET "COMP_XNT="&&SET "FNL_XNT="&&FOR /F "TOKENS=1* DELIMS=:~" %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" /F "%$QCLM2$%" 2^>NUL') DO (IF NOT "%%a"=="" CALL SET /A "COMP_XNT+=1"&&CALL SET /A "FNL_XNT+=1"&&CALL SET "TX1=%%a"&&CALL SET "TX2=%%b"&&CALL:COMP_ITEM2)
 EXIT /B
 :COMP_ITEM2
 IF /I "%X0Z%"=="%TX1%" EXIT /B
 IF "%COMP_XNT%" GTR "1" EXIT /B
-IF /I "%TX1%"=="End of search" FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Component %%□ doesn't exist.&&EXIT /B)
+IF /I "%TX1%"=="End of search" FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Component %%□ doesn't exist.&&EXIT /B)
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_EXT
 FOR %%a in (1 2 3 4 5 6 7 8 9) DO (CALL SET "COMP_Z%%a=")
 SET "X0Z="&&SET "SUB_XNT="&&SET "COMP_FLAG="&&FOR /F "TOKENS=1* DELIMS=:~" %%1 IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" /F "%$QCLM2$%" 2^>NUL') DO (IF NOT "%%1"=="" CALL SET /A "SUB_XNT+=1"&&CALL SET "X1=%%1"&&CALL SET "X2=%%2"&&CALL:COMP_DELETE)
@@ -2330,33 +2330,33 @@ SET "COMP_ABT2="&&IF /I "%SAFE_EXCLUDE%"=="ENABLED" FOR /F "TOKENS=1-9 DELIMS=-"
 SET "COMP_Z%FNL_XNT%=%$QCLM2$%~%X2%"&&SET "COMP_ABT3="&&FOR %%1 in (%COMP_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" SET "COMP_ABT3=1")
 IF NOT DEFINED COMP_ABT1 IF NOT DEFINED COMP_ABT2 IF NOT DEFINED COMP_ABT3 SET "COMP_ABT="
 SET /A "FNL_XNT+=1"&&SET "X0Z=%$QCLM2$%~%X2%"
-IF NOT DEFINED COMP_FLAG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Subcomp %@@%%%□~%X2%%$$%...)
-IF DEFINED COMP_ABT IF "%FNL_XNT%"=="2" SET "COMP_FLAG=1"&&FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is required or unable to remove.)
+IF NOT DEFINED COMP_FLAG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Subcomp %CA%%%□~%X2%%CT%...)
+IF DEFINED COMP_ABT IF "%FNL_XNT%"=="2" SET "COMP_FLAG=1"&&FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%CT% Component %%□ is required or unable to remove.)
 IF DEFINED COMP_ABT EXIT /B
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_EXT
 %REG% ADD "%X1%~%X2%" /V "Visibility" /T REG_DWORD /D "1" /F>NUL 2>&1
 %REG% DELETE "%X1%~%X2%\Owners" /F>NUL 2>&1
 IF NOT DEFINED LIVE_APPLY CALL:MOUNT_MIX
 SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /REMOVE-PACKAGE /PACKAGENAME:"%$QCLM2$%~%X2%" 2^>NUL') DO (SET "DISMSG="&&IF "%%1"=="The operation completed successfully" CALL SET "DISMSG=%%1.")
-IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%$$% Component %%□ is a stub or unable to remove.)
-IF DEFINED DISMSG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%DISMSG%") DO (ECHO.%COLOR5%%%□%$$%)
+IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR2%ERROR:%CT% Component %%□ is a stub or unable to remove.)
+IF DEFINED DISMSG IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("%DISMSG%") DO (ECHO.%COLOR5%%%□%CT%)
 EXIT /B
 :DRIVER_ITEM
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (INSTALL DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not INSTALL or DELETE.&&EXIT /B)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not INSTALL or DELETE.&&EXIT /B)
 IF /I "%$QCLM1$%:%$QCLM3$%:%$QCLM4$%"=="DRIVER:INSTALL:DX" CALL:DRVR_INSTALL
 IF /I "%$QCLM1$%:%$QCLM3$%:%$QCLM4$%"=="DRIVER:DELETE:DX" CALL:DRVR_REMOVE
 EXIT /B
 :DRVR_INSTALL
 SET "PACK_GOOD=The operation completed successfully"&&SET "PACK_BAD=The operation did not complete successfully"
 FOR /F "TOKENS=*" %%a in ('DIR/S/B "%$QCLM2$%\*.INF" 2^>NUL') DO (
-IF NOT EXIST "%%a\*" FOR %%G in ("%%a") DO (IF DEFINED @VERBOSE CALL ECHO.Installing %@@%%%~nG.inf%$$%...)
+IF NOT EXIST "%%a\*" FOR %%G in ("%%a") DO (IF DEFINED @VERBOSE CALL ECHO.Installing %CA%%%~nG.inf%CT%...)
 IF NOT EXIST "%%a\*" IF DEFINED LIVE_APPLY SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('pnputil.exe /add-driver "%%a" /install 2^>NUL') DO (IF "%%1"=="Driver package added successfully" CALL SET "DISMSG=%PACK_GOOD%")
 IF NOT EXIST "%%a\*" IF NOT DEFINED LIVE_APPLY SET "DISMSG="&&FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /ADD-DRIVER /DRIVER:"%%a" /ForceUnsigned 2^>NUL') DO (IF "%%1"=="%PACK_GOOD%" CALL SET "DISMSG=%PACK_GOOD%")
-IF NOT EXIST "%%a\*" IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%$$%
-IF NOT EXIST "%%a\*" IF NOT DEFINED DISMSG ECHO.%COLOR2%ERROR:%$$% %PACK_BAD%.)
+IF NOT EXIST "%%a\*" IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%PACK_GOOD%.%CT%
+IF NOT EXIST "%%a\*" IF NOT DEFINED DISMSG ECHO.%COLOR2%ERROR:%CT% %PACK_BAD%.)
 EXIT /B
 :DRVR_REMOVE
 SET "FILE_OUTPUT=$DRVR"&&IF NOT DEFINED DRVR_QRY IF EXIST "$DRVR" DEL /Q /F "$DRVR">NUL 2>&1
@@ -2365,12 +2365,12 @@ IF NOT EXIST "$DRVR" SET "DRVR_QRY=1"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=|" %%a i
 FOR /F "TOKENS=1 DELIMS= " %%# in ("%%a") DO (SET "X1=%%#")
 FOR /F "TOKENS=1 DELIMS= " %%# in ("%%b") DO (SET "X2=%%#")
 FOR /F "TOKENS=1 DELIMS= " %%# in ("%%g") DO (SET "X3=%%#"&&CALL:FILE_OUTPUT))
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Driver %@@%%%□%$$%...)
-SET "DISMSG="&&IF EXIST "$DRVR" FOR /F "TOKENS=1-3 DELIMS=%U00%" %%a in ($DRVR) DO (IF DEFINED @VERBOSE IF /I "%%b"=="!$QCLM2$!" ECHO.Uninstalling %@@%%%a%$$% v%%c...
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Driver %CA%%%□%CT%...)
+SET "DISMSG="&&IF EXIST "$DRVR" FOR /F "TOKENS=1-3 DELIMS=%U00%" %%a in ($DRVR) DO (IF DEFINED @VERBOSE IF /I "%%b"=="!$QCLM2$!" ECHO.Uninstalling %CA%%%a%CT% v%%c...
 IF /I "%%b"=="!$QCLM2$!" IF DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('PNPUTIL.EXE /DELETE-DRIVER "%%a" /UNINSTALL /FORCE 2^>NUL') DO (IF "%%1"=="Driver package deleted successfully" SET "DISMSG=The operation completed successfully.")
 IF /I "%%b"=="!$QCLM2$!" IF NOT DEFINED LIVE_APPLY FOR /F "TOKENS=1 DELIMS=." %%1 in ('%DISM% /ENGLISH /%ApplyTarget% /REMOVE-DRIVER /DRIVER:"%%a" 2^>NUL') DO (IF "%%1"=="The operation completed successfully" SET "DISMSG=%%1."))
-IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Driver %%□ doesn't exist.)
-IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%DISMSG%%$$%
+IF NOT DEFINED DISMSG FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Driver %%□ doesn't exist.)
+IF DEFINED DISMSG IF DEFINED @VERBOSE ECHO.%COLOR5%%DISMSG%%CT%
 EXIT /B
 :FILE_OUTPUT
 IF "%FILE_OUTPUT%"=="$FEAT" ECHO.%X1%%U00%%X2%>>"$FEAT"
@@ -2380,89 +2380,89 @@ EXIT /B
 CALL:IF_LIVE_MIX
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (ENABLE DISABLE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not ENABLE or DISABLE.&&EXIT /B)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not ENABLE or DISABLE.&&EXIT /B)
 SET "FILE_OUTPUT=$FEAT"&&IF NOT DEFINED FEAT_QRY IF EXIST "$FEAT" DEL /Q /F "$FEAT">NUL 2>&1
 IF NOT EXIST "$FEAT" IF DEFINED @VERBOSE ECHO.Getting feature listing...
 IF NOT EXIST "$FEAT" SET "FEAT_QRY=1"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=| " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-FEATURES /FORMAT:TABLE 2^>NUL') DO (FOR %%X in (Enabled Disabled) DO (IF /I "%%b"=="%%X" SET "X1=%%a"&&SET "X2=%%b"&&CALL:FILE_OUTPUT))
 IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (
-IF /I "!$QCLM3$!"=="DISABLE" ECHO.Disabling Feature %@@%%%□%$$%...
-IF /I "!$QCLM3$!"=="ENABLE" ECHO.Enabling Feature %@@%%%□%$$%...)
+IF /I "!$QCLM3$!"=="DISABLE" ECHO.Disabling Feature %CA%%%□%CT%...
+IF /I "!$QCLM3$!"=="ENABLE" ECHO.Enabling Feature %CA%%%□%CT%...)
 SET "FEAT="&&IF EXIST "$FEAT" FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ($FEAT) DO (IF /I "%%a"=="!$QCLM2$!" SET "FEAT=1"&&SET "X1=%%a"&&SET "X2=%%b")
-IF NOT DEFINED FEAT FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ doesn't exist.&&EXIT /B)
-IF /I "!$QCLM3$!"=="ENABLE" IF /I "%X2%"=="Enabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF NOT DEFINED FEAT FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Feature %%□ doesn't exist.&&EXIT /B)
+IF /I "!$QCLM3$!"=="ENABLE" IF /I "%X2%"=="Enabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 IF /I "!$QCLM3$!"=="ENABLE" IF /I "%X2%"=="Enabled" EXIT /B
-IF /I "!$QCLM3$!"=="DISABLE" IF /I "%X2%"=="Disabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%X2%"=="Disabled" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 IF /I "!$QCLM3$!"=="DISABLE" IF /I "%X2%"=="Disabled" EXIT /B
 IF /I "!$QCLM3$!"=="ENABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /ENABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /ALL 2^>NUL') DO (
-IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%■.%$$%
+IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%■.%CT%
 IF "%%■"=="The operation completed successfully" SET "X2=Enabled"&&CALL:FILE_OUTPUT&&EXIT /B)
 IF /I "!$QCLM3$!"=="DISABLE" FOR /F "TOKENS=1 DELIMS=." %%■ in ('%DISM% /ENGLISH /%ApplyTarget% /NORESTART /DISABLE-FEATURE /FEATURENAME:"%$QCLM2$%" /REMOVE 2^>NUL') DO (
-IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%$.%$$%
+IF "%%■"=="The operation completed successfully" IF DEFINED @VERBOSE ECHO.%COLOR5%%%$.%CT%
 IF "%%■"=="The operation completed successfully" SET "X2=Disabled"&&CALL:FILE_OUTPUT&&EXIT /B)
-FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Feature %%□ is a stub or unable to change.)
+FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Feature %%□ is a stub or unable to change.)
 EXIT /B
 :SERVICE_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (AUTO MANUAL DISABLE DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not AUTO, MANUAL, DISABLE, or DELETE.&&EXIT /B
+IF NOT DEFINED $PASS ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not AUTO, MANUAL, DISABLE, or DELETE.&&EXIT /B
 FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (FOR /F "TOKENS=*" %%■ IN ("!$QCLM2$!") DO (
-IF /I "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Removing Service %@@%%%■%$$%...
-IF /I NOT "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Changing start to %@@%%%□%$$% for Service %@@%%%■%$$%...))
-IF DEFINED SVC_SKIP FOR %%1 in (%SVC_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%$$%&&EXIT /B)
+IF /I "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Removing Service %CA%%%■%CT%...
+IF /I NOT "%%□"=="DELETE" IF DEFINED @VERBOSE ECHO.Changing start to %CA%%%□%CT% for Service %CA%%%■%CT%...))
+IF DEFINED SVC_SKIP FOR %%1 in (%SVC_SKIP%) DO (IF /I "!$QCLM2$!"=="%%1" ECHO.%COLOR4%The operation has been skipped.%CT%&&EXIT /B)
 SET "$GO="&&FOR /F "TOKENS=1-3 DELIMS= " %%a IN ('%REG% QUERY "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V Start 2^>NUL') DO (
 IF "%%a"=="Start" SET "$GO=1"
-IF /I "!$QCLM3$!"=="AUTO" IF /I "%%a"=="Start" IF "%%c"=="0x2" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="AUTO" IF /I "%%a"=="Start" IF "%%c"=="0x2" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 IF /I "!$QCLM3$!"=="AUTO" IF /I "%%a"=="Start" IF "%%c"=="0x2" EXIT /B
-IF /I "!$QCLM3$!"=="MANUAL" IF /I "%%a"=="Start" IF "%%c"=="0x3" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="MANUAL" IF /I "%%a"=="Start" IF "%%c"=="0x3" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 IF /I "!$QCLM3$!"=="MANUAL" IF /I "%%a"=="Start" IF "%%c"=="0x3" EXIT /B
-IF /I "!$QCLM3$!"=="DISABLE" IF /I "%%a"=="Start" IF "%%c"=="0x4" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="DISABLE" IF /I "%%a"=="Start" IF "%%c"=="0x4" IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 IF /I "!$QCLM3$!"=="DISABLE" IF /I "%%a"=="Start" IF "%%c"=="0x4" EXIT /B)
-IF NOT DEFINED $GO FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Service %%□ doesn't exist.&&EXIT /B)
+IF NOT DEFINED $GO FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Service %%□ doesn't exist.&&EXIT /B)
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="DELETE" %REG% DELETE "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /F>NUL 2>&1
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="AUTO" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "2" /F >NUL 2>&1
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="MANUAL" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "3" /F>NUL 2>&1
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM3$!"=="DISABLE" %REG% ADD "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V "Start" /T REG_DWORD /D "4" /F>NUL 2>&1
 IF NOT "%WINPE_BOOT%"=="1" SET "$RAS=RATI"&&CALL:RASTI_CREATE
 FOR /F "TOKENS=1-3 DELIMS= " %%a IN ('%REG% QUERY "%HiveSystem%\ControlSet001\Services\%$QCLM2$%" /V Start 2^>NUL') DO (
-IF /I "!$QCLM3$!"=="AUTO" IF "%%a"=="Start" IF NOT "%%c"=="0x2" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "!$QCLM3$!"=="MANUAL" IF "%%a"=="Start" IF NOT "%%c"=="0x3" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "!$QCLM3$!"=="DISABLE" IF "%%a"=="Start" IF NOT "%%c"=="0x4" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B
-IF /I "!$QCLM3$!"=="DELETE" IF "%%a"=="Start" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B)
-IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+IF /I "!$QCLM3$!"=="AUTO" IF "%%a"=="Start" IF NOT "%%c"=="0x2" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="MANUAL" IF "%%a"=="Start" IF NOT "%%c"=="0x3" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="DISABLE" IF "%%a"=="Start" IF NOT "%%c"=="0x4" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B
+IF /I "!$QCLM3$!"=="DELETE" IF "%%a"=="Start" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B)
+IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 EXIT /B
 :TASK_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Task %@@%%%□%$$%...)
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Removing Task %CA%%%□%CT%...)
 SET "TASKID="&&FOR /F "TOKENS=1-4 DELIMS={} " %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /V Id 2^>NUL') DO (IF "%%a"=="Id" SET "TASKID=%%c")
-IF NOT DEFINED TASKID FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%$$% Task %%□ doesn't exist.&&EXIT /B)
+IF NOT DEFINED TASKID FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.%COLOR4%ERROR:%CT% Task %%□ doesn't exist.&&EXIT /B)
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM1$!"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /F>NUL 2>&1
 IF "%WINPE_BOOT%"=="1" IF /I "!$QCLM1$!"=="TASK" %REG% DELETE "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{%TASKID%}" /F>NUL 2>&1
 IF NOT "%WINPE_BOOT%"=="1" SET "$RAS=RATI"&&CALL:RASTI_CREATE
-FOR /F "TOKENS=1 DELIMS= " %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /V Id 2^>NUL') DO (IF "%%a"=="Id" ECHO.%COLOR2%ERROR:%$$% The operation did not complete successfully.&&EXIT /B)
-IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%$$%
+FOR /F "TOKENS=1 DELIMS= " %%a IN ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\%$QCLM2$%" /V Id 2^>NUL') DO (IF "%%a"=="Id" ECHO.%COLOR2%ERROR:%CT% The operation did not complete successfully.&&EXIT /B)
+IF DEFINED @VERBOSE ECHO.%COLOR5%The operation completed successfully.%CT%
 EXIT /B
 :WINSXS_ITEM
 CALL:IF_LIVE_EXT
 SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 SET "$PASS="&&FOR %%□ IN (DELETE) DO (IF /I "!$QCLM3$!"=="%%□" SET "$PASS=1")
-IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%$$% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
-IF DEFINED LIVE_APPLY ECHO.%COLOR4%ERROR:%$$% OFFLINE IMAGE ONLY&&EXIT /B
+IF NOT DEFINED $PASS FOR /F "TOKENS=*" %%□ IN ("!$QCLM3$!") DO (ECHO.%COLOR4%ERROR:%CT% !$QCLM1$! column 3 is not DELETE.&&EXIT /B)
+IF DEFINED LIVE_APPLY ECHO.%COLOR4%ERROR:%CT% OFFLINE IMAGE ONLY&&EXIT /B
 IF NOT DEFINED SXS_SKIP SET "SXS_SKIP=amd64_microsoft-windows-s..cingstack.resources amd64_microsoft-windows-servicingstack amd64_microsoft.vc80.crt amd64_microsoft.vc90.crt amd64_microsoft.windows.c..-controls.resources amd64_microsoft.windows.common-controls amd64_microsoft.windows.gdiplus x86_microsoft.vc80.crt x86_microsoft.vc90.crt x86_microsoft.windows.c..-controls.resources x86_microsoft.windows.common-controls x86_microsoft.windows.gdiplus"
-ECHO.&&ECHO.Removing %@@%WinSxS folder%$$%...&&SET "SUBZ="&&SET "SUBXNT="&&FOR /F "TOKENS=1-2* DELIMS=_" %%a IN ('DIR "%WinTar%\WinSxS" /A: /B /O:GN') DO (IF NOT "%%a"=="" SET "QUERYX=%%a_%%b"&&SET "SUBX=%%c"&&SET /A "SUBXNT+=1"&&CALL:LATERS_WINSXS)
+ECHO.&&ECHO.Removing %CA%WinSxS folder%CT%...&&SET "SUBZ="&&SET "SUBXNT="&&FOR /F "TOKENS=1-2* DELIMS=_" %%a IN ('DIR "%WinTar%\WinSxS" /A: /B /O:GN') DO (IF NOT "%%a"=="" SET "QUERYX=%%a_%%b"&&SET "SUBX=%%c"&&SET /A "SUBXNT+=1"&&CALL:LATERS_WINSXS)
 EXIT /B
 :LATERS_WINSXS
 IF "%QUERYX%_%SUBX%"=="%SUBZ%" EXIT /B
-FOR %%1 in (0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20) DO (IF %SUBXNT% EQU %%1500 CALL ECHO.WinSxS folder queue item %##%%%1500%$$%...
-IF "%SUBXNT%"=="%%1000" CALL ECHO.WinSxS folder queue item %##%%%1000%$$%...)
+FOR %%1 in (0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20) DO (IF %SUBXNT% EQU %%1500 CALL ECHO.WinSxS folder queue item %CB%%%1500%CT%...
+IF "%SUBXNT%"=="%%1000" CALL ECHO.WinSxS folder queue item %CB%%%1000%CT%...)
 SET "DNTX="&&FOR %%a in (%SXS_SKIP%) DO (IF "%QUERYX%"=="%%a" SET "DNTX=1")
 SET "SUBZ=%QUERYX%_%SUBX%"&&SET "DNTX="&&FOR %%a in (%SXS_SKIP%) DO (IF "%QUERYX%"=="%%a" SET "DNTX=1")
 IF NOT DEFINED DNTX (TAKEOWN /F "%WinTar%\WinSxS\%QUERYX%_%SUBX%" /R /D Y>NUL 2>&1
 ICACLS "%WinTar%\WinSxS\%QUERYX%_%SUBX%" /grant %USERNAME%:F /T>NUL 2>&1
-RD /Q /S "\\?\%WinTar%\WinSxS\%QUERYX%_%SUBX%" >NUL 2>&1) ELSE (ECHO.Keeping %@@%%QUERYX%_%SUBX%%$$%)
+RD /Q /S "\\?\%WinTar%\WinSxS\%QUERYX%_%SUBX%" >NUL 2>&1) ELSE (ECHO.Keeping %CA%%QUERYX%_%SUBX%%CT%)
 EXIT /B
 :SCRO_CREATE
 CALL:IF_LIVE_EXT
@@ -2470,14 +2470,14 @@ SET "DELIMS=%U00%"&&SET "$INPUT=!COLUMN0!"&&SET "$OUTPUT=QCLM"&&CALL:EXPANDOFLEX
 IF /I "%$QCLM4$%"=="SC" SET "SCRO=SetupComplete"
 IF /I "%$QCLM4$%"=="RO" SET "SCRO=RunOnce"
 IF NOT DEFINED %$QCLM4$%_PREPARE SET "%$QCLM4$%_PREPARE=1"&&CALL:SCRO_PREPARE
-IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Scheduling %@@%%%□%$$% for %@@%%SCRO%%$$%...)
+IF DEFINED @VERBOSE FOR /F "TOKENS=*" %%□ IN ("!$QCLM2$!") DO (ECHO.Scheduling %CA%%%□%CT% for %CA%%SCRO%%CT%...)
 CALL:SCRO_DISPATCH
 IF /I NOT "!$QCLM1$!"=="EXTPACKAGE" GOTO:SCRO_CREATE_SKIP
 FOR /F "TOKENS=*" %%░ in ("!$QCLM2$!") DO (
-IF EXIST "%PackFolder%\%%░" IF DEFINED @VERBOSE ECHO.Copying Package %@@%%%░ for %##%%SCRO%%$$%...
+IF EXIST "%PackFolder%\%%░" IF DEFINED @VERBOSE ECHO.Copying Package %CA%%%░ for %CB%%SCRO%%CT%...
 IF EXIST "%PackFolder%\%%░" COPY /Y "%PackFolder%\%%░" "%DrvTar%\$">NUL
 IF EXIST "%PackFolder%\%%░" ECHO.%U00%EXTPACKAGE%U00%%%░%U00%INSTALL%U00%DX%U00%>>"%DrvTar%\$\%SCRO%.list"
-IF NOT EXIST "%PackFolder%\%%░" ECHO.%COLOR4%ERROR:%$$% %PackFolder%\%%░ doesn't exist.)
+IF NOT EXIST "%PackFolder%\%%░" ECHO.%COLOR4%ERROR:%CT% %PackFolder%\%%░ doesn't exist.)
 EXIT /B
 :SCRO_CREATE_SKIP
 FOR /F "TOKENS=1-9 DELIMS=%U00%" %%a in ("!COLUMN0!") DO (ECHO.%U00%%%a%U00%%%b%U00%%%c%U00%DX%U00%>>"%DrvTar%\$\%SCRO%.list")
@@ -2507,7 +2507,7 @@ EXIT /B
 :IMAGEMGR_BUILDER
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 SET "$BCLM3="&&SET "$BCLM1="&&SET "$BCLM4="&&SET "$HEAD="&&CALL:SETS_HANDLER&&CALL:CLEAN
-SET "$HEADERS=                            %U13% List Builder%U01% %U01%                            Select an option"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) %U13% Miscellaneous"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                            %U13% List Builder%U01% %U01%                            Select an option"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %U13% Miscellaneous"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" CALL:LIST_MISCELLANEOUS&GOTO:IMAGEMGR_BUILDER
 IF NOT DEFINED SELECT EXIT /B
 IF NOT DEFINED $PICK GOTO:IMAGEMGR_BUILDER
@@ -2526,7 +2526,7 @@ IF EXIST "%ListFolder%\%$CHOICE%" SET "$PICK=%ListFolder%\%$CHOICE%"
 EXIT /B
 :LIST_MISCELLANEOUS
 CLS&&SET "IMAGE_LAST=IMAGE"&&CALL:SETS_MAIN&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP
-ECHO.                            %U13% List Builder&&ECHO.&&ECHO.                             Miscellaneous&&ECHO.&&ECHO. (%##% 1 %$$%) %U13% Create Source Base&&ECHO. (%##% 2 %$$%) %U20% Generate Example Base&&ECHO. (%##% 3 %$$%) %U13% Convert Group Base&&ECHO. (%##% 4 %$$%) %U10% External Package Item&&ECHO.
+ECHO.                            %U13% List Builder&&ECHO.&&ECHO.                             Miscellaneous&&ECHO.&&ECHO. (%CB% 1 %CT%) %U13% Create Source Base&&ECHO. (%CB% 2 %CT%) %U20% Generate Example Base&&ECHO. (%CB% 3 %CT%) %U13% Convert Group Base&&ECHO. (%CB% 4 %CT%) %U10% External Package Item&&ECHO.
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV
 SET "$CHECK=NUMBER❗0-4"&&SET "$VERBOSE=1"&&SET "$SELECT=SELECTX"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECTX EXIT /B
@@ -2540,15 +2540,15 @@ GOTO:LIST_MISCELLANEOUS
 IF NOT DEFINED MENU_SKIP SET "$HEADERS= %U01% %U01% %U01% %U01%                        Enter name of new .base%U01% %U01% %U01% "&&SET "$SELECT=NEW_NAME"&&SET "$CHECK=PATH"&&CALL:PROMPT_BOX
 IF DEFINED ERROR EXIT /B
 IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %@@%EXAMPLE-BASE START:%$$%  %DATE%  %TIME%&&ECHO.&&ECHO.&&CALL:BASE_EXAMPLE>"%ListFolder%\%NEW_NAME%.base"
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %CA%EXAMPLE-BASE START:%CT%  %DATE%  %TIME%&&ECHO.&&ECHO.&&CALL:BASE_EXAMPLE>"%ListFolder%\%NEW_NAME%.base"
 CALL:BASE_EXAMPLEQUICK>"%ListFolder%\%NEW_NAME%_Quick.base"
-ECHO.                   Example base created successfully.&&ECHO.&&ECHO.&&ECHO.            %@@%EXAMPLE-BASE END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
+ECHO.                   Example base created successfully.&&ECHO.&&ECHO.&&ECHO.            %CA%EXAMPLE-BASE END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
 IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :LIST_PACK_CREATE
 CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                           %U13% Miscellaneous&&ECHO.
-ECHO.                         External Package Item&&ECHO.&&ECHO.  %@@%AVAILABLE *.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLEs:%$$%&&ECHO.
-SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST&&ECHO.&&ECHO.                        Multiples OK ( %##%1 2 3%$$% )
+ECHO.                         External Package Item&&ECHO.&&ECHO.  %CA%AVAILABLE *.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLEs:%CT%&&ECHO.
+SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST&&ECHO.&&ECHO.                        Multiples OK ( %CB%1 2 3%CT% )
 SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=PATH"&&CALL:MENU_SELECT
 IF DEFINED ERROR EXIT /B
 IF "%SELECT%"=="0" SET "FILE_TYPE=PACK"&&CALL:BASIC_FILE&EXIT /B
@@ -2556,7 +2556,7 @@ CALL:LIST_TIME
 IF NOT DEFINED $BCLM4 EXIT /B
 SET "$BCLM1=ExtPackage"&&SET "$BCLM3=Install"&&SET "LIST_START="&&FOR %%a in (%SELECT%) DO (CALL SET "ITEMX=%%$ITEM%%a%%"&&CALL SET "LIST_WRITE=%U00%%%$ITEM%%a%%%U00%"&&CALL:LIST_WRITE)
 IF NOT DEFINED LIST_START SET "ERROR=1"&&EXIT /B
-SET "$BCLM1="&&SET "$BCLM3="&&SET "$HEADERS=                            %U04% Append Items%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) Create new list"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$BCLM1="&&SET "$BCLM3="&&SET "$HEADERS=                            %U04% Append Items%U01% %U01%                             Select a list"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) Create new list"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" CALL:LIST_MAKE
 IF NOT DEFINED $PICK EXIT /B
 SET "$LIST_FILE=%$PICK%"&&CALL:LIST_COMBINE&&CALL:APPEND_SCREEN
@@ -2567,14 +2567,14 @@ IF NOT DEFINED LIST_START SET "LIST_START=1"&&(ECHO.MENU-SCRIPT)>"$LIST"
 FOR /F "TOKENS=1-9 DELIMS=%U00%" %%1 IN ("%LIST_WRITE%") DO (CALL ECHO.%U00%📢ExtPackage%U00%%%1%U00%%$BCLM3%%U00%%$BCLM4%%U00%>>"$LIST")
 EXIT /B
 :LIST_CONVERT
-SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                            Create Base-List%U01% %U01%                       Select a list to convert"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                            Create Base-List%U01% %U01%                       Select a list to convert"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) File Operation"&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=LIST"&&CALL:BASIC_FILE&GOTO:LIST_CONVERT_END
 IF DEFINED $PICK SET "$HEAD_CHECK=%$PICK%"&&CALL:GET_HEADER
 IF DEFINED ERROR GOTO:LIST_CONVERT_END
 COPY /Y "%$PICK%" "$TEMP">NUL
 IF EXIST "$TEMP" SET "ISGROUP="&&FOR /F "TOKENS=1 SKIP=1 DELIMS=%U00%" %%1 in ($TEMP) DO (IF "%%1"=="GROUP" SET "ISGROUP=1"&&GOTO:LIST_CONVERT_SKIP)
 :LIST_CONVERT_SKIP
-IF NOT DEFINED ISGROUP ECHO.%COLOR4%ERROR:%$$% List does not contain any groups.&&SET "ERROR=1"&&CALL:PAUSED&GOTO:LIST_CONVERT_END
+IF NOT DEFINED ISGROUP ECHO.%COLOR4%ERROR:%CT% List does not contain any groups.&&SET "ERROR=1"&&CALL:PAUSED&GOTO:LIST_CONVERT_END
 SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                            Create Base-List%U01% %U01% %U01% %U01%                        Enter name of new .BASE%U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
 IF DEFINED ERROR GOTO:LIST_CONVERT_END
 IF DEFINED ISGROUP MOVE /Y "$TEMP" "%ListFolder%\%SELECT%.base">NUL
@@ -2610,11 +2610,11 @@ SET "$LIST1="&&SET "$LIST2="&&CALL:CLEAN
 CALL:PAUSED
 EXIT /B
 :LIST_BASE_CREATE
-SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                          Create Source Base"&&SET "$ITEMSTOP= ( %##%0%$$% ) All base list items"&&SET "$CHOICE_LIST=Appx%U01%Feature%U01%Component%U01%Capability%U01%Service%U01%Task%U01%Driver"&&SET "$VERBOSE=1"&&SET "$CHECKO=PATH"&&SET "$SELECT=BASE_CHOICE"&&CALL:CHOICE_BOX
+SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                          Create Source Base"&&SET "$ITEMSTOP= ( %CB%0%CT% ) All base list items"&&SET "$CHOICE_LIST=Appx%U01%Feature%U01%Component%U01%Capability%U01%Service%U01%Task%U01%Driver"&&SET "$VERBOSE=1"&&SET "$CHECKO=PATH"&&SET "$SELECT=BASE_CHOICE"&&CALL:CHOICE_BOX
 IF "%BASE_CHOICE%"=="0" SET "BASE_CHOICE=1 4 2 5 6 7 3"
 SET "$GO="&&FOR /F "TOKENS=1" %%a IN ("%BASE_CHOICE%") DO (FOR %%1 IN (1 2 3 4 5 6 7) DO (IF "%%a"=="%%1" SET "$GO=1"))
 IF NOT DEFINED $GO EXIT /B
-SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                          Create Source Base%U01% %U01%                   Select a source to generate base"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%Current Environment%$$%"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                          Create Source Base%U01% %U01%                   Select a source to generate base"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%Current Environment%CT%"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "LIVE_APPLY=1"
 IF NOT DEFINED LIVE_APPLY IF NOT DEFINED $PICK EXIT /B
 SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                          Create Source Base%U01% %U01% %U01% %U01%                      Enter name of new base list%U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&SET "$SELECT=NEW_NAME"&&CALL:PROMPT_BOX
@@ -2625,18 +2625,18 @@ IF NOT DEFINED LIVE_APPLY SET "DISP_NAME=%$FILE_X%.vhdx"
 IF DEFINED LIVE_APPLY SET "DISP_NAME=Current Environment"
 SET "INPUT=%NEW_NAME%"&&CALL:GET_FILEEXT
 IF "%EXT_UPPER%"==".BASE" SET "NEW_NAME=%$FILE_X%"
-SET "$BCLM1="&&SET "$BCLM3="&&CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.       %@@%BASE-LIST CREATION START:%$$%  %DATE%  %TIME%&&ECHO.
+SET "$BCLM1="&&SET "$BCLM3="&&CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.       %CA%BASE-LIST CREATION START:%CT%  %DATE%  %TIME%&&ECHO.
 IF NOT DEFINED LIVE_APPLY SET "$VDISK_FILE=%$PICK%"&&SET "VDISK_LTR=ANY"&&CALL:VDISK_ATTACH
-IF NOT DEFINED LIVE_APPLY IF NOT EXIST "%VDISK_LTR%:\WINDOWS" ECHO.&&ECHO.             %##%Vdisk error or Windows not installed on Vdisk.%$$%&&ECHO.&&CALL:VDISK_DETACH&&GOTO:LIST_BASE_CLEANUP
+IF NOT DEFINED LIVE_APPLY IF NOT EXIST "%VDISK_LTR%:\WINDOWS" ECHO.&&ECHO.             %CB%Vdisk error or Windows not installed on Vdisk.%CT%&&ECHO.&&CALL:VDISK_DETACH&&GOTO:LIST_BASE_CLEANUP
 IF NOT DEFINED LIVE_APPLY SET "TARGET_PATH=%VDISK_LTR%:"
 IF DEFINED LIVE_APPLY SET "TARGET_PATH=%SYSTEMDRIVE%"
-ECHO. %@@%GETTING VERSION%$$%..&&ECHO.&&CALL:IF_LIVE_MIX
+ECHO. %CA%GETTING VERSION%CT%..&&ECHO.&&CALL:IF_LIVE_MIX
 SET "INFO_E="&&SET "INFO_V="&&ECHO.MENU-SCRIPT>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=1-9 DELIMS=: " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-CURRENTEDITION 2^>NUL') DO (
 IF "%%a %%b"=="Image Version" SET "INFO_V=%%c"
 IF "%%a %%b"=="Current Edition" IF NOT "%%c"=="is" SET "INFO_E=%%c")
 FOR %%a in (INFO_V INFO_E) DO (IF NOT DEFINED %%a SET "%%a=Unavailable")
-ECHO.Version:%@@%%INFO_V%%$$% Edition:%@@%%INFO_E%%$$% Source:%@@%%DISP_NAME%%$$%&&ECHO.Version:%INFO_V% Edition:%INFO_E% Source:%DISP_NAME%>>"%ListFolder%\%NEW_NAME%.base"
+ECHO.Version:%CA%%INFO_V%%CT% Edition:%CA%%INFO_E%%CT% Source:%CA%%DISP_NAME%%CT%&&ECHO.Version:%INFO_V% Edition:%INFO_E% Source:%DISP_NAME%>>"%ListFolder%\%NEW_NAME%.base"
 ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 IF DEFINED LIVE_APPLY SET "$BASE_GROUP=Current Environment - %DATE% - %TIME%"
 IF NOT DEFINED LIVE_APPLY SET "$BASE_GROUP=%$FILE_X%%$EXT_X% - %DATE% - %TIME%"
@@ -2652,10 +2652,10 @@ IF "%%■"=="7" CALL:GET_BASE_DRIVER)
 SET "BASE_WRITE="&&SET "BASE_WRITELAST="&&CALL:MOUNT_INT
 IF NOT DEFINED LIVE_APPLY CALL:VDISK_DETACH
 :LIST_BASE_CLEANUP
-ECHO.&&ECHO.        %@@%BASE-LIST CREATION END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:CLEAN&&CALL:PAUSED
+ECHO.&&ECHO.        %CA%BASE-LIST CREATION END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:CLEAN&&CALL:PAUSED
 EXIT /B
 :GET_BASE_APPX
-ECHO.&&ECHO. %@@%Getting AppX Listing%$$%..&&ECHO.&&SET "$BCLM1=AppX"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
+ECHO.&&ECHO. %CA%Getting AppX Listing%CT%..&&ECHO.&&SET "$BCLM1=AppX"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%AppX❕Scoped❕Select an option❕Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=9* DELIMS=\" %%a in ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications" 2^>NUL') DO (FOR /F "TOKENS=1-1* DELIMS=_" %%1 in ("%%a") DO (SET "BASE_WRITE=%%1"&&SET "$GROUP_CLM2=%%1"&&CALL:BASE_WRITE))
 ECHO.>>"%ListFolder%\%NEW_NAME%.base"
@@ -2665,7 +2665,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_FEATURE
-ECHO.&&ECHO. %@@%Getting Feature Listing%$$%..&&ECHO.&&SET "$BCLM1=Feature"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
+ECHO.&&ECHO. %CA%Getting Feature Listing%CT%..&&ECHO.&&SET "$BCLM1=Feature"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Feature❕Scoped❕Select an option❕Enable❗Disable❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=1-9 DELIMS=|: " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-FEATURES /FORMAT:TABLE 2^>NUL') DO (
 IF "%%b"=="Enabled" SET "$BASE_CHOICE=Default is ENABLE"&&SET "BASE_WRITE=%%a"&&SET "$GROUP_CLM2=%%a"&&CALL:BASE_WRITE
@@ -2675,7 +2675,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_COMPONENT
-ECHO.&&ECHO. %@@%Getting Component Listing%$$%..&&ECHO.&&SET "$BCLM1=Component"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
+ECHO.&&ECHO. %CA%Getting Component Listing%CT%..&&ECHO.&&SET "$BCLM1=Component"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Component❕Scoped❕Select an option❕Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=8* DELIMS=\" %%a in ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" 2^>NUL') DO (FOR /F "TOKENS=1-1* DELIMS=~" %%1 in ("%%a") DO (SET "BASE_WRITE=%%1"&&SET "$GROUP_CLM2=%%1"&&CALL:BASE_WRITE))
 ECHO.>>"%ListFolder%\%NEW_NAME%.base"
@@ -2683,7 +2683,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_CAPABILITY
-ECHO.&&ECHO. %@@%Getting Capability Listing%$$%..&&ECHO.&&SET "$BCLM1=Capability"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
+ECHO.&&ECHO. %CA%Getting Capability Listing%CT%..&&ECHO.&&SET "$BCLM1=Capability"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Capability❕Scoped❕Select an option❕Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=1-2 DELIMS=|: " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-CAPABILITIES /FORMAT:TABLE 2^>NUL') DO (
 IF "%%b"=="Installed" SET "BASE_WRITE=%%a"&&SET "$GROUP_CLM2=%%a"&&CALL:BASE_WRITE)
@@ -2692,7 +2692,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_SERVICE
-ECHO.&&ECHO. %@@%Getting Service Listing%$$%..&&ECHO.&&SET "$BCLM1=Service"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
+ECHO.&&ECHO. %CA%Getting Service Listing%CT%..&&ECHO.&&SET "$BCLM1=Service"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Service❕Scoped❕Select an option❕Auto%U01%Manual%U01%Disable%U01%Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=1-4* DELIMS=\" %%a in ('%REG% QUERY "%HiveSystem%\ControlSet001\Services" 2^>NUL') DO (FOR /F "TOKENS=1-9 DELIMS= " %%1 in ('%REG% QUERY "%HiveSystem%\ControlSet001\Services\%%e" 2^>NUL') DO (SET "BASE_WRITE=%%e"
 IF "%%1"=="Start" IF "%%3"=="0x2" SET "$BASE_CHOICE=Default is Auto"
@@ -2707,7 +2707,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_TASK
-ECHO.&&ECHO. %@@%Getting Task Listing%$$%..&&ECHO.&&SET "$BCLM1=Task"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
+ECHO.&&ECHO. %CA%Getting Task Listing%CT%..&&ECHO.&&SET "$BCLM1=Task"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_EXT
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Task❕Scoped❕Select an option❕Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 FOR /F "TOKENS=1-3* DELIMS= " %%a in ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree" /f ID /e /s 2^>NUL') DO (IF "%%b"=="REG_SZ" IF NOT "%%c"=="" FOR /F "TOKENS=2* DELIMS=\ " %%1 in ('%REG% QUERY "%HiveSoftware%\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\%%c" /f PATH /e /s 2^>NUL') DO (IF "%%1"=="REG_SZ" IF NOT "%%2"=="" SET "BASE_WRITE=%%2"&&CALL:BASE_WRITE))
 ECHO.>>"%ListFolder%\%NEW_NAME%.base"
@@ -2715,7 +2715,7 @@ ECHO.>>"%ListFolder%\%NEW_NAME%.base"
 FOR %%X IN ($BCLM1 $BCLM3 $BASE_CHOICE BASE_WRITELAST) DO (SET "%%X=")
 EXIT /B
 :GET_BASE_DRIVER
-ECHO.&&ECHO. %@@%Getting Driver Listing%$$%..&&ECHO.&&SET "$BCLM1=Driver"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
+ECHO.&&ECHO. %CA%Getting Driver Listing%CT%..&&ECHO.&&SET "$BCLM1=Driver"&&SET "$BCLM3=%U0L%Choice0.S%U0R%"&&CALL:IF_LIVE_MIX
 ECHO.❕Group❕%$BASE_GROUP%❕%U20%Driver❕Scoped❕Select an option❕Delete❕VolaTILE❕>>"%ListFolder%\%NEW_NAME%.base"
 SET "DRIVER_NAME="&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=: " %%a in ('%DISM% /ENGLISH /%ApplyTarget% /GET-DRIVERS 2^>NUL') DO (
 IF "%%a %%b"=="Published Name" SET "DRIVER_INF=%%c"
@@ -2730,11 +2730,11 @@ EXIT /B
 :BASE_WRITE
 IF DEFINED BASE_WRITE IF DEFINED BASE_WRITELAST IF "%BASE_WRITE%"=="%BASE_WRITELAST%" EXIT /B
 SET "BASE_WRITELAST=!BASE_WRITE!"
-ECHO.%@@%!$BCLM1!%$$% !BASE_WRITE!%$$%
+ECHO.%CA%!$BCLM1!%CT% !BASE_WRITE!%CT%
 ECHO.%U00%%U22%!$BCLM1!%U00%!BASE_WRITE!%U00%!$BCLM3!%U00%DX%U00%!$BASE_CHOICE!>>"%ListFolder%\%NEW_NAME%.base"
 EXIT /B
 :LIST_TIME
-SET "$BCLM4="&&SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                            Time of Action"&&SET "$CHOICE_LIST=Default       %U00%%@@%DX%$$%%U00% Immediate execution%U01%SetupComplete %U00%%@@%SC%$$%%U00% Scheduled execution%U01%RunOnce       %U00%%@@%RO%$$%%U00% Scheduled execution"&&SET "$VERBOSE=1"&&SET "$SELECT=SELECTZ"&&CALL:CHOICE_BOX
+SET "$BCLM4="&&SET "$HEADERS=                           %U13% Miscellaneous%U01% %U01%                            Time of Action"&&SET "$CHOICE_LIST=Default       %U00%%CA%DX%CT%%U00% Immediate execution%U01%SetupComplete %U00%%CA%SC%CT%%U00% Scheduled execution%U01%RunOnce       %U00%%CA%RO%CT%%U00% Scheduled execution"&&SET "$VERBOSE=1"&&SET "$SELECT=SELECTZ"&&CALL:CHOICE_BOX
 IF "%SELECTZ%"=="1" SET "$BCLM4=DX"
 IF "%SELECTZ%"=="2" SET "$BCLM4=SC"
 IF "%SELECTZ%"=="3" SET "$BCLM4=RO"
@@ -2744,7 +2744,7 @@ IF DEFINED BASE_EXEC EXIT /B
 SET "$HEADERS=                            %U13% List Builder%U01% %U01% %U01% %U01% %U01%               Selected options have been added to list%U01% %U01% %U01% "&&SET "$SELECT=SELECTX1"&&SET "$VERBOSE="&&SET "$CHECK=NONE"&&CALL:PROMPT_BOX
 EXIT /B
 :PAD_SAME
-IF "%$LIST_FILE%"=="%$PICK%" CALL:PAD_LINE&&ECHO.%@@%%$LIST_FILE%%$$% and %@@%%$PICK%%$$% are the same...&&CALL:PAD_LINE&&CALL:PAUSED
+IF "%$LIST_FILE%"=="%$PICK%" CALL:PAD_LINE&&ECHO.%CA%%$LIST_FILE%%CT% and %CA%%$PICK%%CT% are the same...&&CALL:PAD_LINE&&CALL:PAUSED
 EXIT /B
 :LIST_ITEMS
 SET LIST_ITEMS_EXECUTE=APPX FEATURE COMPONENT CAPABILITY SERVICE TASK WINSXS DRIVER EXTPACKAGE COMMAND SESSION REGISTRY FILEOPER TEXTHOST POWERSHELL
@@ -2839,8 +2839,8 @@ EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 :PACKAGE_MANAGEMENT
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
-@ECHO OFF&&CLS&&SET "IMAGE_LAST=PACKAGE"&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U05% Image Management&&ECHO.&&ECHO.  %@@%PACKAGE CONTENTS:%$$%&&ECHO.&&SET "$FOLD=%ProgFolder%\project"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
-ECHO. %@@%%U05%PACK%$$%(%##%X%$$%)LIST%U13%     (%##%R%$$%)un Pack     (%##%E%$$%)dit Pack     (%##%B%$$%)uild Pack&&CALL:PAD_LINE
+@ECHO OFF&&CLS&&SET "IMAGE_LAST=PACKAGE"&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U05% Image Management&&ECHO.&&ECHO.  %CA%PACKAGE CONTENTS:%CT%&&ECHO.&&SET "$FOLD=%ProgFolder%\project"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
+ECHO. %CA%%U05%PACK%CT%(%CB%X%CT%)LIST%U13%     (%CB%R%CT%)un Pack     (%CB%E%CT%)dit Pack     (%CB%B%CT%)uild Pack&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
@@ -2860,12 +2860,12 @@ IF "%SELECT%"=="4" CALL:DRVR_EXPORT&SET "SELECT="
 GOTO:PACK_BUILDER
 :DRVR_EXPORT
 IF DEFINED ERROR EXIT /B
-SET "$HEADERS=                             Driver Export%U01% %U01%                   Select a source to export drivers"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%Current Environment%$$%"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                             Driver Export%U01% %U01%                   Select a source to export drivers"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%Current Environment%CT%"&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "LIVE_APPLY=1"
 :DRVR_EXPORT_SKIP
 IF NOT DEFINED LIVE_APPLY IF NOT DEFINED $PICK EXIT /B
 IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %@@%DRIVER-EXPORT START:%$$%  %DATE%  %TIME%&&ECHO.
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %CA%DRIVER-EXPORT START:%CT%  %DATE%  %TIME%&&ECHO.
 IF DEFINED LIVE_APPLY ECHO.Using live system for driver export.
 IF NOT DEFINED LIVE_APPLY SET "$VDISK_FILE=%$PICK%"&&CALL:VDISK_ATTACH
 IF NOT DEFINED LIVE_APPLY SET "TARGET_PATH=%VDISK_LTR%:"
@@ -2876,42 +2876,42 @@ IF EXIST "%ProgFolder%\project\driver" ECHO.Exporting drivers to %ProgFolder%\pr
 IF EXIST "%ProgFolder%\project\driver" %DISM% /ENGLISH /%ApplyTarget% /EXPORT-DRIVER /destination:"%ProgFolder%\project\driver"
 FOR %%a in (CMD LIST) DO (IF NOT EXIST "%ProgFolder%\project\PACKAGE.%%a" CALL:NEW_PACKAGE%%a)
 IF NOT DEFINED LIVE_APPLY CALL:VDISK_DETACH
-ECHO.&&ECHO.            %@@%DRIVER-EXPORT END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
+ECHO.&&ECHO.            %CA%DRIVER-EXPORT END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
 IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :PROJ_EDIT
 FOR %%a in (package.cmd package.list) DO (IF EXIST "%ProgFolder%\project\%%a" START NOTEPAD.EXE "%ProgFolder%\project\%%a")
 EXIT /B
 :PROJ_RESTORE
-SET "$HEADERS=                          %U05% Package Extract"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %##%0%$$% ) %##%File Operation%$$%"&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
+SET "$HEADERS=                          %U05% Package Extract"&&SET "$CHOICEMINO=1"&&SET "$ITEMSTOP= ( %CB%0%CT% ) %CB%File Operation%CT%"&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX"&&SET "$VERBOSE=1"&&CALL:FILE_VIEWER
 IF "%SELECT%"=="0" SET "FILE_TYPE=PKX"&&CALL:BASIC_FILE&EXIT /B
 IF NOT DEFINED $PICK EXIT /B
 CALL:PROJ_CLEAR
 IF DEFINED ERROR EXIT /B
-CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.          %@@%PACKAGE RESTORE START:%$$%  %DATE%  %TIME%
+CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.          %CA%PACKAGE RESTORE START:%CT%  %DATE%  %TIME%
 %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%$PICK%" /INDEX:1 /APPLYDIR:"%ProgFolder%\project"
-IF NOT EXIST "%ProgFolder%\project\package.list" ECHO.%COLOR2%ERROR:%$$% Package is either missing package.list or unable to extract.&&RD /S /Q "%ProgFolder%\project">NUL 2>&1
-ECHO.&&ECHO.           %@@%PACKAGE RESTORE END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED
+IF NOT EXIST "%ProgFolder%\project\package.list" ECHO.%COLOR2%ERROR:%CT% Package is either missing package.list or unable to extract.&&RD /S /Q "%ProgFolder%\project">NUL 2>&1
+ECHO.&&ECHO.           %CA%PACKAGE RESTORE END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED
 EXIT /B
 :PROJ_CREATE
-IF NOT EXIST "%ProgFolder%\project\*" ECHO.&&ECHO.%COLOR4%ERROR:%$$% Package folder is empty.&&ECHO.&IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
+IF NOT EXIST "%ProgFolder%\project\*" ECHO.&&ECHO.%COLOR4%ERROR:%CT% Package folder is empty.&&ECHO.&IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 IF NOT EXIST "%ProgFolder%\project\*" EXIT /B
 SET "$HEADERS=                           %U05% Pack Builder%U01% %U01%                        Capture Project Folder%U01% %U01% %U01% %U01%                      Enter new .PKX package name%U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&SET "$SELECT=PACKNAME"&&CALL:PROMPT_BOX
 IF NOT DEFINED PACKNAME EXIT /B
 IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %@@%PACKAGE CREATE START:%$$%  %DATE%  %TIME%
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %CA%PACKAGE CREATE START:%CT%  %DATE%  %TIME%
 %DISM% /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"%ProgFolder%\project" /IMAGEFILE:"%PackFolder%\%PACKNAME%.pkx" /COMPRESS:%COMPRESS% /NAME:"PKX" /CheckIntegrity /Verify
-ECHO.&&ECHO.            %@@%PACKAGE CREATE END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
+ECHO.&&ECHO.            %CA%PACKAGE CREATE END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
 IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :PROJ_NEW
 IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %@@%PACK-TEMPLATE START:%$$%  %DATE%  %TIME%&&ECHO.&&ECHO.
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %CA%PACK-TEMPLATE START:%CT%  %DATE%  %TIME%&&ECHO.&&ECHO.
 CALL:PROJ_CLEAR
 IF DEFINED ERROR EXIT /B
 IF NOT EXIST "%ProgFolder%\project\driver" MD "%ProgFolder%\project\driver">NUL 2>&1
 CALL:NEW_PACKAGELIST&CALL:NEW_PACKAGECMD
-ECHO.               New package template created successfully.&&ECHO.&&ECHO.&&ECHO.            %@@%PACK-TEMPLATE END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
+ECHO.               New package template created successfully.&&ECHO.&&ECHO.&&ECHO.            %CA%PACK-TEMPLATE END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
 IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :NEW_PACKAGELIST
@@ -2922,7 +2922,7 @@ EXIT /B
 EXIT /B
 :PROJ_CLEAR
 IF DEFINED MENU_SKIP GOTO:PROJ_CLEAR_SKIP
-SET "$HEADERS= %U01% %U01% %U01% %U01%         Project folder will be cleared. Press (%##%X%$$%) to proceed%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
+SET "$HEADERS= %U01% %U01% %U01% %U01%         Project folder will be cleared. Press (%CB%X%CT%) to proceed%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
 IF NOT "%CONFIRM%"=="X" SET "ERROR=PROJ_CLEAR"&&CALL:DEBUG&&EXIT /B
 :PROJ_CLEAR_SKIP
 IF EXIST "%ProgFolder%\project" SET "FOLDER_DEL=%ProgFolder%\project"&&CALL:FOLDER_DEL
@@ -2935,9 +2935,9 @@ EXIT /B
 IF NOT DEFINED FMGR_DUAL SET "FMGR_DUAL=DISABLED"
 IF NOT DEFINED FMGR_SOURCE SET "FMGR_SOURCE=%ProgFolder%"&&SET "FMGR_TARGET=%ProgFolder%"
 IF NOT EXIST "%FMGR_SOURCE%\*" SET "FMGR_SOURCE=%ProgFolder%"&&SET "FMGR_TARGET=%ProgFolder%"
-IF "%FMGR_DUAL%"=="ENABLED" ECHO.                           %@@%SOURCE%$$% (%##%S%$$%) %@@%TARGET%$$%&&ECHO.&&ECHO.  %@@%TARGET FOLDER:%$$% %FMGR_TARGET%&&ECHO.&&SET "$FOLD=%FMGR_TARGET%"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.
-ECHO.  %@@%SOURCE FOLDER:%$$% %FMGR_SOURCE%&&ECHO.&&ECHO.  (%##%..%$$%)&&SET "$FOLD=%FMGR_SOURCE%"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
-ECHO. %@@%%U02%FILE%$$%(%##%X%$$%)DISK%U04% (%##%.%$$%) (%##%N%$$%)ew (%##%O%$$%)pen (%##%C%$$%)opy (%##%M%$$%)ove (%##%R%$$%)en (%##%D%$$%)el (%##%#%$$%)Own (%##%V%$$%)&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
+IF "%FMGR_DUAL%"=="ENABLED" ECHO.                           %CA%SOURCE%CT% (%CB%S%CT%) %CA%TARGET%CT%&&ECHO.&&ECHO.  %CA%TARGET FOLDER:%CT% %FMGR_TARGET%&&ECHO.&&SET "$FOLD=%FMGR_TARGET%"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.
+ECHO.  %CA%SOURCE FOLDER:%CT% %FMGR_SOURCE%&&ECHO.&&ECHO.  (%CB%..%CT%)&&SET "$FOLD=%FMGR_SOURCE%"&&SET "$FILT=*.*"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
+ECHO. %CA%%U02%FILE%CT%(%CB%X%CT%)DISK%U04% (%CB%.%CT%) (%CB%N%CT%)ew (%CB%O%CT%)pen (%CB%C%CT%)opy (%CB%M%CT%)ove (%CB%R%CT%)en (%CB%D%CT%)el (%CB%#%CT%)Own (%CB%V%CT%)&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
 IF "%SELECT%"=="S" CALL:FMGR_SWAP&SET "SELECT="
@@ -2969,14 +2969,14 @@ IF NOT DEFINED $PICK EXIT /B
 IF EXIST "%$PICK%\*" SET "$HEADERS=                          %U02% File Management%U01% %U01%                                Rename%U01% %U01% %U01% %U01%                         Enter new folder name%U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&SET "$SELECT=NEW_NAME"&&CALL:PROMPT_BOX
 IF NOT EXIST "%$PICK%\*" SET "$HEADERS=                          %U02% File Management%U01% %U01%                                Rename%U01% %U01% %U01% %U01%              Enter new file name including the extension%U01% %U01% "&&SET "$CHECK=PATH"&&SET "$VERBOSE=1"&&SET "$SELECT=NEW_NAME"&&CALL:PROMPT_BOX
 IF DEFINED ERROR EXIT /B
-ECHO.Renaming %@@%%$PICK%%$$% to %@@%%FMGR_SOURCE%\%NEW_NAME%%$$%.
+ECHO.Renaming %CA%%$PICK%%CT% to %CA%%FMGR_SOURCE%\%NEW_NAME%%CT%.
 REN "%$PICK%" "%NEW_NAME%"
 EXIT /B
 :FMGR_DEL
 IF NOT DEFINED $PICK EXIT /B
 IF NOT EXIST "%$PICK%\*" DEL /Q /F "\\?\%$PICK%"
 IF EXIST "%$PICK%\*" RD /S /Q "\\?\%$PICK%"
-IF NOT EXIST "%$PICK%\*" IF NOT EXIST "%$PICK%" ECHO.Deleting %@@%%$PICK%%$$%.
+IF NOT EXIST "%$PICK%\*" IF NOT EXIST "%$PICK%" ECHO.Deleting %CA%%$PICK%%CT%.
 EXIT /B
 :FMGR_OPEN
 IF NOT DEFINED $PICK EXIT /B
@@ -2987,8 +2987,8 @@ EXIT /B
 :FMGR_COPY
 IF NOT DEFINED $PICK EXIT /B
 IF "%FMGR_SOURCE%"=="%FMGR_TARGET%" CALL:FMGR_SAME&EXIT /B
-IF NOT EXIST "%$PICK%\*" ECHO.Copying %@@%%$PICK%%$$% to %@@%%FMGR_TARGET%%$$%...&&XCOPY "%$PICK%" "%FMGR_TARGET%" /C /Y>NUL 2>&1
-IF EXIST "%$PICK%\*" ECHO.Copying %@@%%$PICK%%$$% to %@@%%FMGR_TARGET%%$$%...&&XCOPY "%$PICK%" "%FMGR_TARGET%\%$CHOICE%\" /E /C /I /Y>NUL 2>&1
+IF NOT EXIST "%$PICK%\*" ECHO.Copying %CA%%$PICK%%CT% to %CA%%FMGR_TARGET%%CT%...&&XCOPY "%$PICK%" "%FMGR_TARGET%" /C /Y>NUL 2>&1
+IF EXIST "%$PICK%\*" ECHO.Copying %CA%%$PICK%%CT% to %CA%%FMGR_TARGET%%CT%...&&XCOPY "%$PICK%" "%FMGR_TARGET%\%$CHOICE%\" /E /C /I /Y>NUL 2>&1
 EXIT /B
 :FMGR_SYM
 IF NOT DEFINED $PICK EXIT /B
@@ -2999,8 +2999,8 @@ EXIT /B
 :FMGR_MOVE
 IF NOT DEFINED $PICK EXIT /B
 IF "%FMGR_SOURCE%"=="%FMGR_TARGET%" CALL:FMGR_SAME&EXIT /B
-IF NOT EXIST "%$PICK%\*" ECHO.Moving %@@%%$PICK%%$$% to %@@%%FMGR_TARGET%%$$%...&&MOVE /Y "%$PICK%" "%FMGR_TARGET%">NUL 2>&1
-IF EXIST "%$PICK%\*" ECHO.Moving %@@%%$PICK%%$$% to %@@%%FMGR_TARGET%%$$%...&&XCOPY "%$PICK%" "%FMGR_TARGET%\%$CHOICE%\" /E /C /I /Y>NUL 2>&1
+IF NOT EXIST "%$PICK%\*" ECHO.Moving %CA%%$PICK%%CT% to %CA%%FMGR_TARGET%%CT%...&&MOVE /Y "%$PICK%" "%FMGR_TARGET%">NUL 2>&1
+IF EXIST "%$PICK%\*" ECHO.Moving %CA%%$PICK%%CT% to %CA%%FMGR_TARGET%%CT%...&&XCOPY "%$PICK%" "%FMGR_TARGET%\%$CHOICE%\" /E /C /I /Y>NUL 2>&1
 IF EXIST "%$PICK%\*" RD /S /Q "\\?\%$PICK%">NUL 2>&1
 EXIT /B
 :FMGR_OWN
@@ -3014,7 +3014,7 @@ ECHO.
 CALL:PAUSED
 EXIT /B
 :FMGR_EXPLORE
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Management&&ECHO.&&ECHO.                       Enter the PATH to explore&&ECHO.&&ECHO.  %@@%AVAILABLE PATHs:%$$%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %##%%%G%$$% ^) Volume %%G:)
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Management&&ECHO.&&ECHO.                       Enter the PATH to explore&&ECHO.&&ECHO.  %CA%AVAILABLE PATHs:%CT%&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %CB%%%G%CT% ^) Volume %%G:)
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=PATH"&&CALL:MENU_SELECT
 IF DEFINED SELECT FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%SELECT%"=="%%G" IF EXIST "%%G:\" SET "FMGR_SOURCE=%SELECT%:"&&EXIT /B)
 IF DEFINED SELECT SET "INPUT=%SELECT%"&&SET "OUTPUT=FMGR_SOURCE"&&CALL:SLASHER
@@ -3031,7 +3031,7 @@ EXIT /B
 :BASIC_FILE
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 IF DEFINED FILE_OPER GOTO:BASIC_FILETYPE
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                           Select an option&&ECHO.&&ECHO.&&ECHO.&&ECHO. (%##%1%$$%) Rename&&ECHO. (%##%2%$$%) Delete&&ECHO. (%##%3%$$%) Copy&&IF "%FOLDER_MODE%"=="ISOLATED" FOR %%G in (VHDX MAIN IMAGE) DO (IF "%FILE_TYPE%"=="%%G" ECHO. ^(%##%4%$$%^) Move)
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                           Select an option&&ECHO.&&ECHO.&&ECHO.&&ECHO. (%CB%1%CT%) Rename&&ECHO. (%CB%2%CT%) Delete&&ECHO. (%CB%3%CT%) Copy&&IF "%FOLDER_MODE%"=="ISOLATED" FOR %%G in (VHDX MAIN IMAGE) DO (IF "%FILE_TYPE%"=="%%G" ECHO. ^(%CB%4%CT%^) Move)
 ECHO.&&ECHO.&&ECHO.&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=FILE_PROMPT"&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF "%FILE_PROMPT%"=="1" SET "FILE_OPER=Rename"
 IF "%FILE_PROMPT%"=="2" SET "FILE_OPER=Delete"
@@ -3043,14 +3043,14 @@ IF "%FILE_OPER%"=="MoveVHDX" IF "%FOLDER_MODE%"=="ISOLATED" CALL:VHDX_MOVE&GOTO:
 IF DEFINED FILE_SKIP GOTO:BASIC_FILEOPER
 :BASIC_FILEPICK
 CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&SET "$CENTERED_MSG=%FILE_OPER%"&&CALL:TXT_CENTER&&ECHO.
-FOR %%X in (WIM VHDX ISO) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %@@%AVAILABLE %%Xs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
-FOR %%X in (LIST BASE) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %@@%AVAILABLE %%Xs:%$$%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
-FOR %%X in (CAB MSU PKX APPX APPXBUNDLE MSIXBUNDLE) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %@@%AVAILABLE %%Xs:%$$%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
-IF "%FILE_TYPE%"=="WALL" ECHO.  %@@%AVAILABLE JPGs/PNGs:%$$%&&ECHO.&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.JPG *.PNG"&&CALL:FILE_LIST
-IF "%FILE_TYPE%"=="MAIN" ECHO.  %@@%MAIN FOLDER VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST
-IF "%FILE_TYPE%"=="IMAGE" ECHO.  %@@%AVAILABLE WIMs/VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX"&&CALL:FILE_LIST
-IF "%FILE_TYPE%"=="LISTS" ECHO.  %@@%AVAILABLE LISTs/BASEs:%$$%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&CALL:FILE_LIST
-IF "%FILE_TYPE%"=="PACK" ECHO.  %@@%AVAILABLE PACKAGEs:%$$%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST
+FOR %%X in (WIM VHDX ISO) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %CA%AVAILABLE %%Xs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
+FOR %%X in (LIST BASE) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %CA%AVAILABLE %%Xs:%CT%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
+FOR %%X in (CAB MSU PKX APPX APPXBUNDLE MSIXBUNDLE) DO (IF "%%X"=="%FILE_TYPE%" ECHO.  %CA%AVAILABLE %%Xs:%CT%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.%%X"&&CALL:FILE_LIST)
+IF "%FILE_TYPE%"=="WALL" ECHO.  %CA%AVAILABLE JPGs/PNGs:%CT%&&ECHO.&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.JPG *.PNG"&&CALL:FILE_LIST
+IF "%FILE_TYPE%"=="MAIN" ECHO.  %CA%MAIN FOLDER VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST
+IF "%FILE_TYPE%"=="IMAGE" ECHO.  %CA%AVAILABLE WIMs/VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX"&&CALL:FILE_LIST
+IF "%FILE_TYPE%"=="LISTS" ECHO.  %CA%AVAILABLE LISTs/BASEs:%CT%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.BASE *.LIST"&&CALL:FILE_LIST
+IF "%FILE_TYPE%"=="PACK" ECHO.  %CA%AVAILABLE PACKAGEs:%CT%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF NOT DEFINED $PICK GOTO:BASIC_ERROR
 :BASIC_FILEOPER
@@ -3068,20 +3068,20 @@ SET "FILE_OPER="&&SET "FILE_TYPE="&&SET "FILE_NAME="&&SET "FILE_SKIP="&&SET "$PI
 EXIT /B
 :VHDX_MOVE
 IF NOT "%FOLDER_MODE%"=="ISOLATED" EXIT /B
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                       Move VHDX between folders&&ECHO.&&ECHO.  %@@%IMAGE FOLDER VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&ECHO.                               ( %##%-%$$% / %##%+%$$% )&&ECHO.&&ECHO.  %@@%MAIN FOLDER VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                       Move VHDX between folders&&ECHO.&&ECHO.  %CA%IMAGE FOLDER VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&ECHO.                               ( %CB%-%CT% / %CB%+%CT% )&&ECHO.&&ECHO.  %CA%MAIN FOLDER VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT EXIT /B
 IF "%SELECT%"=="-" CALL:MOVE2IMAGE
 IF "%SELECT%"=="+" CALL:MOVE2MAIN
 GOTO:VHDX_MOVE
 :MOVE2IMAGE
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                         Move to image folder&&ECHO.&&ECHO.  %@@%MAIN FOLDER VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
-IF DEFINED $PICK IF EXIST "%ImageFolder%\%$CHOICE%" CALL:PAD_LINE&&ECHO. File already exists in IMAGE folder. Press (%##%X%$$%) to overwrite %@@%%$CHOICE%%$$%.&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:MENU_SELECT
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                         Move to image folder&&ECHO.&&ECHO.  %CA%MAIN FOLDER VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
+IF DEFINED $PICK IF EXIST "%ImageFolder%\%$CHOICE%" CALL:PAD_LINE&&ECHO. File already exists in IMAGE folder. Press (%CB%X%CT%) to overwrite %CA%%$CHOICE%%CT%.&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&SET "$SELECT=CONFIRM"&&CALL:MENU_SELECT
 IF DEFINED $PICK IF EXIST "%ImageFolder%\%$CHOICE%" IF NOT "%CONFIRM%"=="X" EXIT /B
 IF DEFINED $PICK MOVE /Y "%$PICK%" "%ImageFolder%\">NUL
 EXIT /B
 :MOVE2MAIN
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                          Move to main folder&&ECHO.&&ECHO.  %@@%IMAGE FOLDER VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
-IF DEFINED $PICK IF EXIST "%ProgFolder%\%$CHOICE%" CALL:PAD_LINE&&ECHO. File already exists in MAIN folder. Press (%##%X%$$%) to overwrite %@@%%$CHOICE%%$$%.&&CALL:PAD_LINE&&CALL:PAD_PREV&&CALL SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U02% File Operation&&ECHO.&&ECHO.                          Move to main folder&&ECHO.&&ECHO.  %CA%IMAGE FOLDER VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
+IF DEFINED $PICK IF EXIST "%ProgFolder%\%$CHOICE%" CALL:PAD_LINE&&ECHO. File already exists in MAIN folder. Press (%CB%X%CT%) to overwrite %CA%%$CHOICE%%CT%.&&CALL:PAD_LINE&&CALL:PAD_PREV&&CALL SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
 IF DEFINED $PICK IF EXIST "%ProgFolder%\%$CHOICE%" IF NOT "%CONFIRM%"=="X" EXIT /B
 IF DEFINED $PICK MOVE /Y "%$PICK%" "%ProgFolder%\">NUL
 EXIT /B
@@ -3090,8 +3090,8 @@ EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 ::"MOUNTVOL","\\?\Volume{00000000-0000-0000-0000-100000000000}\","\\?\GLOBALROOT\Device\harddisk0\partition1\","\\?\BOOTPARTITION\"
 @ECHO OFF&&CLS&&SET "DISK_LETTER="&&SET "DISK_MSG="&&SET "MISC_LAST=DISK"&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U04% Disk Management&&CALL:DISK_LIST_BASIC&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE
-ECHO. %@@%%U04%DISK%$$%(%##%X%$$%)FILE%U02%     (%##%I%$$%)nspect    (%##%E%$$%)rase                  (%##%O%$$%)ptions&&CALL:PAD_LINE&&ECHO. [%@@%PART%$$%] (%##%C%$$%)reate     (%##%D%$$%)elete     (%##%F%$$%)ormat     (%##%M%$$%)ount     (%##%U%$$%)nmount&&CALL:PAD_LINE
-IF DEFINED ADV_DISK ECHO. [%@@%IMAGE%$$%](%##%N%$$%)ew VHDX      (%##%V%$$%)HDX Mount     (%##%.%$$%)ISO Mount      (%##%U%$$%)nmount&&CALL:PAD_LINE
+ECHO. %CA%%U04%DISK%CT%(%CB%X%CT%)FILE%U02%     (%CB%I%CT%)nspect    (%CB%E%CT%)rase                  (%CB%O%CT%)ptions&&CALL:PAD_LINE&&ECHO. [%CA%PART%CT%] (%CB%C%CT%)reate     (%CB%D%CT%)elete     (%CB%F%CT%)ormat     (%CB%M%CT%)ount     (%CB%U%CT%)nmount&&CALL:PAD_LINE
+IF DEFINED ADV_DISK ECHO. [%CA%IMAGE%CT%](%CB%N%CT%)ew VHDX      (%CB%V%CT%)HDX Mount     (%CB%.%CT%)ISO Mount      (%CB%U%CT%)nmount&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
@@ -3100,14 +3100,14 @@ IF "%SELECT%"=="N" CALL:VHDX_NEW_PROMPT&SET "SELECT="
 IF "%SELECT%"=="U" CALL:DISK_UNMOUNT_PROMPT&SET "SELECT="
 IF "%SELECT%"=="O" IF DEFINED ADV_DISK SET "ADV_DISK="&SET "SELECT="
 IF "%SELECT%"=="O" IF NOT DEFINED ADV_DISK SET "ADV_DISK=1"&SET "SELECT="
-IF "%SELECT%"=="." CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.  %@@%AVAILABLE ISOs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.ISO"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT&&CALL:ISO_MOUNT&SET "SELECT="
-IF "%SELECT%"=="V" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.  %@@%AVAILABLE VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT&&CALL:VHDX_MOUNT&SET "SELECT="
+IF "%SELECT%"=="." CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.  %CA%AVAILABLE ISOs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.ISO"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT&&CALL:ISO_MOUNT&SET "SELECT="
+IF "%SELECT%"=="V" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.  %CA%AVAILABLE VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT&&CALL:VHDX_MOUNT&SET "SELECT="
 IF "%SELECT%"=="UID" CALL:DISK_MENU&&CALL:DISK_UID_PROMPT&&CALL:DISK_PART_END&SET "SELECT="
 IF "%SELECT%"=="E" CALL:DISK_ERASE_PROMPT&&CALL:DISK_PART_END&&SET "SELECT="
 IF "%SELECT%"=="I" SET "QUERY_MSG=                        Select a disk to inspect"&&CALL:DISK_MENU&&CALL:DISKMGR_INSPECT&&CALL:DISK_PART_END&SET "SELECT="
 IF "%SELECT%"=="C" SET "QUERY_MSG=                   Select a disk to create partition"&&CALL:DISK_MENU&&CALL:PART_CREATE_PROMPT&&CALL:DISK_PART_END&SET "SELECT="
-IF "%SELECT%"=="F" SET "QUERY_MSG=                   %COLOR2%Select a disk to format partition%$$%"&&CALL:DISK_MENU&&CALL:PART_GET&&CALL:CONFIRM&&CALL:DISKMGR_FORMAT&&CALL:DISK_PART_END&SET "SELECT="
-IF "%SELECT%"=="D" SET "QUERY_MSG=                   %COLOR2%Select a disk to delete partition%$$%"&&CALL:DISK_MENU&&CALL:PART_GET&&CALL:CONFIRM&&CALL:DISKMGR_DELETE&&CALL:DISK_PART_END&SET "SELECT="
+IF "%SELECT%"=="F" SET "QUERY_MSG=                   %COLOR2%Select a disk to format partition%CT%"&&CALL:DISK_MENU&&CALL:PART_GET&&CALL:CONFIRM&&CALL:DISKMGR_FORMAT&&CALL:DISK_PART_END&SET "SELECT="
+IF "%SELECT%"=="D" SET "QUERY_MSG=                   %COLOR2%Select a disk to delete partition%CT%"&&CALL:DISK_MENU&&CALL:PART_GET&&CALL:CONFIRM&&CALL:DISKMGR_DELETE&&CALL:DISK_PART_END&SET "SELECT="
 IF "%SELECT%"=="M" SET "QUERY_MSG=                   Select a disk to mount partition"&&CALL:DISK_MENU&&CALL:PART_GET&&CALL:LETTER_GET&&CALL:CONFIRM&&CALL:DISKMGR_MOUNT&SET "SELECT="
 GOTO:DISK_MANAGEMENT
 :VHDX_NEW_PROMPT
@@ -3172,10 +3172,10 @@ SET "DISK_X="&&SET "PART_X="&&SET "LETT_X="&&SET "SIZE_X="&&CALL:DEL_DISK&&EXIT 
 IF EXIST "$DISK" DEL /Q /F "$DISK">NUL
 EXIT /B
 :BOOT_FETCH
-SET "$HEADERS= %U01% %U01% %U01% %U01%     File boot.sav doesn't exist. Press (%##%X%$$%) to copy from recovery%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
+SET "$HEADERS= %U01% %U01% %U01% %U01%     File boot.sav doesn't exist. Press (%CB%X%CT%) to copy from recovery%U01% %U01% %U01% "&&SET "$CASE=UPPER"&&SET "$SELECT=CONFIRM"&&SET "$CHECK=LETTER"&&CALL:PROMPT_BOX
 IF NOT "%CONFIRM%"=="X" EXIT /B
 CALL:EFI_MOUNT&&CALL:PAD_LINE
-ECHO.Copying %@@%boot.sav%$$%...&&COPY /Y "%EFI_LETTER%:\$.WIM" "%CacheFolder%\boot.sav">NUL 2>&1
+ECHO.Copying %CA%boot.sav%CT%...&&COPY /Y "%EFI_LETTER%:\$.WIM" "%CacheFolder%\boot.sav">NUL 2>&1
 CALL:EFI_UNMOUNT
 EXIT /B
 :LETTER_GET
@@ -3196,7 +3196,7 @@ EXIT /B
 :PART_CREATE_PROMPT
 IF DEFINED ERROR EXIT /B
 IF NOT DEFINED DISK_NUMBER EXIT /B
-SET "$HEADERS=                          %U04% Disk Management%U01% %U01%            Enter a partition size. (%##%0%$$%) Remainder of space"&&SET "$CHECK=NUMBER"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
+SET "$HEADERS=                          %U04% Disk Management%U01% %U01%            Enter a partition size. (%CB%0%CT%) Remainder of space"&&SET "$CHECK=NUMBER"&&SET "$VERBOSE=1"&&CALL:PROMPT_BOX
 IF NOT DEFINED ERROR SET "PART_SIZE=%SELECT%"&&CALL:CONFIRM&&CALL:DISKMGR_CREATE
 EXIT /B
 :DISKMGR_CREATE
@@ -3275,8 +3275,8 @@ EXIT /B
 :DISKMGR_MOUNT
 IF DEFINED ERROR EXIT /B
 FOR %%a in (DISK_NUMBER DISK_LETTER PART_NUMBER) DO (IF NOT DEFINED %%a EXIT /B)
-IF EXIST "%DISK_LETTER%:\" ECHO.%COLOR4%ERROR:%$$% Select a different drive letter.&&EXIT /B
-IF "%PROG_MODE%"=="RAMDISK" IF "%DISK_LETTER%"=="Z" ECHO.%COLOR4%ERROR:%$$% Select a different drive letter.&&EXIT /B
+IF EXIST "%DISK_LETTER%:\" ECHO.%COLOR4%ERROR:%CT% Select a different drive letter.&&EXIT /B
+IF "%PROG_MODE%"=="RAMDISK" IF "%DISK_LETTER%"=="Z" ECHO.%COLOR4%ERROR:%CT% Select a different drive letter.&&EXIT /B
 IF NOT "%PROG_MODE%"=="COMMAND" ECHO.&&ECHO.Mounting disk %DISK_NUMBER% partition %PART_NUMBER% to letter %DISK_LETTER%:\...
 SET "DISK_X=%DISK_NUMBER%"&&SET "PART_X=%PART_NUMBER%"&&SET "LETT_X=%DISK_LETTER%"&&CALL:PART_ASSIGN
 IF NOT EXIST "%DISK_LETTER%:\" SET "DISK_X=%DISK_NUMBER%"&&SET "PART_X=%PART_NUMBER%"&&SET "LETT_X=%DISK_LETTER%"&&CALL:PART_ASSIGN
@@ -3284,7 +3284,7 @@ IF EXIST "%DISK_LETTER%:\" SET "DISK_MSG=Partition %PART_NUMBER% on Disk %DISK_N
 IF NOT EXIST "%DISK_LETTER%:\" SET "DISK_MSG=ERROR: Partition %PART_NUMBER% on Disk %DISK_NUMBER% was not assigned letter %DISK_LETTER%."
 EXIT /B
 :DISK_UNMOUNT_PROMPT
-CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                            Volume Unmount&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %##%%%G%$$% ^) Volume %%G:)
+CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                            Volume Unmount&&ECHO.&&FOR %%G in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF EXIST "%%G:\" ECHO. ^( %CB%%%G%CT% ^) Volume %%G:)
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=$LTR"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
 IF DEFINED $LTR CALL:DISKMGR_UNMOUNT
 EXIT /B
@@ -3308,7 +3308,7 @@ FOR %%G in ($DISK $VDISK $VOL $NAM $LTR) DO (SET "%%G=")
 IF EXIST "$DISK" DEL /Q /F "$DISK">NUL 2>&1
 EXIT /B
 :DISK_ERASE_PROMPT
-SET "QUERY_MSG=                         %COLOR2%Select a disk to erase%$$%"&&CALL:DISK_MENU
+SET "QUERY_MSG=                         %COLOR2%Select a disk to erase%CT%"&&CALL:DISK_MENU
 IF NOT DEFINED ERROR CALL:CONFIRM&&SET "$GET=TST_LETTER"&&CALL:LETTER_ANY&&CALL:DISKMGR_ERASE&SET "TST_LETTER="
 EXIT /B
 :DISKMGR_ERASE
@@ -3319,12 +3319,12 @@ SET "DISK_X=%DISK_NUMBER%"&&CALL:DISK_CLEAN&&SET "DISK_X=%DISK_NUMBER%"&&SET "PA
 IF EXIST "%TST_LETTER%:\" SET "DISK_X=%DISK_NUMBER%"&&CALL:DISK_CLEAN
 CALL:DISKMGR_CHANGEID>NUL 2>&1
 IF NOT EXIST "%TST_LETTER%:\" SET "DISK_MSG=All partitions on Disk %DISK_NUMBER% have been erased."
-IF EXIST "%TST_LETTER%:\" SET "DISK_MSG=%##%Disk %DISK_NUMBER% is currently in use - unplug disk - reboot into Windows - replug and try again.%$$%"
+IF EXIST "%TST_LETTER%:\" SET "DISK_MSG=%CB%Disk %DISK_NUMBER% is currently in use - unplug disk - reboot into Windows - replug and try again.%CT%"
 IF EXIST "%TST_LETTER%:\" SET "LETT_X=%TST_LETTER%"&&CALL:VOL_REMOVE
 IF EXIST "%TST_LETTER%:\" SET "DISK_X=%DISK_NUMBER%"&&SET "PART_X=1"&&SET "LETT_X=%TST_LETTER%"&&CALL:PART_REMOVE
 SET "TEST_X="&&EXIT /B
 :DISK_UID_PROMPT
-ECHO.                       Enter a new disk UID (%##%#%$$%) &&CALL:PAD_LINE&&CALL:PAD_PREV&&CALL:MENU_SELECT
+ECHO.                       Enter a new disk UID (%CB%#%CT%) &&CALL:PAD_LINE&&CALL:PAD_PREV&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT SET "ERROR=DISK_UID_PROMPT"&&CALL:DEBUG&&EXIT /B
 IF NOT DEFINED ERROR SET "GET_DISK_ID=%SELECT%"&&CALL:CONFIRM&&CALL:DISKMGR_CHANGEID
 EXIT /B
@@ -3363,10 +3363,10 @@ IF NOT DEFINED DISK_TARGET SET "EFI_LETTER="&&EXIT /B
 SET "$GET=EFI_LETTER"&&CALL:LETTER_ANY
 SET /P HOST_TARGET=<"%ProgFolder0%\HOST_TARGET"
 SET "DISK_TARGET=%HOST_TARGET%"&&CALL:DISK_DETECT>NUL 2>&1
-IF NOT DEFINED DISK_DETECT SET "ERROR=EFI_MOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%$$% EFI target disk could not be found.&&SET "EFI_LETTER="&&EXIT /B
+IF NOT DEFINED DISK_DETECT SET "ERROR=EFI_MOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%CT% EFI target disk could not be found.&&SET "EFI_LETTER="&&EXIT /B
 SET "DISK_X=%DISK_DETECT%"&&SET "PART_X=1"&&CALL:PART_BAS
 SET "DISK_X=%DISK_DETECT%"&&SET "PART_X=1"&&SET "LETT_X=%EFI_LETTER%"&&CALL:PART_ASSIGN
-IF NOT EXIST "%EFI_LETTER%:\" SET "ERROR=EFI_MOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%$$% EFI %EFI_LETTER%:\ could not be mounted.&&SET "EFI_LETTER="
+IF NOT EXIST "%EFI_LETTER%:\" SET "ERROR=EFI_MOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%CT% EFI %EFI_LETTER%:\ could not be mounted.&&SET "EFI_LETTER="
 EXIT /B
 :EFI_UNMOUNT
 IF NOT DEFINED DISK_TARGET SET "EFI_LETTER="
@@ -3374,7 +3374,7 @@ IF NOT EXIST "%EFI_LETTER%:\" SET "EFI_LETTER="
 IF NOT DEFINED EFI_LETTER EXIT /B
 SET "DISK_X=%DISK_DETECT%"&&SET "PART_X=1"&&SET "LETT_X=%EFI_LETTER%"&&CALL:PART_REMOVE
 SET "DISK_X=%DISK_DETECT%"&&SET "PART_X=1"&&CALL:PART_EFIX
-IF EXIST "%EFI_LETTER%:\" SET "ERROR=EFI_UNMOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%$$% EFI %EFI_LETTER%:\ could not dismount.
+IF EXIST "%EFI_LETTER%:\" SET "ERROR=EFI_UNMOUNT"&&CALL:DEBUG&&ECHO.%COLOR2%ERROR:%CT% EFI %EFI_LETTER%:\ could not dismount.
 SET "EFI_LETTER="&&EXIT /B
 :DISK_MENU
 CLS&&SET "DISK_TARGET="&&CALL:PAD_LINE&&SET "DISK_GET=1"&&CALL:DISK_LIST
@@ -3393,29 +3393,29 @@ FOR /F "TOKENS=1 DELIMS=:" %%G in ("%SystemDrive%") DO (SET "SYS_VOLUME=%%G")
 FOR /F "TOKENS=1 DELIMS=:" %%G in ("%ProgFolder%") DO (SET "PROG_VOLUME=%%G")
 (ECHO.LIST DISK&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1-5 SKIP=8 DELIMS= " %%a in ('DISKPART /s "$DISK"') DO (
 IF "%%a"=="Disk" IF NOT "%%b"=="###" SET "DISKVND="&&(ECHO.select disk %%b&&ECHO.detail disk&&ECHO.list partition&&ECHO.Exit)>"$DISK"&&SET "LTRX=X"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS={}: " %%1 in ('DISKPART /s "$DISK"') DO (
-IF "%%1 %%2"=="Disk %%b" ECHO.&&ECHO.   %@@%Disk%$$% ^(%##%%%b%$$%^)
+IF "%%1 %%2"=="Disk %%b" ECHO.&&ECHO.   %CA%Disk%CT% ^(%CB%%%b%CT%^)
 IF NOT "%%1 %%2"=="Disk %%b" IF NOT DEFINED DISKVND SET "DISKVND=$"&&ECHO.   %%1 %%2 %%3 %%4 %%5
-IF "%%1"=="Type" ECHO.    %@@%Type%$$% = %%2
-IF "%%1 %%2"=="Disk ID" ECHO.    %@@%UID%$$%  = %%3
-IF "%%1 %%3"=="Volume %SYS_VOLUME%" ECHO.  %COLOR2%  System Volume%$$%
-IF "%%1 %%3"=="Volume %PROG_VOLUME%" ECHO.  %COLOR2%  Program Volume%$$%
-IF "%%1 %%2 %%3"=="Pagefile Disk Yes" ECHO.  %COLOR2%  Active Pagefile%$$%
+IF "%%1"=="Type" ECHO.    %CA%Type%CT% = %%2
+IF "%%1 %%2"=="Disk ID" ECHO.    %CA%UID%CT%  = %%3
+IF "%%1 %%3"=="Volume %SYS_VOLUME%" ECHO.  %COLOR2%  System Volume%CT%
+IF "%%1 %%3"=="Volume %PROG_VOLUME%" ECHO.  %COLOR2%  Program Volume%CT%
+IF "%%1 %%2 %%3"=="Pagefile Disk Yes" ECHO.  %COLOR2%  Active Pagefile%CT%
 IF "%%1"=="Partition" IF NOT "%%2"=="###" SET "PARTX=%%2"&&SET "SIZEX=%%4 %%5"&&(ECHO.select disk %%b&&ECHO.select partition %%2&&ECHO.detail partition&&ECHO.Exit)>"$DISK"&&SET "LTRX="&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS=* " %%A in ('DISKPART /s "$DISK"') DO (IF "%%A"=="Volume" IF NOT "%%B"=="###" SET "LTRX=%%C"&&CALL:DISK_CHECK)
-IF NOT DEFINED LTRX IF NOT "%%2"=="DiskPart..." ECHO.    %@@%Part %%2%$$% Vol * %%4 %%5))
+IF NOT DEFINED LTRX IF NOT "%%2"=="DiskPart..." ECHO.    %CA%Part %%2%CT% Vol * %%4 %%5))
 IF DEFINED DISK_GET CALL:DISK_DETECT>NUL 2>&1
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP
 FOR %%a in ($GO LTRX PARTX SIZEX QUERY_MSG DISK_GET) DO (SET "%%a=")
 DEL /Q /F "$DISK">NUL 2>&1
 EXIT /B
 :DISK_CHECK
-SET "$GO="&&FOR %%■ in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%%■"=="%LTRX%" SET "$GO=1"&&ECHO.    %@@%Part %PARTX%%$$% Vol %@@%%LTRX%%$$% %SIZEX%)
-IF NOT DEFINED $GO ECHO.    %@@%Part %PARTX%%$$% Vol * %SIZEX%
+SET "$GO="&&FOR %%■ in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%%■"=="%LTRX%" SET "$GO=1"&&ECHO.    %CA%Part %PARTX%%CT% Vol %CA%%LTRX%%CT% %SIZEX%)
+IF NOT DEFINED $GO ECHO.    %CA%Part %PARTX%%CT% Vol * %SIZEX%
 EXIT /B
 :DISK_LIST_BASIC
 (ECHO.LIST DISK&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1-5 SKIP=8 DELIMS= " %%a in ('DISKPART /s "$DISK"') DO (
-IF "%%a"=="Disk" IF NOT "%%b"=="###" ECHO.&&ECHO.   %@@%%%a%$$% %@@%%%b%$$%&&SET "DISKVND="&&(ECHO.select disk %%b&&ECHO.detail disk&&ECHO.list partition&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS={}: " %%1 in ('DISKPART /s "$DISK"') DO (
+IF "%%a"=="Disk" IF NOT "%%b"=="###" ECHO.&&ECHO.   %CA%%%a%CT% %CA%%%b%CT%&&SET "DISKVND="&&(ECHO.select disk %%b&&ECHO.detail disk&&ECHO.list partition&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS={}: " %%1 in ('DISKPART /s "$DISK"') DO (
 IF NOT "%%1 %%2"=="Disk %%b" IF NOT DEFINED DISKVND SET "DISKVND=$"&&ECHO.   %%1 %%2 %%3 %%4 %%5
-FOR %%■ in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%%1"=="Volume" IF "%%3"=="%%■" ECHO.    Vol %@@%%%■%$$%)))
+FOR %%■ in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) DO (IF "%%1"=="Volume" IF "%%3"=="%%■" ECHO.    Vol %CA%%%■%CT%)))
 ECHO.&&DEL /Q /F "$DISK">NUL 2>&1
 EXIT /B
 :DISK_DETECT
@@ -3425,7 +3425,7 @@ SET "DISK_DETECT="&&FOR %%a in (0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 1
 (ECHO.LIST DISK&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1,2,4 SKIP=8 DELIMS= " %%a in ('DISKPART /s "$DISK"') DO (IF "%%a"=="Disk" IF NOT "%%b"=="###" SET "DISK_%%b="&&(ECHO.select disk %%b&&ECHO.detail disk&&ECHO.list partition&&ECHO.Exit)>"$DISK"&&FOR /F "TOKENS=1-9 SKIP=6 DELIMS={}: " %%1 in ('DISKPART /s "$DISK"') DO (
 IF "%%1 %%2"=="Disk %%b" SET "DISK_%%b=%%b"
 IF "%%1 %%2"=="Disk ID" SET "DISKID_%%b=%%3"&&IF "%%3"=="%DISK_TARGET%" SET "DISK_DETECT=%%b"
-IF "%%1 %%2"=="Disk ID" IF DEFINED QUERY_X ECHO.Getting info for disk uid %##%%%3%$$%...
+IF "%%1 %%2"=="Disk ID" IF DEFINED QUERY_X ECHO.Getting info for disk uid %CB%%%3%CT%...
 IF "%%1 %%2 %%3"=="Pagefile Disk Yes" SET "DISK_%%b="
 IF "%%2 %%3 %%4"=="File Backed Virtual" SET "DISK_%%b=VDISK"
 IF "%%1 %%3"=="Volume %SYS_VOLUME%" SET "DISK_%%b="
@@ -3437,8 +3437,8 @@ EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 :BOOT_CREATOR
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
-CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U04% BootDisk Creator&&ECHO.&&ECHO.  %@@%AVAILABLE VHDXs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&ECHO. (%##%O%$$%)ptions                     (%##%C%$$%)reate        (%##%V%$$%)HDX %@@%%VHDX_SLOTX%%$$%&&CALL:PAD_LINE
-IF DEFINED ADV_BOOT ECHO. [%@@%OPTIONS%$$%]   (%##%A%$$%)dd File      (%##%E%$$%)xport EFI      (%##%W%$$%)allpaper %@@%%PE_WALLPAPER%%$$%&&CALL:PAD_LINE
+CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                          %U04% BootDisk Creator&&ECHO.&&ECHO.  %CA%AVAILABLE VHDXs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&SET "$DISP=BAS"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&ECHO. (%CB%O%CT%)ptions                     (%CB%C%CT%)reate        (%CB%V%CT%)HDX %CA%%VHDX_SLOTX%%CT%&&CALL:PAD_LINE
+IF DEFINED ADV_BOOT ECHO. [%CA%OPTIONS%CT%]   (%CB%A%CT%)dd File      (%CB%E%CT%)xport EFI      (%CB%W%CT%)allpaper %CA%%PE_WALLPAPER%%CT%&&CALL:PAD_LINE
 CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED HOST_ERROR GOTO:MAIN_MENU
 IF NOT DEFINED SELECT GOTO:MAIN_MENU
@@ -3454,7 +3454,7 @@ GOTO:BOOT_CREATOR
 CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP
 FOR %%a in (0 1 2 3 4 5 6 7 8 9) DO (SET "ADDFILE_NUM=%%a"&&CALL SET "ADDFILE_CHK=%%ADDFILE_%%a%%"&&CALL:ADDFILE_CHK)
 ECHO.                             %U02% Add File&&ECHO.
-FOR %%G in (0 1 2 3 4 5 6 7 8 9) DO (CALL ECHO. File ^(%##%%%G%$$%^) %@@%%%ADDFILE_%%G%%%$$%)
+FOR %%G in (0 1 2 3 4 5 6 7 8 9) DO (CALL ECHO. File ^(%CB%%%G%CT%^) %CA%%%ADDFILE_%%G%%%CT%)
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT EXIT /B
 FOR %%G in (0 1 2 3 4 5 6 7 8 9) DO (IF "%SELECT%"=="%%G" SET "ADDFILEX=%SELECT%"&&CALL:ADDFILE_CHOOSE)
@@ -3462,15 +3462,15 @@ FOR %%a in (ADDFILE_CHK ADDFILE_NUM) DO (SET "%%a=")
 GOTO:ADDFILE_MENU
 :ADDFILE_CHOOSE
 CLS&&SET "ADDFILEZ="&&IF "%FOLDER_MODE%"=="UNIFIED" SET "SELECTX=5"&&GOTO:ADDFILE_JUMP
-CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U02% Add File&&ECHO.&&ECHO. (%##%1%$$%) Package&&ECHO. (%##%2%$$%) List&&CALL ECHO. (%##%3%$$%) Image&&ECHO. (%##%4%$$%) Cache&&ECHO. (%##%5%$$%) Main&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=NUMBER❗1-5"&&SET "$SELECT=SELECTX"&&CALL:MENU_SELECT
+CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U02% Add File&&ECHO.&&ECHO. (%CB%1%CT%) Package&&ECHO. (%CB%2%CT%) List&&CALL ECHO. (%CB%3%CT%) Image&&ECHO. (%CB%4%CT%) Cache&&ECHO. (%CB%5%CT%) Main&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=NUMBER❗1-5"&&SET "$SELECT=SELECTX"&&CALL:MENU_SELECT
 IF NOT "%SELECTX%"=="1" IF NOT "%SELECTX%"=="2" IF NOT "%SELECTX%"=="3" IF NOT "%SELECTX%"=="4" IF NOT "%SELECTX%"=="5" EXIT /B
 CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             %U02% Add File&&ECHO.
-IF "%SELECTX%"=="1" SET "ADDFILEZ=◁PackFolder▷" ECHO.  %@@%AVAILABLE PACKAGEs:%$$%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST
-IF "%SELECTX%"=="2" SET "ADDFILEZ=◁ListFolder▷"&&ECHO.  %@@%AVAILABLE LISTs/BASEs:%$$%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST *.BASE"&&CALL:FILE_LIST
-IF "%SELECTX%"=="3" SET "ADDFILEZ=◁ImageFolder▷"&&ECHO.  %@@%AVAILABLE IMAGEs:%$$%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX *.ISO"&&CALL:FILE_LIST
-IF "%SELECTX%"=="4" SET "ADDFILEZ=◁CacheFolder▷"&&ECHO.  %@@%AVAILABLE CACHE FILEs:%$$%&&ECHO.&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.*"&&CALL:FILE_LIST
+IF "%SELECTX%"=="1" SET "ADDFILEZ=◁PackFolder▷" ECHO.  %CA%AVAILABLE PACKAGEs:%CT%&&ECHO.&&SET "$FOLD=%PackFolder%"&&SET "$FILT=*.PKX *.CAB *.MSU *.APPX *.APPXBUNDLE *.MSIXBUNDLE"&&CALL:FILE_LIST
+IF "%SELECTX%"=="2" SET "ADDFILEZ=◁ListFolder▷"&&ECHO.  %CA%AVAILABLE LISTs/BASEs:%CT%&&ECHO.&&SET "$FOLD=%ListFolder%"&&SET "$FILT=*.LIST *.BASE"&&CALL:FILE_LIST
+IF "%SELECTX%"=="3" SET "ADDFILEZ=◁ImageFolder▷"&&ECHO.  %CA%AVAILABLE IMAGEs:%CT%&&ECHO.&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.WIM *.VHDX *.ISO"&&CALL:FILE_LIST
+IF "%SELECTX%"=="4" SET "ADDFILEZ=◁CacheFolder▷"&&ECHO.  %CA%AVAILABLE CACHE FILEs:%CT%&&ECHO.&&SET "$FOLD=%CacheFolder%"&&SET "$FILT=*.*"&&CALL:FILE_LIST
 :ADDFILE_JUMP
-IF "%SELECTX%"=="5" SET "ADDFILEZ=◁ProgFolder▷"&&ECHO.  %@@%AVAILABLE MAIN FILEs:%$$%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.*"&&CALL:FILE_LIST
+IF "%SELECTX%"=="5" SET "ADDFILEZ=◁ProgFolder▷"&&ECHO.  %CA%AVAILABLE MAIN FILEs:%CT%&&ECHO.&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.*"&&CALL:FILE_LIST
 ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF DEFINED ADDFILEZ IF DEFINED $PICK IF EXIST "%$PICK%" IF NOT EXIST "%$PICK%\*" SET "ADDFILE_%ADDFILEX%=%ADDFILEZ%\%$CHOICE%"
 IF DEFINED ADDFILEZ IF NOT DEFINED $PICK SET "ADDFILE_%ADDFILEX%=SELECT"
@@ -3484,14 +3484,14 @@ EXIT /B
 :EFI_FETCH
 CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.        EFI boot files will be extracted from the boot media.&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:CONFIRM
 IF NOT "%CONFIRM%"=="X" EXIT /B
-CLS&&IF EXIST "%CacheFolder%\boot.sdi" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.         File boot.sdi already exists. Press (%##%X%$$%) to overwrite&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
+CLS&&IF EXIST "%CacheFolder%\boot.sdi" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.         File boot.sdi already exists. Press (%CB%X%CT%) to overwrite&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
 IF EXIST "%CacheFolder%\boot.sdi" IF NOT "%CONFIRM%"=="X" EXIT /B
-IF EXIST "%CacheFolder%\boot.efi" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.       File boot.efi already exists. Press (%##%X%$$%) to overwrite&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
+IF EXIST "%CacheFolder%\boot.efi" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.       File boot.efi already exists. Press (%CB%X%CT%) to overwrite&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$SELECT=CONFIRM"&&SET "$CASE=UPPER"&&SET "$CHECK=LETTER"&&CALL:MENU_SELECT
 IF EXIST "%CacheFolder%\boot.efi" IF NOT "%CONFIRM%"=="X" EXIT /B
 SET "$HEADERS=                            %U15% Bootloader%U01% %U01%                          Select a bootloader"&&SET "$CHOICE_LIST=New%U01%Old"&&SET "$NO_ERRORS=1"&&CALL:CHOICE_BOX
 IF "%SELECT%"=="1" SET "BOOTLOADERX=New"
 IF "%SELECT%"=="2" SET "BOOTLOADERX=Old"
-CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.            %@@%EFI EXPORT START:%$$%  %DATE%  %TIME%&&ECHO.&&CALL:VTEMP_CREATE&ECHO.Extracting boot-media. Using boot.sav located in folder...
+CLS&&SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.            %CA%EFI EXPORT START:%CT%  %DATE%  %TIME%&&ECHO.&&CALL:VTEMP_CREATE&ECHO.Extracting boot-media. Using boot.sav located in folder...
 SET "$IMAGE_X=%CacheFolder%\boot.sav"&&SET "INDEX_WORD=Setup"&&CALL:GET_WIMINDEX
 IF NOT DEFINED INDEX_Z SET "INDEX_Z=1"
 %DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%CacheFolder%\boot.sav" /INDEX:%INDEX_Z% /APPLYDIR:"%VDISK_LTR%:"&ECHO.&SET "INDEX_Z="
@@ -3501,14 +3501,14 @@ IF "%BOOTLOADERX%"=="New" IF NOT EXIST "%VDISK_LTR%:\Windows\Boot\EFI_EX\bootmgf
 IF "%BOOTLOADERX%"=="Old" IF EXIST "%VDISK_LTR%:\Windows\Boot\EFI\bootmgfw.efi" ECHO.File boot.efi was found. Copying to folder.&&COPY /Y "%VDISK_LTR%:\Windows\Boot\EFI\bootmgfw.efi" "%CacheFolder%\boot.efi">NUL 2>&1
 IF "%BOOTLOADERX%"=="New" IF EXIST "%VDISK_LTR%:\Windows\Boot\EFI_EX\bootmgfw_EX.efi" ECHO.File boot.efi was found. Copying to folder.&&COPY /Y "%VDISK_LTR%:\Windows\Boot\EFI_EX\bootmgfw_EX.efi" "%CacheFolder%\boot.efi">NUL 2>&1
 IF NOT EXIST "%CacheFolder%\boot.sdi" ECHO.ERROR: boot.sdi missing
-ECHO.&&ECHO.EFI boot files will be used during boot creation when selected in settings.&&ECHO.&&CALL:VTEMP_DELETE&&ECHO.&&ECHO.             %@@%EFI EXPORT END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED
+ECHO.&&ECHO.EFI boot files will be used during boot creation when selected in settings.&&ECHO.&&CALL:VTEMP_DELETE&&ECHO.&&ECHO.             %CA%EFI EXPORT END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP&&CALL:PAUSED
 EXIT /B
 :BOOT_CREATOR_PROMPT
 IF "%PROG_MODE%"=="RAMDISK" IF NOT EXIST "%CacheFolder%\boot.sav" CALL:BOOT_FETCH
 IF NOT EXIST "%CacheFolder%\boot.sav" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.   Import boot media from within image processing before proceeding.&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAUSED&&EXIT /B
 IF "%VHDX_SLOTX%"=="SELECT" CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.&&ECHO.&&ECHO.              No virtual hard disk file has been selected.&&ECHO.        Virtual disks can be added to the boot menu in Recovery.&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:CONFIRM
 IF "%VHDX_SLOTX%"=="SELECT" IF NOT "%CONFIRM%"=="X" EXIT /B
-SET "QUERY_MSG=                         %COLOR2%Select a disk to erase%$$%"&&CALL:DISK_MENU
+SET "QUERY_MSG=                         %COLOR2%Select a disk to erase%CT%"&&CALL:DISK_MENU
 IF DEFINED ERROR EXIT /B
 CALL:CONFIRM
 IF NOT "%CONFIRM%"=="X" EXIT /B
@@ -3530,24 +3530,24 @@ IF NOT EXIST "%PRI_LETTER%:\" (ECHO.select disk %DISK_NUMBER%&&ECHO.select parti
 SET "TIMER=3"&&CALL:TIMER&&DEL /Q /F "$DISK">NUL 2>&1
 SET "RETRY_PART1="&&SET "RETRY_PART2="&&SET "RETRY_PART3="
 IF EXIST "%EFI_LETTER%:\" IF EXIST "%PRI_LETTER%:\" SET "EFI="&&EXIT /B
-ECHO.                     %COLOR2%The disk is currently in use.%$$%&&ECHO.     A malfunctioning disk, or if a program located on the disk&&ECHO.            is currently in use can also cause an error.&&ECHO.  For best results it is recommended to use an external nvme drive.&&ECHO.    Unplug the USB disk and/or reboot if this continues to occur.&&ECHO.
+ECHO.                     %COLOR2%The disk is currently in use.%CT%&&ECHO.     A malfunctioning disk, or if a program located on the disk&&ECHO.            is currently in use can also cause an error.&&ECHO.  For best results it is recommended to use an external nvme drive.&&ECHO.    Unplug the USB disk and/or reboot if this continues to occur.&&ECHO.
 SET "EFI="&&ECHO.&&SET "ERROR=PART_CREATE"&&CALL:DEBUG&&EXIT /B
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 :BOOT_CREATOR_START
 ::▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶▶MENU◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀◀
 IF NOT "%PROG_MODE%"=="COMMAND" CLS
-SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %@@%BOOT CREATOR START:%$$%  %DATE%  %TIME%&&ECHO.&&CALL:GET_SPACE_ENV
+SET "$BOX=ST"&&CALL:BOX_DISP&&ECHO.           %CA%BOOT CREATOR START:%CT%  %DATE%  %TIME%&&ECHO.&&CALL:GET_SPACE_ENV
 SET "DISK_MSG="&&%DISM% /cleanup-MountPoints>NUL 2>&1
 SET "CHAR_STR=%VHDX_SLOTX%"&&SET "CHAR_CHK= "&&CALL:CHAR_CHK
-IF DEFINED CHAR_FLG ECHO.%COLOR4%ERROR:%$$% Remove the space from the VHDX name, then try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH
-FOR %%a in (0 1 2 3 4 5 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%$$% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH)
+IF DEFINED CHAR_FLG ECHO.%COLOR4%ERROR:%CT% Remove the space from the VHDX name, then try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH
+FOR %%a in (0 1 2 3 4 5 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%CT% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH)
 CALL:DISK_DETECT>NUL&CALL SET "DISK_TARGET=%%DISKID_%DISK_NUMBER%%%"&CALL:DISK_DETECT>NUL
 SET "UID_XNT="&&FOR /F "DELIMS=" %%G in ('%CMD% /D /U /C ECHO.%DISK_TARGET%^| FIND /V ""') do (CALL SET /A "UID_XNT+=1")
 IF NOT "%UID_XNT%"=="36" (ECHO.Converting to GPT..&&CALL:DISKMGR_ERASE&&CALL:DISK_DETECT>NUL 2>&1
 CALL SET "DISK_TARGET=%%DISKID_%DISK_NUMBER%%%"&&CALL ECHO.Assigning new disk uid %%DISKID_%DISK_NUMBER%%%...&&CALL:DISK_DETECT>NUL 2>&1)
 SET "UID_XNT="&&FOR /F "DELIMS=" %%G in ('%CMD% /D /U /C ECHO.%DISK_TARGET%^| FIND /V ""') do (CALL SET /A "UID_XNT+=1")
-IF NOT "%UID_XNT%"=="36" ECHO.%COLOR2%ERROR:%$$% Disk could not be converted to GPT. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH
-FOR %%a in (DISK_DETECT DISK_NUMBER DISK_TARGET) DO (IF NOT DEFINED %%a ECHO.%COLOR2%ERROR:%$$% Unable to query disk number or uid.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH)
+IF NOT "%UID_XNT%"=="36" ECHO.%COLOR2%ERROR:%CT% Disk could not be converted to GPT. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH
+FOR %%a in (DISK_DETECT DISK_NUMBER DISK_TARGET) DO (IF NOT DEFINED %%a ECHO.%COLOR2%ERROR:%CT% Unable to query disk number or uid.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_FINISH)
 SET "EFI_LETTER="&&FOR %%G in (Z Y X W V U T S R Q P O N M L K J I H G F E D) DO (IF NOT EXIST "%%G:\" SET "EFI_LETTER=%%G")
 SET "PRI_LETTER="&&FOR %%G in (Z Y X W V U T S R Q P O N M L K J I H G F E D) DO (IF NOT EXIST "%%G:\" IF NOT "%%G"=="%EFI_LETTER%" SET "PRI_LETTER=%%G")
 SET "TST_LETTER="&&FOR %%G in (Z Y X W V U T S R Q P O N M L K J I H G F E D) DO (IF NOT EXIST "%%G:\" IF NOT "%%G"=="%EFI_LETTER%" IF NOT "%%G"=="%PRI_LETTER%" SET "TST_LETTER=%%G")
@@ -3560,10 +3560,10 @@ IF EXIST "%CacheFolder%\BOOT.SAV" ECHO.Extracting boot-media. Using boot.sav loc
 SET "$IMAGE_X=%PRI_LETTER%:\%HOST_FOLDER%\boot.wim"&&SET "INDEX_WORD=Setup"&&CALL:GET_WIMINDEX
 IF NOT DEFINED INDEX_Z SET "INDEX_Z=1"
 SET "$IMAGE_X=%PRI_LETTER%:\%HOST_FOLDER%\boot.wim"&&SET "INDEX_X=%INDEX_Z%"&&CALL:GET_IMAGEINFO
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% File boot.sav is corrupt. Abort.&&GOTO:BOOT_CLEANUP
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% File boot.sav is corrupt. Abort.&&GOTO:BOOT_CLEANUP
 ECHO.Version: %$IMGVER%&&%DISM% /ENGLISH /APPLY-IMAGE /IMAGEFILE:"%PRI_LETTER%:\%HOST_FOLDER%\boot.wim" /INDEX:%INDEX_Z% /APPLYDIR:"%VDISK_LTR%:"&ECHO.&SET "INDEX_Z="
 MOVE /Y "%PRI_LETTER%:\%HOST_FOLDER%\boot.wim" "%PRI_LETTER%:\%HOST_FOLDER%\boot.sav">NUL 2>&1
-IF NOT EXIST "%VDISK_LTR%:\Windows" ECHO.%COLOR2%ERROR:%$$% Files created with boot.sav are corrupt. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
+IF NOT EXIST "%VDISK_LTR%:\Windows" ECHO.%COLOR2%ERROR:%CT% Files created with boot.sav are corrupt. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
 MD "%VDISK_LTR%:\$">NUL 2>&1
 ECHO.%DISK_TARGET%>"%VDISK_LTR%:\$\HOST_TARGET"
 ECHO.%HOST_FOLDER%>"%VDISK_LTR%:\$\HOST_FOLDER"
@@ -3571,12 +3571,12 @@ COPY /Y "%ProgFolder0%\winploy.cmd" "%VDISK_LTR%:\$">NUL&COPY /Y "%ProgFolder0%\
 FOR %%a in (Boot EFI\Boot EFI\Microsoft\Boot) DO (MD %EFI_LETTER%:\%%a>NUL 2>&1)
 IF "%BOOTLOADER%"=="boot.efi" IF EXIST "%CacheFolder%\boot.sdi" ECHO.Using boot.sdi located in folder, for efi image boot support.&&COPY /Y "%CacheFolder%\boot.sdi" "%EFI_LETTER%:\Boot">NUL
 IF NOT EXIST "%EFI_LETTER%:\Boot\boot.sdi" COPY /Y "%VDISK_LTR%:\Windows\Boot\DVD\EFI\boot.sdi" "%EFI_LETTER%:\Boot">NUL 2>&1
-IF NOT EXIST "%EFI_LETTER%:\Boot\boot.sdi" ECHO.%COLOR2%ERROR:%$$% boot.sdi missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
+IF NOT EXIST "%EFI_LETTER%:\Boot\boot.sdi" ECHO.%COLOR2%ERROR:%CT% boot.sdi missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
 IF "%BOOTLOADER%"=="boot.efi" IF NOT EXIST "%CacheFolder%\boot.efi" SET "BOOTLOADER=New"
 IF "%BOOTLOADER%"=="Old" COPY /Y "%VDISK_LTR%:\Windows\Boot\EFI\bootmgfw.efi" "%EFI_LETTER%:\EFI\Boot\bootx64.efi">NUL 2>&1
 IF "%BOOTLOADER%"=="New" COPY /Y "%VDISK_LTR%:\Windows\Boot\EFI_EX\bootmgfw_EX.efi" "%EFI_LETTER%:\EFI\Boot\bootx64.efi">NUL 2>&1
 IF "%BOOTLOADER%"=="boot.efi" IF EXIST "%CacheFolder%\boot.efi" ECHO.Using boot.efi located in folder for the bootloader.&&COPY /Y "%CacheFolder%\boot.efi" "%EFI_LETTER%:\EFI\Boot\bootx64.efi">NUL
-IF NOT EXIST "%EFI_LETTER%:\EFI\Boot\bootx64.efi" ECHO.%COLOR2%ERROR:%$$% boot.efi missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
+IF NOT EXIST "%EFI_LETTER%:\EFI\Boot\bootx64.efi" ECHO.%COLOR2%ERROR:%CT% boot.efi missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
 IF DEFINED PE_WALLPAPER IF EXIST "%CacheFolder%\%PE_WALLPAPER%" (ECHO.Using %PE_WALLPAPER% for the recovery wallpaper.
 TAKEOWN /F "%VDISK_LTR%:\Windows\System32\setup.bmp">NUL 2>&1
 ICACLS "%VDISK_LTR%:\Windows\System32\setup.bmp" /grant %USERNAME%:F>NUL 2>&1
@@ -3586,18 +3586,18 @@ COPY /Y "%VDISK_LTR%:\Windows\System32\config\ELAM" "%TEMP%\BCD">NUL 2>&1
 ::ECHO."%%SYSTEMDRIVE%%\$\winploy.cmd">"%VDISK_LTR%:\WINDOWS\SYSTEM32\STARTNET.CMD"
 (ECHO.[LaunchApp]&&ECHO.AppPath=X:\$\winploy.cmd)>"%VDISK_LTR%:\Windows\System32\winpeshl.ini"
 SET "VHDX_SLOTZ=%VHDX_SLOT0%"&&SET "VHDX_SLOT0=%VHDX_SLOTX%"&&SET "HOST_X=%HOST_FOLDER%"&&CALL:BCD_CREATE>NUL 2>&1
-SET "VHDX_SLOT0=%VHDX_SLOTZ%"&&SET "VHDX_SLOTZ="&&IF NOT EXIST "%EFI_LETTER%:\EFI\Microsoft\Boot\BCD" ECHO.%COLOR2%ERROR:%$$% BCD missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
+SET "VHDX_SLOT0=%VHDX_SLOTZ%"&&SET "VHDX_SLOTZ="&&IF NOT EXIST "%EFI_LETTER%:\EFI\Microsoft\Boot\BCD" ECHO.%COLOR2%ERROR:%CT% BCD missing. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
 ::%DISM% /IMAGE:"%VDISK_LTR%:" /SET-SCRATCHSPACE:512 >NUL 2>&1
 ECHO.Saving boot-media...&&%DISM% /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"%VDISK_LTR%:" /IMAGEFILE:"%PRI_LETTER%:\%HOST_FOLDER%\$TEMP.wim" /COMPRESS:FAST /NAME:"WindowsPE" /CheckIntegrity /Verify /Bootable&ECHO.
 SET "$IMAGE_X=%PRI_LETTER%:\%HOST_FOLDER%\$TEMP.wim"&&SET "INDEX_X=1"&&CALL:GET_IMAGEINFO
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% File boot.sav is corrupt. Abort.&&GOTO:BOOT_CLEANUP
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% File boot.sav is corrupt. Abort.&&GOTO:BOOT_CLEANUP
 SET "GET_BYTES=MB"&&SET "INPUT=%EFI_LETTER%:"&&SET "OUTPUT=EFI_FREE"&&CALL:GET_FREE_SPACE
 IF NOT DEFINED ERROR SET "GET_BYTES=MB"&&SET "INPUT=%PRI_LETTER%:\%HOST_FOLDER%\$TEMP.wim"&&SET "OUTPUT=BOOT_X"&&CALL:GET_FILESIZE
 IF NOT DEFINED ERROR SET /A "EFI_FREE+=%BOOT_X%"
-IF DEFINED ERROR ECHO.%COLOR2%ERROR:%$$% Unable to get file size or free space. Abort.&&GOTO:BOOT_CLEANUP
+IF DEFINED ERROR ECHO.%COLOR2%ERROR:%CT% Unable to get file size or free space. Abort.&&GOTO:BOOT_CLEANUP
 CALL:GET_SPACE_ENV&&FOR %%a in (EFI_FREE BOOT_X) DO (IF NOT DEFINED %%a SET "%%a=0")
-IF %EFI_FREE% LEQ %BOOT_X% ECHO.%COLOR2%ERROR:%$$% File boot.sav %BOOT_X%MB exceeds %EFI_FREE%MB. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
-FOR %%a in (0 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%$$% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP)
+IF %EFI_FREE% LEQ %BOOT_X% ECHO.%COLOR2%ERROR:%CT% File boot.sav %BOOT_X%MB exceeds %EFI_FREE%MB. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP
+FOR %%a in (0 ERROR) DO (IF "%FREE%"=="%%a" ECHO.%COLOR2%ERROR:%CT% Not enough free space. Clear some space and try again. Abort.&&SET "ERROR=BOOT_CREATOR_START"&&GOTO:BOOT_CLEANUP)
 IF NOT DEFINED ERROR MOVE /Y "%PRI_LETTER%:\%HOST_FOLDER%\$TEMP.wim" "%EFI_LETTER%:\$.WIM">NUL
 :BOOT_CLEANUP
 ECHO.Unmounting temporary vdisk...&&SET "$VDISK_FILE=%PRI_LETTER%:\%HOST_FOLDER%\$TEMP.vhdx"&&CALL:VDISK_DETACH>NUL 2>&1
@@ -3615,7 +3615,7 @@ CALL SET "VDISK_CHK=%%DISK_%DISK_DETECT%%%"
 IF "%VDISK_CHK%"=="VDISK" SET "$LTR=%PRI_LETTER%"&&CALL:DISKMGR_UNMOUNT
 :BOOT_FINISH
 SET "ADDFILE_CHK="&&SET "VDISK_CHK="&&SET "PATH_TEMP="&&SET "PATH_FILE="&&SET "EFI_LETTER="&&SET "PRI_LETTER="&&SET "TST_LETTER="&&IF "%PROG_MODE%"=="RAMDISK" CALL:HOST_AUTO>NUL 2>&1
-CALL:DEL_DISK&&ECHO.&&ECHO.            %@@%BOOT CREATOR END:%$$%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
+CALL:DEL_DISK&&ECHO.&&ECHO.            %CA%BOOT CREATOR END:%CT%  %DATE%  %TIME%&&SET "$BOX=SB"&&CALL:BOX_DISP
 IF NOT "%PROG_MODE%"=="COMMAND" CALL:PAUSED
 EXIT /B
 :ADDFILE_COPY
@@ -3625,14 +3625,14 @@ IF EXIST "%ADDFILE_CHK%" IF NOT EXIST "%ADDFILE_CHK%\*" ECHO.Copying %ADDFILE_CH
 EXIT /B
 :BCD_MENU
 CLS&&CALL:SETS_HANDLER&&CALL:CLEAN&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&IF NOT DEFINED BOOT_TIMEOUT SET "BOOT_TIMEOUT=5"
-ECHO.                           %U09% Boot Menu Editor&&ECHO.&&ECHO. Time (%##%T%$$%^) %U14% %@@%%BOOT_TIMEOUT%%$$% seconds
+ECHO.                           %U09% Boot Menu Editor&&ECHO.&&ECHO. Time (%CB%T%CT%^) %U14% %CA%%BOOT_TIMEOUT%%CT% seconds
 IF NOT DEFINED NEXT_BOOT SET "BOOT_TARGET=GET"&&CALL:BOOT_TOGGLE
-IF "%NEXT_BOOT%"=="RECOVERY" ECHO. Slot (%##%*%$$%) %U06% %@@%Recovery%$$%
-FOR %%G in (0) DO (IF DEFINED VHDX_SLOT%%G IF NOT "%VHDX_SLOT0%"=="SELECT" CALL ECHO. Slot ^(%##%%%G%$$%^) %U06% %@@%%%VHDX_SLOT%%G%%%$$%)
-FOR %%G in (1 2 3 4 5) DO (CALL ECHO. Slot ^(%##%%%G%$$%^) %U06% %@@%%%VHDX_SLOT%%G%%%$$%)
-FOR %%G in (6 7 8 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25) DO (IF DEFINED VHDX_SLOT%%G CALL ECHO. Slot ^(%##%%%G%$$%^) %U06% %@@%%%VHDX_SLOT%%G%%%$$%)
-IF "%NEXT_BOOT%"=="VHDX" ECHO. Slot (%##%*%$$%) %@@%Recovery%$$%
-ECHO.&&ECHO.                Press (%##%X%$$%) to apply boot menu settings&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
+IF "%NEXT_BOOT%"=="RECOVERY" ECHO. Slot (%CB%*%CT%) %U06% %CA%Recovery%CT%
+FOR %%G in (0) DO (IF DEFINED VHDX_SLOT%%G IF NOT "%VHDX_SLOT0%"=="SELECT" CALL ECHO. Slot ^(%CB%%%G%CT%^) %U06% %CA%%%VHDX_SLOT%%G%%%CT%)
+FOR %%G in (1 2 3 4 5) DO (CALL ECHO. Slot ^(%CB%%%G%CT%^) %U06% %CA%%%VHDX_SLOT%%G%%%CT%)
+FOR %%G in (6 7 8 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25) DO (IF DEFINED VHDX_SLOT%%G CALL ECHO. Slot ^(%CB%%%G%CT%^) %U06% %CA%%%VHDX_SLOT%%G%%%CT%)
+IF "%NEXT_BOOT%"=="VHDX" ECHO. Slot (%CB%*%CT%) %CA%Recovery%CT%
+ECHO.&&ECHO.                Press (%CB%X%CT%) to apply boot menu settings&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHECK=MENU"&&CALL:MENU_SELECT
 IF NOT DEFINED SELECT EXIT /B
 IF "%SELECT%"=="T" CALL:BOOT_TIMEOUT&SET "SELECT="
 IF "%SELECT%"=="*" IF "%NEXT_BOOT%"=="RECOVERY" SET "NEXT_BOOT=VHDX"&&SET "SELECT="
@@ -3646,13 +3646,13 @@ IF NOT DEFINED ERROR IF NOT "%SELECT%"=="0" SET "BOOT_TIMEOUT=%SELECT%"
 IF DEFINED ERROR SET "BOOT_TIMEOUT="
 EXIT /B
 :VHDX_CHECK
-IF "%$VHDX%"=="X" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             Boot Creator&&ECHO.&&ECHO.  %@@%AVAILABLE VHDXs:%$$%&&ECHO.&&ECHO. ( %##%0%$$% ) File Operation&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHOICEMINO=1"&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
+IF "%$VHDX%"=="X" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                             Boot Creator&&ECHO.&&ECHO.  %CA%AVAILABLE VHDXs:%CT%&&ECHO.&&ECHO. ( %CB%0%CT% ) File Operation&&SET "$FOLD=%ImageFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHOICEMINO=1"&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
 IF "%$VHDX%"=="X" IF "%SELECT%"=="0" SET "FILE_TYPE=VHDX"&&CALL:BASIC_FILE&SET "ERROR=NONE"&&CALL:DEBUG&EXIT /B
-IF NOT "%$VHDX%"=="X" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                           Boot Menu Editor&&ECHO.&&ECHO.  %@@%MAIN FOLDER VHDXs:%$$%&&ECHO.&&ECHO. ( %##%0%$$% ) File Operation&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHOICEMINO=1"&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
+IF NOT "%$VHDX%"=="X" CLS&&CALL:PAD_LINE&&SET "$BOX=RT"&&CALL:BOX_DISP&&ECHO.                           Boot Menu Editor&&ECHO.&&ECHO.  %CA%MAIN FOLDER VHDXs:%CT%&&ECHO.&&ECHO. ( %CB%0%CT% ) File Operation&&SET "$FOLD=%ProgFolder%"&&SET "$FILT=*.VHDX"&&CALL:FILE_LIST&&ECHO.&&SET "$BOX=RB"&&CALL:BOX_DISP&&CALL:PAD_LINE&&CALL:PAD_PREV&&SET "$CHOICEMINO=1"&&SET "$CHECK=NUMBER"&&CALL:MENU_SELECT
 IF NOT "%$VHDX%"=="X" IF "%SELECT%"=="0" SET "FILE_TYPE=MAIN"&&CALL:BASIC_FILE&SET "ERROR=NONE"&&CALL:DEBUG&EXIT /B
 IF NOT DEFINED $PICK SET "VHDX_SLOT%$VHDX%="&&SET "$VHDX="&&EXIT /B
 SET "CHAR_STR=%$CHOICE%"&&SET "CHAR_CHK= "&&CALL:CHAR_CHK
-IF DEFINED CHAR_FLG ECHO.&&ECHO.%COLOR4%ERROR:%$$% Remove the space from the VHDX name, then try again.&&ECHO.&&SET "VHDX_SLOT%$VHDX%="&&CALL:PAUSED
+IF DEFINED CHAR_FLG ECHO.&&ECHO.%COLOR4%ERROR:%CT% Remove the space from the VHDX name, then try again.&&ECHO.&&SET "VHDX_SLOT%$VHDX%="&&CALL:PAUSED
 IF NOT DEFINED CHAR_FLG SET "VHDX_SLOT%$VHDX%=%$CHOICE%"
 SET "$VHDX="
 EXIT /B
@@ -5150,7 +5150,7 @@ $command = @"
 DISM /ENGLISH /CAPTURE-IMAGE /CAPTUREDIR:"$PSScriptRootX\project" /IMAGEFILE:"$PackFolder\$boxoutput.pkx" /COMPRESS:Fast /NAME:"PKX" /CheckIntegrity /Verify
 "@
 ForEach ($i in @("","ARG1=-IMAGEMGR","ARG2=-RUN","ARG3=-CUSTOM","ARG4=`$LIST","ARG5=-LIVE")) {Add-Content -Path "$PSScriptRootX\winploy.ini" -Value "$i" -Encoding UTF8}
-ForEach ($i in @("MENU-SCRIPT","`❕Command`❕ECHO.           %@@%PACKAGE CREATE START`:%`$`$%  %DATE%  %TIME%`❕NORMAL`❕DX`❕","`❕Command`❕$command`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.            %@@%PACKAGE CREATE END`:%`$`$%  %DATE%  %TIME%`❕NORMAL`❕DX`❕")) {Add-Content -Path "$ListFolder\`$LIST" -Value "$i" -Encoding UTF8}
+ForEach ($i in @("MENU-SCRIPT","`❕Command`❕ECHO.           %CA%PACKAGE CREATE START`:%CT%  %DATE%  %TIME%`❕NORMAL`❕DX`❕","`❕Command`❕$command`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.            %CA%PACKAGE CREATE END`:%CT%  %DATE%  %TIME%`❕NORMAL`❕DX`❕")) {Add-Content -Path "$ListFolder\`$LIST" -Value "$i" -Encoding UTF8}
 $global:PBWiz_Stage = $null;$global:marked = $null;$PageMain.Visible = $true;$PagePB.Visible = $true;$PagePBWiz.Visible = $false;Button_PagePB;
 Launch-CMD -X '-0' -Y '-0' -W '1000' -H '666'}}
 
@@ -5200,7 +5200,7 @@ $command = @"
 DISM /ENGLISH /APPLY-IMAGE /IMAGEFILE:"$PackFolder\$ListViewChoiceS3" /INDEX:1 /APPLYDIR:"$ProjectFolder"
 "@
 ForEach ($i in @("","ARG1=-IMAGEMGR","ARG2=-RUN","ARG3=-CUSTOM","ARG4=`$LIST","ARG5=-LIVE")) {Add-Content -Path "$PSScriptRootX\winploy.ini" -Value "$i" -Encoding UTF8}
-ForEach ($i in @("MENU-SCRIPT","`❕Command`❕ECHO.           %@@%PACKAGE EXTRACT START`:%`$`$%  %DATE%  %TIME%`❕NORMAL`❕DX`❕","`❕Command`❕$command`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.            %@@%PACKAGE EXTRACT END`:%`$`$%  %DATE%  %TIME%`❕NORMAL`❕DX`❕")) {Add-Content -Path "$ListFolder\`$LIST" -Value "$i" -Encoding UTF8}
+ForEach ($i in @("MENU-SCRIPT","`❕Command`❕ECHO.           %CA%PACKAGE EXTRACT START`:%CT%  %DATE%  %TIME%`❕NORMAL`❕DX`❕","`❕Command`❕$command`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.`❕NORMAL`❕DX`❕","`❕Command`❕ECHO.            %CA%PACKAGE EXTRACT END`:%CT%  %DATE%  %TIME%`❕NORMAL`❕DX`❕")) {Add-Content -Path "$ListFolder\`$LIST" -Value "$i" -Encoding UTF8}
 $global:PBWiz_Stage = $null;$global:marked = $null;$PageMain.Visible = $true;$PagePB.Visible = $true;$PagePBWiz.Visible = $false;Button_PagePB
 Launch-CMD -X '-0' -Y '-0' -W '1000' -H '666'}}
 }
@@ -5609,7 +5609,7 @@ Add-Content -Path "$PSScriptRootX\`$CON" -Value "GUI_CONFONT=$($DropBox1_PageSC.
 Add-Content -Path "$PSScriptRootX\`$CON" -Value "GUI_CONFONTSIZE=$($DropBox2_PageSC.SelectedItem)" -Encoding UTF8
 Add-Content -Path "$PSScriptRootX\`$CON" -Value "GUI_SCALE=$GUI_SCALE" -Encoding UTF8
 if ($ButtonRadio1_Group1.Checked -eq $true) {$GUI_CONTYPE = 'Embed'} else {$GUI_CONTYPE = 'Spawn'}
-$global:CMDWindow = Start-Process "PowerShell" -PassThru -ArgumentList "-noprofile", "-WindowStyle", "Hidden", "-Command", {
+$global:CMDWindow = Start-Process "$env:PSEXE" -PassThru -ArgumentList "-noprofile", "-WindowStyle", "Hidden", "-Command", {
 Add-Type -TypeDefinition @'
 using System;using System.Runtime.InteropServices;public class WinMekanix {
 [DllImport(\"user32.dll\", SetLastError = true)] private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
@@ -5724,6 +5724,8 @@ $RefX = 1000;$DimScaleX = $DimensionX / $RefX
 $RefY = 1000;$DimScaleY = $DimensionY / $RefY
 if ($DimScaleX -ge $DimScaleY) {$ScaleRef = $DimScaleY}
 if ($DimScaleY -ge $DimScaleX) {$ScaleRef = $DimScaleX}
+if ($REFERENCE) {$null} else {$global:REFERENCE = 'LIVE'}
+if ($BOOTLOADER) {$null} else {$global:BOOTLOADER = 'New'}
 if ($GUI_CONCONFIRM) {$null} else {$global:GUI_CONCONFIRM = 'Enable'}
 if ($GUI_SCALE) {$null} else {$global:GUI_SCALE = 1.00}
 if ($GUI_CONFONT) {$null} else {$global:GUI_CONFONT = 'Consolas'}

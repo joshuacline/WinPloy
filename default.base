@@ -550,8 +550,7 @@
 ❕TextHost❕🪛Copy As Path Context Menu ☆ ◁Choice1.S▷ applied.❕Screen❕DX❕
 
 ❕Group❕🖯Context Menu❕🪛Take ownership ☆ ◁Array1.S▷❕Normal❕Right-click context menu settings❕Take ownership context menu❕
-; Created by: Shawn Brink; Created on: September 6, 2021; Updated on: January 7, 2024
-; Tutorial: https://www.elevenforum.com/t/add-take-ownership-to-context-menu-in-windows-11.1230/
+❕Created by: Shawn Brink; Created on: September 6, 2021; Updated on: January 7, 2024; Tutorial: https://www.elevenforum.com/t/add-take-ownership-to-context-menu-in-windows-11.1230/❕
 ❕📜Routine❕◁HiveSoftware▷\Classes\Directory\shell\TakeOwnership❗◁Null▷❕Registry❕String❕
 ❕📜Array❕◁Routine1.S▷❕Take Ownership❗◁Null▷❕✅Enabled❗❎Disabled❕
 ❕Choice❕Select an option❕✅Enable❗❎Disable❕VolaTILE❕
@@ -760,7 +759,7 @@
 ❕Choice❕Select an option❕✅Enable❗❎Disable❕VolaTILE❕
 ❕Array❕◁Choice1.I▷❕1❗2❕1❗0❕
 ❕Registry❕◁HiveSystem▷\CurrentControlSet\Control\RadioManagement\SystemRadioState❗◁Null▷❗◁Array1.S▷❗Dword❕Create❕DX❕
-❕TextHost❕🪛Airplane Mode  ☆ ◁Choice1.S▷ applied.❕Screen❕DX❕
+❕TextHost❕📵Airplane Mode  ☆ ◁Choice1.S▷ applied.❕Screen❕DX❕
 
 ❕Group❕🛜Network❕🛜Bluetooth discovery ☆ ◁Array1.S▷❕Normal❕Network related settings❗Enable or disable bluetooth discovery❕
 ❕📜Routine❕◁HiveSoftware▷\Microsoft\PolicyManager\current\device\Bluetooth❗AllowAdvertising❕Registry❕Integer❕
@@ -771,7 +770,7 @@
 ❕X❕Registry❕◁HiveSoftware▷\Microsoft\PolicyManager\current\device\Browser❗AllowAddressBarDropdown❗◁Array1.S▷❗Dword❕Create❕DX❕
 ❕X❕Registry❕◁HiveSoftware▷\Microsoft\PolicyManager\current\device\SYSTEM❗AllowExperimentation❗◁Array1.S▷❗Dword❕Create❕DX❕
 ❕X❕Registry❕◁HiveSoftware▷\Microsoft\PolicyManager\current\device\SmartGlass❗BluetoothPolicy❗◁Array1.S▷❗Dword❕Create❕DX❕
-❕TextHost❕❎Cloud content ☆ ◁Choice1.S▷ applied.❕Screen❕DX❕
+❕TextHost❕🛜Bluetooth discovery ☆ ◁Choice1.S▷ applied.❕Screen❕DX❕
 
 ❕Group❕🛜Network❕🪛Link layer topology discovery ☆ ◁Array1.S▷❕Normal❕Network related settings❗Enable or disable link layer topology discovery❕
 ❕📜Routine❕◁HiveSoftware▷\Policies\Microsoft\Windows\LLTD❗EnableRspndr❕Registry❕Integer❕

@@ -7,9 +7,9 @@ A native command shell Windows image deployment tool. Featuring a built-in Power
 
 While some might call it '**legacy**', others refer to it as '**a dependency-free baseline that retains functionality in the most scarce system terrain, including in the absence of PowerShell and .NET frameworks, i.e. Windows Pre-Installation Environments**'.
 
-***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
-
 The only comprehensive toolkit with absolutely **zero internet connectivity**, a notable missing feature from recent utilities. Zero updates, check-ins, and most importantly no backdoors. **Period**. Experience a level of freedom I'll never dare dream of again. **Priceless**. Administrate your Windows from an offline recovery environment.
+
+***With people attempting to steal the tool's name, my legal name, my traffic, as well as attacking the tool, what does this tell you? It tells you all you need to know. Best in class.🏅***
 
 # Download
 
